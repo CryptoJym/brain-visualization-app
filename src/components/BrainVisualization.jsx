@@ -151,17 +151,17 @@ function BrainVisualization() {
     // Scene setup
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0a0a0a);
-    scene.fog = new THREE.Fog(0x0a0a0a, 5, 15);
+    scene.fog = new THREE.Fog(0x0a0a0a, 8, 20);
     sceneRef.current = scene;
 
     // Camera setup
     const camera = new THREE.PerspectiveCamera(
-      45,
+      35,
       mountRef.current.clientWidth / mountRef.current.clientHeight,
       0.1,
       1000
     );
-    camera.position.set(0, 0, 8);
+    camera.position.set(0, 0, 12);
     cameraRef.current = camera;
 
     // Renderer setup
