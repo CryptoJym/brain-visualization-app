@@ -151,17 +151,17 @@ function BrainVisualization() {
     // Scene setup
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0a0a0a);
-    scene.fog = new THREE.Fog(0x0a0a0a, 10, 30);
+    scene.fog = new THREE.Fog(0x0a0a0a, 15, 40);
     sceneRef.current = scene;
 
     // Camera setup
     const camera = new THREE.PerspectiveCamera(
-      30,
+      25,
       mountRef.current.clientWidth / mountRef.current.clientHeight,
       0.1,
       1000
     );
-    camera.position.set(0, 0, 18);
+    camera.position.set(0, 0, 25);
     cameraRef.current = camera;
 
     // Renderer setup
@@ -232,17 +232,32 @@ function BrainVisualization() {
       
       brainGeometry.computeVertexNormals();
       
-      const brainMaterial = new THREE.MeshPhongMaterial({
-        color: 0x2a3f5f,
+      const brainMaterial = new THREE.MeshPhysicalMaterial({
+        color: 0x4a5f7f,
         transparent: true,
-        opacity: 0.3,
+        opacity: 0.2,
         side: THREE.DoubleSide,
-        shininess: 50,
-        wireframe: false
+        metalness: 0.1,
+        roughness: 0.3,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.4,
+        reflectivity: 0.5,
+        envMapIntensity: 0.5
       });
       
       const brainMesh = new THREE.Mesh(brainGeometry, brainMaterial);
       brainGroupMesh.add(brainMesh);
+      
+      // Add edge highlight for better definition
+      const edgeGeometry = new THREE.EdgesGeometry(brainGeometry, 30);
+      const edgeMaterial = new THREE.LineBasicMaterial({ 
+        color: 0x6a7f9f, 
+        transparent: true, 
+        opacity: 0.2,
+        linewidth: 1 
+      });
+      const edgeLines = new THREE.LineSegments(edgeGeometry, edgeMaterial);
+      brainGroupMesh.add(edgeLines);
       
       // Add brain stem
       const stemGeometry = new THREE.CylinderGeometry(0.5, 0.7, 1.5, 16);
@@ -270,9 +285,9 @@ function BrainVisualization() {
           const material = new THREE.MeshPhongMaterial({
             color: data.color,
             emissive: data.color,
-            emissiveIntensity: 0.1,
+            emissiveIntensity: 0.2,
             transparent: true,
-            opacity: 0.8,
+            opacity: 0.9,
             shininess: 100
           });
           
