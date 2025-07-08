@@ -151,17 +151,17 @@ function BrainVisualization() {
     // Scene setup
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0a0a0a);
-    scene.fog = new THREE.Fog(0x0a0a0a, 8, 20);
+    scene.fog = new THREE.Fog(0x0a0a0a, 10, 30);
     sceneRef.current = scene;
 
     // Camera setup
     const camera = new THREE.PerspectiveCamera(
-      35,
+      30,
       mountRef.current.clientWidth / mountRef.current.clientHeight,
       0.1,
       1000
     );
-    camera.position.set(0, 0, 12);
+    camera.position.set(0, 0, 18);
     cameraRef.current = camera;
 
     // Renderer setup
@@ -174,17 +174,22 @@ function BrainVisualization() {
     rendererRef.current = renderer;
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
     scene.add(ambientLight);
     
-    const mainLight = new THREE.DirectionalLight(0xffffff, 0.7);
+    const mainLight = new THREE.DirectionalLight(0xffffff, 0.8);
     mainLight.position.set(5, 5, 5);
     mainLight.castShadow = true;
     scene.add(mainLight);
     
-    const rimLight = new THREE.PointLight(0x4e94ce, 0.5);
+    const rimLight = new THREE.PointLight(0x4e94ce, 0.6);
     rimLight.position.set(-5, 0, -5);
     scene.add(rimLight);
+    
+    // Add a front light to better illuminate the brain structure
+    const frontLight = new THREE.DirectionalLight(0xffffff, 0.4);
+    frontLight.position.set(0, 2, 10);
+    scene.add(frontLight);
 
     // Create brain group
     const brainGroupMesh = new THREE.Group();
@@ -228,11 +233,12 @@ function BrainVisualization() {
       brainGeometry.computeVertexNormals();
       
       const brainMaterial = new THREE.MeshPhongMaterial({
-        color: 0x1a1f2e,
+        color: 0x2a3f5f,
         transparent: true,
-        opacity: 0.15,
+        opacity: 0.3,
         side: THREE.DoubleSide,
-        shininess: 30
+        shininess: 50,
+        wireframe: false
       });
       
       const brainMesh = new THREE.Mesh(brainGeometry, brainMaterial);
