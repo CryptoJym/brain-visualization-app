@@ -23,7 +23,7 @@ const ACEsQuestionnaire = ({ onComplete }) => {
     { id: 'emotional_abuse', text: 'Did a parent or adult in your home ever insult you, put you down, or act in a way that made you afraid?', category: 'abuse' },
     
     // Neglect
-    { id: 'physical_neglect', text: 'Did you often feel that you didn't have enough to eat, had to wear dirty clothes, or had no one to protect you?', category: 'neglect' },
+    { id: 'physical_neglect', text: "Did you often feel that you didn't have enough to eat, had to wear dirty clothes, or had no one to protect you?", category: 'neglect' },
     { id: 'emotional_neglect', text: 'Did you often feel that no one in your family loved you or thought you were important?', category: 'neglect' },
     
     // Household Dysfunction
