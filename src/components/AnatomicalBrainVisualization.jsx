@@ -333,19 +333,19 @@ export default function AnatomicalBrainVisualization({ assessmentResults, brainI
     <div className="relative w-full h-full">
       <div ref={mountRef} className="w-full h-full" />
       
-      {/* Controls */}
-      <div className="absolute top-4 right-4 space-y-2">
-        <div className="bg-white/10 backdrop-blur-xl rounded-lg p-2 border border-white/20">
+      {/* Controls - Fixed positioning with z-index */}
+      <div className="absolute top-20 right-4 z-20 space-y-2 max-w-[200px]">
+        <div className="bg-gray-900/90 backdrop-blur-xl rounded-lg p-3 border border-white/20">
           <p className="text-xs text-gray-400 mb-2">View Angle</p>
           <div className="grid grid-cols-2 gap-1">
             {['lateral', 'medial', 'superior', 'inferior', 'anterior', 'posterior'].map(view => (
               <button
                 key={view}
                 onClick={() => setCameraView(view)}
-                className={`px-3 py-1 text-xs rounded transition-all ${
+                className={`px-2 py-1 text-xs rounded transition-all ${
                   viewMode === view 
                     ? 'bg-purple-600 text-white' 
-                    : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                 }`}
               >
                 {view.charAt(0).toUpperCase() + view.slice(1)}
@@ -356,15 +356,15 @@ export default function AnatomicalBrainVisualization({ assessmentResults, brainI
         
         <button
           onClick={() => setShowLabels(!showLabels)}
-          className="w-full px-4 py-2 bg-white/10 backdrop-blur-xl rounded-lg border border-white/20 text-white text-sm hover:bg-white/20 transition-all"
+          className="w-full px-4 py-2 bg-gray-900/90 backdrop-blur-xl rounded-lg border border-white/20 text-white text-sm hover:bg-gray-800 transition-all"
         >
           {showLabels ? 'Hide' : 'Show'} Labels
         </button>
       </div>
       
-      {/* Region Info */}
+      {/* Region Info - Fixed positioning with z-index */}
       {selectedRegion && brainRegions[selectedRegion] && (
-        <div className="absolute bottom-4 left-4 max-w-md bg-white/10 backdrop-blur-xl rounded-lg p-4 border border-white/20">
+        <div className="absolute bottom-4 right-4 z-20 max-w-md bg-gray-900/90 backdrop-blur-xl rounded-lg p-4 border border-white/20">
           <h3 className="text-lg font-medium text-white mb-2">
             {brainRegions[selectedRegion].name}
           </h3>

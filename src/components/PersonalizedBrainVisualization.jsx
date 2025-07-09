@@ -34,7 +34,7 @@ function PersonalizedBrainVisualization({ assessmentResults }) {
   return (
     <div className="relative w-full h-screen bg-gradient-to-b from-gray-900 via-purple-900/10 to-black">
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 z-10 p-6">
+      <div className="absolute top-0 left-0 right-0 z-30 p-6 bg-gradient-to-b from-gray-900/90 to-transparent">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-light text-white mb-2">
             Your Personalized Brain Map
@@ -102,9 +102,9 @@ function PersonalizedBrainVisualization({ assessmentResults }) {
         </div>
       </div>
       
-      {/* Legend */}
-      <div className="absolute bottom-6 right-6">
-        <div className="bg-white/5 backdrop-blur-xl rounded-lg p-4 border border-white/10">
+      {/* Legend - Positioned to avoid conflicts */}
+      <div className="absolute bottom-6 left-6 z-20">
+        <div className="bg-gray-900/90 backdrop-blur-xl rounded-lg p-4 border border-white/20">
           <h3 className="text-sm font-medium text-white mb-3">Impact Severity</h3>
           <div className="space-y-2">
             <div className="flex items-center gap-2">

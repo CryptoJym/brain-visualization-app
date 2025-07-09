@@ -105,7 +105,7 @@ function App() {
         <PersonalizedBrainVisualization assessmentResults={assessmentResults} />
         <button
           onClick={handleRestartAssessment}
-          className="absolute top-24 right-6 px-4 py-2 bg-white/10 text-white rounded-lg text-sm hover:bg-white/20 transition-all duration-300 backdrop-blur"
+          className="fixed bottom-6 right-6 z-30 px-6 py-3 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-all duration-300 backdrop-blur"
         >
           Retake Assessment
         </button>
@@ -119,7 +119,7 @@ function App() {
         <BrainVisualization />
         <button
           onClick={() => setCurrentView('questionnaire')}
-          className="absolute top-24 right-6 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg text-sm hover:shadow-lg hover:shadow-purple-600/25 transition-all duration-300"
+          className="fixed bottom-6 right-6 z-30 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-purple-600/25 transition-all duration-300"
         >
           Take Assessment
         </button>
