@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import AnatomicalBrainVisualization from './AnatomicalBrainVisualization';
+import EnterpriseBrainVisualization from './EnterpriseBrainVisualization';
 import { brainRegions } from '../utils/traumaBrainMapping';
 
 function BrainVisualization() {
@@ -50,8 +50,11 @@ function BrainVisualization() {
       
       {/* Main visualization */}
       <div className="w-full h-full">
-        <AnatomicalBrainVisualization 
+        <EnterpriseBrainVisualization 
           brainImpacts={exampleImpacts}
+          onRegionSelect={(regionKey, regionData) => {
+            console.log('Selected region:', regionKey, regionData);
+          }}
         />
       </div>
       

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import LoadingScreen from './LoadingScreen';
-import AnatomicalBrainVisualization from './AnatomicalBrainVisualization';
+import EnterpriseBrainVisualization from './EnterpriseBrainVisualization';
 import { analyzeTraumaImpact, brainRegions } from '../utils/traumaBrainMapping';
 
 function PersonalizedBrainVisualization({ assessmentResults }) {
@@ -47,9 +47,12 @@ function PersonalizedBrainVisualization({ assessmentResults }) {
       
       {/* Main visualization */}
       <div className="w-full h-full">
-        <AnatomicalBrainVisualization 
+        <EnterpriseBrainVisualization 
           assessmentResults={assessmentResults}
           brainImpacts={brainImpacts}
+          onRegionSelect={(regionKey, regionData) => {
+            console.log('Selected region:', regionKey, regionData);
+          }}
         />
       </div>
       
