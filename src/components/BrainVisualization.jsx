@@ -398,12 +398,11 @@ function BrainVisualization() {
 
     const handlePointerDown = (e) => {
       isDragging = true;
-      autoRotate = false;
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
       const clientY = e.touches ? e.touches[0].clientY : e.clientY;
       previousPosition = { x: clientX, y: clientY };
       
-      // Store current rotation
+      // Always preserve current rotation state
       if (brainGroup.current) {
         currentRotation.x = brainGroup.current.rotation.x;
         currentRotation.y = brainGroup.current.rotation.y;
@@ -421,8 +420,9 @@ function BrainVisualization() {
       }
       
       isDragging = false;
-      // Don't reset autoRotate on click
+      // Only pause auto-rotate on drag, not on click
       if (moved >= 5) {
+        autoRotate = false;
         setTimeout(() => { autoRotate = true; }, 3000);
       }
     };
@@ -583,7 +583,7 @@ function BrainVisualization() {
       }
       renderer.dispose();
     };
-  }, [selectedRegion, rotationSpeed]);
+  }, [selectedRegion, rotationSpeed, showLabels]);
 
   // Update synergy connections
   useEffect(() => {
@@ -735,10 +735,38 @@ function BrainVisualization() {
 
       {/* Main 3D View */}
       <div ref={mountRef} className="w-full h-full" />
+      
+      {/* 3D Labels Overlay */}
+      {showLabels && (
+        <div className="absolute inset-0 pointer-events-none">
+          {Object.entries(brainRegions).map(([key, region]) => {
+            if (region.type !== 'region') return null;
+            
+            // For bilateral regions, only show one label
+            const position = region.position.center || region.position.left;
+            if (!position) return null;
+            
+            return (
+              <div
+                key={key}
+                className="absolute text-white text-xs bg-black/50 px-2 py-1 rounded-full backdrop-blur-sm border border-white/20"
+                style={{
+                  left: '50%',
+                  top: '50%',
+                  transform: `translate(${position[0] * 20}px, ${-position[1] * 20 - 100}px) translate(-50%, -50%)`,
+                  zIndex: 10
+                }}
+              >
+                {region.name}
+              </div>
+            );
+          })}
+        </div>
+      )}
 
-      {/* Region Information Panel with Glassmorphism */}
+      {/* Region Information Panel with Glassmorphism - Moved to LEFT side */}
       {selectedRegion && brainRegions[selectedRegion] && (
-        <div className="absolute top-32 right-6 w-96 max-w-[calc(100%-3rem)] animate-fadeIn">
+        <div className="absolute top-32 left-6 w-96 max-w-[calc(100%-3rem)] animate-fadeIn md:max-w-sm lg:max-w-md">
           <div className="bg-white/5 backdrop-blur-2xl rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
             {/* Header */}
             <div className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 p-6 border-b border-white/10">
@@ -873,7 +901,7 @@ function BrainVisualization() {
 
       {/* Internal Perspective Panel - Professional Glassmorphism */}
       {showPerspective && (
-        <div className="absolute bottom-6 right-6 w-96 max-w-[calc(100%-3rem)] animate-slideUp">
+        <div className="absolute bottom-6 right-6 w-96 max-w-[calc(100%-3rem)] animate-slideUp md:max-w-sm lg:max-w-md">
           <div className="bg-white/5 backdrop-blur-2xl rounded-xl border border-white/10 shadow-2xl overflow-hidden">
             <div className="bg-gradient-to-r from-indigo-600/20 to-purple-600/20 p-4 border-b border-white/10">
               <h3 className="text-lg font-light text-white flex items-center gap-2">
