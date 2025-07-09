@@ -311,6 +311,7 @@ function BrainVisualization() {
           });
           const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
           glowMesh.position.copy(mesh.position);
+          glowMesh.isGlowMesh = true; // Mark as glow mesh to exclude from raycasting
           mesh.glowMesh = glowMesh;
           brainGroupMesh.add(glowMesh);
         };
@@ -393,7 +394,10 @@ function BrainVisualization() {
       }
       
       isDragging = false;
-      setTimeout(() => { autoRotate = true; }, 3000);
+      // Don't reset autoRotate on click
+      if (moved >= 5) {
+        setTimeout(() => { autoRotate = true; }, 3000);
+      }
     };
 
     const handlePointerMove = (e) => {
@@ -426,12 +430,25 @@ function BrainVisualization() {
       const y = -((clientY - rect.top) / rect.height) * 2 + 1;
       
       raycaster.current.setFromCamera(new THREE.Vector2(x, y), cameraRef.current);
-      const intersects = raycaster.current.intersectObjects(Object.values(brainMeshes.current));
+      
+      // Get all meshes that are brain regions (exclude glow meshes and pathways)
+      const clickableMeshes = Object.values(brainMeshes.current).filter(mesh => 
+        mesh.userData.type === 'region' && mesh.material && !mesh.isGlowMesh
+      );
+      
+      const intersects = raycaster.current.intersectObjects(clickableMeshes, true);
       
       if (intersects.length > 0) {
         const clickedMesh = intersects[0].object;
         const regionKey = clickedMesh.userData.regionKey;
-        setSelectedRegion(regionKey);
+        if (regionKey) {
+          setSelectedRegion(regionKey);
+          // Don't stop rotation when clicking a region
+          autoRotate = true;
+        }
+      } else {
+        // Click on empty space - deselect
+        setSelectedRegion(null);
       }
     };
 
@@ -456,7 +473,13 @@ function BrainVisualization() {
       
       // Update hover effects
       raycaster.current.setFromCamera(mouse.current, cameraRef.current);
-      const intersects = raycaster.current.intersectObjects(Object.values(brainMeshes.current));
+      
+      // Only check hover on actual region meshes
+      const hoverableMeshes = Object.values(brainMeshes.current).filter(mesh => 
+        mesh.userData.type === 'region' && mesh.material && !mesh.isGlowMesh
+      );
+      
+      const intersects = raycaster.current.intersectObjects(hoverableMeshes, true);
       
       let hoveredKey = null;
       if (intersects.length > 0) {
