@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import * as THREE from 'three';
+import LoadingScreen from './LoadingScreen';
 
 // Brain region data with anatomically correct positions
 const brainRegions = {
@@ -143,10 +144,28 @@ function BrainVisualization() {
   const [showPerspective, setShowPerspective] = useState(false);
   const [hoveredRegion, setHoveredRegion] = useState(null);
   const [activeConnection, setActiveConnection] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [rotationSpeed, setRotationSpeed] = useState(1);
+  const [showLabels, setShowLabels] = useState(false);
+  const [showTour, setShowTour] = useState(true);
+  const [tourStep, setTourStep] = useState(0);
 
   // Initialize Three.js scene
   useEffect(() => {
     if (!mountRef.current) return;
+
+    // Simulate loading progress
+    const loadingInterval = setInterval(() => {
+      setLoadingProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(loadingInterval);
+          setTimeout(() => setIsLoading(false), 500);
+          return 100;
+        }
+        return prev + 10;
+      });
+    }, 100);
 
     // Scene setup
     const scene = new THREE.Scene();
@@ -374,7 +393,7 @@ function BrainVisualization() {
     let isDragging = false;
     let previousPosition = { x: 0, y: 0 };
     let autoRotate = true;
-    let rotationSpeed = 0.001;
+    let baseRotationSpeed = 0.001;
     let currentRotation = { x: 0, y: 0 };
 
     const handlePointerDown = (e) => {
@@ -480,7 +499,7 @@ function BrainVisualization() {
       // Auto-rotate - always update currentRotation
       if (brainGroup.current) {
         if (autoRotate) {
-          currentRotation.y += rotationSpeed;
+          currentRotation.y += baseRotationSpeed * rotationSpeed;
         }
         // Always apply the current rotation (whether auto-rotating or not)
         brainGroup.current.rotation.x = currentRotation.x;
@@ -564,7 +583,7 @@ function BrainVisualization() {
       }
       renderer.dispose();
     };
-  }, [selectedRegion]);
+  }, [selectedRegion, rotationSpeed]);
 
   // Update synergy connections
   useEffect(() => {
@@ -624,131 +643,276 @@ function BrainVisualization() {
   }, [showSynergy, selectedRegion]);
 
   return (
-    <div className="w-full h-screen bg-gradient-to-b from-gray-900 to-black overflow-hidden">
-      {/* Header */}
-      <div className="absolute top-0 left-0 right-0 z-20 bg-gray-900/90 backdrop-blur-sm p-4 border-b border-gray-800">
-        <h1 className="text-xl md:text-2xl font-bold text-white mb-2">
-          Neuroscience of Adversity: How Trauma Shapes the Brain
-        </h1>
-        <p className="text-gray-300 text-xs md:text-sm mb-3">
-          Click brain regions to explore how childhood experiences create lasting neural changes
-        </p>
-        
-        <div className="flex gap-2 flex-wrap">
-          <button
-            onClick={() => setShowSynergy(!showSynergy)}
-            className={`px-3 py-1.5 text-sm rounded ${showSynergy ? 'bg-blue-600' : 'bg-gray-700'} text-white transition-all`}
-          >
-            {showSynergy ? 'Hide' : 'Show'} Neural Connections
-          </button>
-          <button
-            onClick={() => setShowPerspective(!showPerspective)}
-            className={`px-3 py-1.5 text-sm rounded ${showPerspective ? 'bg-purple-600' : 'bg-gray-700'} text-white transition-all`}
-          >
-            Internal Experience
-          </button>
+    <div className="w-full h-screen bg-gradient-to-b from-gray-900 via-purple-900/10 to-black overflow-hidden">
+      {/* Loading Screen */}
+      {isLoading && <LoadingScreen progress={loadingProgress} />}
+      
+      {/* Header with Glassmorphism */}
+      <div className="absolute top-0 left-0 right-0 z-20 bg-gradient-to-b from-gray-900/80 to-transparent backdrop-blur-xl p-6 border-b border-white/10">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-light text-white mb-1 tracking-wide">
+                Neuroscience of Adversity
+              </h1>
+              <p className="text-gray-300 text-sm md:text-base opacity-90">
+                Interactive exploration of trauma's impact on neural development
+              </p>
+            </div>
+            
+            {/* Professional Control Panel */}
+            <div className="hidden md:flex items-center gap-4">
+              <div className="flex items-center gap-2 bg-white/5 rounded-lg p-1 backdrop-blur">
+                <button
+                  onClick={() => setShowSynergy(!showSynergy)}
+                  className={`px-4 py-2 text-sm rounded-md transition-all duration-300 ${
+                    showSynergy 
+                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/25' 
+                      : 'text-gray-300 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  Connections
+                </button>
+                <button
+                  onClick={() => setShowLabels(!showLabels)}
+                  className={`px-4 py-2 text-sm rounded-md transition-all duration-300 ${
+                    showLabels 
+                      ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/25' 
+                      : 'text-gray-300 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  Labels
+                </button>
+                <button
+                  onClick={() => setShowPerspective(!showPerspective)}
+                  className={`px-4 py-2 text-sm rounded-md transition-all duration-300 ${
+                    showPerspective 
+                      ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/25' 
+                      : 'text-gray-300 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  Insights
+                </button>
+              </div>
+              
+              {/* Speed Control */}
+              <div className="flex items-center gap-2 bg-white/5 rounded-lg px-3 py-2 backdrop-blur">
+                <span className="text-xs text-gray-400">Speed</span>
+                <input
+                  type="range"
+                  min="0"
+                  max="2"
+                  step="0.1"
+                  value={rotationSpeed}
+                  onChange={(e) => setRotationSpeed(parseFloat(e.target.value))}
+                  className="w-20 h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                />
+              </div>
+            </div>
+          </div>
+          
+          {/* Mobile Controls */}
+          <div className="md:hidden flex gap-2 mt-4">
+            <button
+              onClick={() => setShowSynergy(!showSynergy)}
+              className={`flex-1 px-3 py-2 text-sm rounded-lg transition-all ${
+                showSynergy ? 'bg-blue-600/80 text-white' : 'bg-white/10 text-gray-300'
+              }`}
+            >
+              Connections
+            </button>
+            <button
+              onClick={() => setShowPerspective(!showPerspective)}
+              className={`flex-1 px-3 py-2 text-sm rounded-lg transition-all ${
+                showPerspective ? 'bg-purple-600/80 text-white' : 'bg-white/10 text-gray-300'
+              }`}
+            >
+              Insights
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Main 3D View */}
       <div ref={mountRef} className="w-full h-full" />
 
-      {/* Region Information Panel */}
+      {/* Region Information Panel with Glassmorphism */}
       {selectedRegion && brainRegions[selectedRegion] && (
-        <div className="absolute top-28 right-4 w-96 max-w-[calc(100%-2rem)] bg-gray-900/95 backdrop-blur-md p-6 rounded-xl border border-gray-700 shadow-2xl">
-          <button
-            onClick={() => setSelectedRegion(null)}
-            className="absolute top-3 right-3 text-gray-400 hover:text-white"
-          >
-            ✕
-          </button>
-          
-          <h2 className="text-2xl font-bold text-white mb-4 pr-8">
-            {brainRegions[selectedRegion].name}
-          </h2>
-          
-          <div className="space-y-4">
-            <div className="bg-blue-900/20 p-4 rounded-lg border border-blue-700/30">
-              <h3 className="text-blue-400 font-semibold text-sm mb-1">Normal Function</h3>
-              <p className="text-white text-sm">{brainRegions[selectedRegion].function}</p>
+        <div className="absolute top-32 right-6 w-96 max-w-[calc(100%-3rem)] animate-fadeIn">
+          <div className="bg-white/5 backdrop-blur-2xl rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 p-6 border-b border-white/10">
+              <button
+                onClick={() => setSelectedRegion(null)}
+                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-300"
+              >
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+              
+              <h2 className="text-2xl font-light text-white mb-1 pr-8">
+                {brainRegions[selectedRegion].name}
+              </h2>
+              <p className="text-sm text-gray-300 opacity-80">Neural Region Analysis</p>
             </div>
             
-            <div className="bg-yellow-900/20 p-4 rounded-lg border border-yellow-700/30">
-              <h3 className="text-yellow-400 font-semibold text-sm mb-1">Early Trauma Impact</h3>
-              <p className="text-yellow-100 text-sm">{brainRegions[selectedRegion].earlyImpact}</p>
-            </div>
-            
-            <div className="bg-orange-900/20 p-4 rounded-lg border border-orange-700/30">
-              <h3 className="text-orange-400 font-semibold text-sm mb-1">Later Impact</h3>
-              <p className="text-orange-100 text-sm">{brainRegions[selectedRegion].lateImpact}</p>
-            </div>
-            
-            <div className="bg-red-900/20 p-4 rounded-lg border border-red-700/30">
-              <h3 className="text-red-400 font-semibold text-sm mb-1">Brain Changes</h3>
-              <p className="text-red-100 text-sm">{brainRegions[selectedRegion].outcome}</p>
-            </div>
-            
-            <div className="bg-green-900/20 p-4 rounded-lg border border-green-700/30">
-              <h3 className="text-green-400 font-semibold text-sm mb-1">How It Shows Up</h3>
-              <p className="text-green-100 text-sm">{brainRegions[selectedRegion].behavior}</p>
-            </div>
-          </div>
-          
-          {showSynergy && (
-            <div className="mt-4 pt-4 border-t border-gray-700">
-              <h3 className="text-white font-semibold text-sm mb-2">Connected Systems</h3>
-              <div className="space-y-2">
-                {synergyConnections
-                  .filter(conn => conn.from === selectedRegion || conn.to === selectedRegion)
-                  .map((conn, idx) => (
-                    <div key={idx} className="text-xs bg-gray-800/50 p-2 rounded">
-                      <p className="text-cyan-400">{conn.description}</p>
-                      <p className="text-gray-300 mt-1">{conn.impact}</p>
-                    </div>
-                  ))}
+            {/* Content */}
+            <div className="p-6 space-y-3">
+              {/* Normal Function */}
+              <div className="group hover:scale-[1.02] transition-transform duration-300">
+                <div className="bg-gradient-to-r from-blue-500/10 to-blue-600/10 p-4 rounded-xl border border-blue-500/20">
+                  <h3 className="text-blue-400 font-medium text-sm mb-1 flex items-center gap-2">
+                    <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></span>
+                    Normal Function
+                  </h3>
+                  <p className="text-gray-100 text-sm leading-relaxed">{brainRegions[selectedRegion].function}</p>
+                </div>
+              </div>
+              
+              {/* Early Impact */}
+              <div className="group hover:scale-[1.02] transition-transform duration-300">
+                <div className="bg-gradient-to-r from-yellow-500/10 to-amber-600/10 p-4 rounded-xl border border-yellow-500/20">
+                  <h3 className="text-yellow-400 font-medium text-sm mb-1 flex items-center gap-2">
+                    <span className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
+                    Early Trauma Impact
+                  </h3>
+                  <p className="text-gray-100 text-sm leading-relaxed">{brainRegions[selectedRegion].earlyImpact}</p>
+                </div>
+              </div>
+              
+              {/* Later Impact */}
+              <div className="group hover:scale-[1.02] transition-transform duration-300">
+                <div className="bg-gradient-to-r from-orange-500/10 to-red-600/10 p-4 rounded-xl border border-orange-500/20">
+                  <h3 className="text-orange-400 font-medium text-sm mb-1 flex items-center gap-2">
+                    <span className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></span>
+                    Later Development Impact
+                  </h3>
+                  <p className="text-gray-100 text-sm leading-relaxed">{brainRegions[selectedRegion].lateImpact}</p>
+                </div>
+              </div>
+              
+              {/* Neurological Changes */}
+              <div className="group hover:scale-[1.02] transition-transform duration-300">
+                <div className="bg-gradient-to-r from-red-500/10 to-rose-600/10 p-4 rounded-xl border border-red-500/20">
+                  <h3 className="text-red-400 font-medium text-sm mb-1 flex items-center gap-2">
+                    <span className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></span>
+                    Neurological Changes
+                  </h3>
+                  <p className="text-gray-100 text-sm leading-relaxed">{brainRegions[selectedRegion].outcome}</p>
+                </div>
+              </div>
+              
+              {/* Behavioral Manifestation */}
+              <div className="group hover:scale-[1.02] transition-transform duration-300">
+                <div className="bg-gradient-to-r from-green-500/10 to-emerald-600/10 p-4 rounded-xl border border-green-500/20">
+                  <h3 className="text-green-400 font-medium text-sm mb-1 flex items-center gap-2">
+                    <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                    Behavioral Manifestation
+                  </h3>
+                  <p className="text-gray-100 text-sm leading-relaxed">{brainRegions[selectedRegion].behavior}</p>
+                </div>
               </div>
             </div>
-          )}
+          
+            {/* Neural Connections */}
+            {showSynergy && (
+              <div className="border-t border-white/10 p-6">
+                <h3 className="text-white font-medium text-sm mb-3 flex items-center gap-2">
+                  <span className="w-2 h-2 bg-cyan-400 rounded-full"></span>
+                  Neural Connections
+                </h3>
+                <div className="space-y-2">
+                  {synergyConnections
+                    .filter(conn => conn.from === selectedRegion || conn.to === selectedRegion)
+                    .map((conn, idx) => (
+                      <div key={idx} className="bg-cyan-500/10 p-3 rounded-lg border border-cyan-500/20 hover:bg-cyan-500/20 transition-all duration-300">
+                        <p className="text-cyan-400 text-sm font-medium">{conn.description}</p>
+                        <p className="text-gray-300 text-xs mt-1 opacity-80">{conn.impact}</p>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
       {/* Hover Information */}
       {hoveredRegion && !selectedRegion && brainRegions[hoveredRegion] && (
-        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 bg-gray-800/90 backdrop-blur px-4 py-2 rounded-lg">
-          <p className="text-white font-medium">{brainRegions[hoveredRegion].name}</p>
-          <p className="text-gray-300 text-sm">Click to explore</p>
+        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 animate-fadeIn">
+          <div className="bg-white/10 backdrop-blur-xl px-6 py-3 rounded-full border border-white/20 shadow-xl">
+            <p className="text-white font-light text-lg">{brainRegions[hoveredRegion].name}</p>
+            <p className="text-gray-300 text-sm text-center opacity-80">Click to explore</p>
+          </div>
         </div>
       )}
 
-      {/* Navigation Instructions */}
-      <div className="absolute bottom-4 left-4 bg-gray-800/80 backdrop-blur-sm p-3 rounded-lg text-xs text-gray-300">
-        <p className="font-semibold text-white mb-1">Navigation</p>
-        <p>🖱️ Drag to rotate brain</p>
-        <p>👆 Click regions to learn more</p>
-        <p>🔗 Enable connections to see interactions</p>
+      {/* Professional Navigation Guide */}
+      <div className="absolute bottom-6 left-6 animate-slideUp">
+        <div className="bg-white/5 backdrop-blur-xl p-4 rounded-xl border border-white/10 shadow-xl">
+          <h4 className="text-white font-medium text-sm mb-2 flex items-center gap-2">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Quick Guide
+          </h4>
+          <div className="space-y-1 text-xs">
+            <p className="text-gray-300 flex items-center gap-2">
+              <span className="text-white opacity-60">Drag</span> Rotate view
+            </p>
+            <p className="text-gray-300 flex items-center gap-2">
+              <span className="text-white opacity-60">Click</span> Select region
+            </p>
+            <p className="text-gray-300 flex items-center gap-2">
+              <span className="text-white opacity-60">Scroll</span> Zoom in/out
+            </p>
+          </div>
+        </div>
       </div>
 
-      {/* Internal Perspective Panel */}
+      {/* Internal Perspective Panel - Professional Glassmorphism */}
       {showPerspective && (
-        <div className="absolute bottom-4 right-4 w-96 max-w-[calc(100%-2rem)] bg-purple-900/90 backdrop-blur-md p-5 rounded-xl border border-purple-700">
-          <h3 className="text-lg font-bold text-white mb-3">The Internal Experience</h3>
-          <div className="space-y-3 text-sm">
-            <p className="text-purple-100 italic">
-              "The world feels like a high-stakes chess game where threats hide in every pattern. 
-              My brain sees danger where others see nothing."
-            </p>
-            <p className="text-purple-100 italic">
-              "I can shut down all emotion and focus with superhuman intensity - but sometimes 
-              the dam breaks and years of suppressed feelings explode at once."
-            </p>
-            <p className="text-purple-100 italic">
-              "Inefficiency physically hurts. Solutions appear as crystal-clear diagrams while 
-              human emotions remain an unsolvable puzzle."
-            </p>
-            <p className="text-purple-100 italic">
-              "Every critical word echoes with the weight of a thousand childhood wounds, 
-              driving an obsessive need to be undeniably excellent."
-            </p>
+        <div className="absolute bottom-6 right-6 w-96 max-w-[calc(100%-3rem)] animate-slideUp">
+          <div className="bg-white/5 backdrop-blur-2xl rounded-xl border border-white/10 shadow-2xl overflow-hidden">
+            <div className="bg-gradient-to-r from-indigo-600/20 to-purple-600/20 p-4 border-b border-white/10">
+              <h3 className="text-lg font-light text-white flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+                The Internal Experience
+              </h3>
+            </div>
+            <div className="p-5 space-y-4">
+              <div className="relative">
+                <div className="absolute -left-2 top-0 bottom-0 w-1 bg-gradient-to-b from-purple-500 to-indigo-500 rounded-full opacity-50"></div>
+                <p className="text-gray-100 text-sm italic leading-relaxed pl-4">
+                  "The world feels like a high-stakes chess game where threats hide in every pattern. 
+                  My brain sees danger where others see nothing."
+                </p>
+              </div>
+              <div className="relative">
+                <div className="absolute -left-2 top-0 bottom-0 w-1 bg-gradient-to-b from-indigo-500 to-blue-500 rounded-full opacity-50"></div>
+                <p className="text-gray-100 text-sm italic leading-relaxed pl-4">
+                  "I can shut down all emotion and focus with superhuman intensity - but sometimes 
+                  the dam breaks and years of suppressed feelings explode at once."
+                </p>
+              </div>
+              <div className="relative">
+                <div className="absolute -left-2 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full opacity-50"></div>
+                <p className="text-gray-100 text-sm italic leading-relaxed pl-4">
+                  "Inefficiency physically hurts. Solutions appear as crystal-clear diagrams while 
+                  human emotions remain an unsolvable puzzle."
+                </p>
+              </div>
+              <div className="relative">
+                <div className="absolute -left-2 top-0 bottom-0 w-1 bg-gradient-to-b from-cyan-500 to-purple-500 rounded-full opacity-50"></div>
+                <p className="text-gray-100 text-sm italic leading-relaxed pl-4">
+                  "Every critical word echoes with the weight of a thousand childhood wounds, 
+                  driving an obsessive need to be undeniably excellent."
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       )}
