@@ -374,6 +374,8 @@ function BrainVisualization() {
     let isDragging = false;
     let previousPosition = { x: 0, y: 0 };
     let autoRotate = true;
+    let rotationSpeed = 0.001;
+    let currentRotation = { x: 0, y: 0 };
 
     const handlePointerDown = (e) => {
       isDragging = true;
@@ -381,6 +383,12 @@ function BrainVisualization() {
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
       const clientY = e.touches ? e.touches[0].clientY : e.clientY;
       previousPosition = { x: clientX, y: clientY };
+      
+      // Store current rotation
+      if (brainGroup.current) {
+        currentRotation.x = brainGroup.current.rotation.x;
+        currentRotation.y = brainGroup.current.rotation.y;
+      }
     };
 
     const handlePointerUp = (e) => {
@@ -410,14 +418,14 @@ function BrainVisualization() {
       mouse.current.y = -((clientY - rect.top) / rect.height) * 2 + 1;
       
       // Handle rotation
-      if (isDragging && brainGroup.current) {
+      if (isDragging) {
         const deltaX = clientX - previousPosition.x;
         const deltaY = clientY - previousPosition.y;
         
-        brainGroup.current.rotation.y += deltaX * 0.005;
-        brainGroup.current.rotation.x = Math.max(
+        currentRotation.y += deltaX * 0.005;
+        currentRotation.x = Math.max(
           -Math.PI/4, 
-          Math.min(Math.PI/4, brainGroup.current.rotation.x + deltaY * 0.005)
+          Math.min(Math.PI/4, currentRotation.x + deltaY * 0.005)
         );
         
         previousPosition = { x: clientX, y: clientY };
@@ -443,8 +451,11 @@ function BrainVisualization() {
         const regionKey = clickedMesh.userData.regionKey;
         if (regionKey) {
           setSelectedRegion(regionKey);
-          // Don't stop rotation when clicking a region
-          autoRotate = true;
+          // Keep current rotation values
+          if (brainGroup.current) {
+            currentRotation.x = brainGroup.current.rotation.x;
+            currentRotation.y = brainGroup.current.rotation.y;
+          }
         }
       } else {
         // Click on empty space - deselect
@@ -466,9 +477,14 @@ function BrainVisualization() {
       requestAnimationFrame(animate);
       const elapsedTime = clock.getElapsedTime();
       
-      // Auto-rotate
-      if (autoRotate && brainGroup.current) {
-        brainGroup.current.rotation.y += 0.001;
+      // Auto-rotate - always update currentRotation
+      if (brainGroup.current) {
+        if (autoRotate) {
+          currentRotation.y += rotationSpeed;
+        }
+        // Always apply the current rotation (whether auto-rotating or not)
+        brainGroup.current.rotation.x = currentRotation.x;
+        brainGroup.current.rotation.y = currentRotation.y;
       }
       
       // Update hover effects
