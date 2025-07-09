@@ -83,7 +83,10 @@ function App() {
   }
 
   if (currentView === 'questionnaire') {
-    return <ACEsQuestionnaire onComplete={handleQuestionnaireComplete} />
+    return <ACEsQuestionnaire 
+      onComplete={handleQuestionnaireComplete} 
+      onBack={() => setCurrentView('intro')}
+    />
   }
 
   if (currentView === 'results' && traumaAnalysis) {

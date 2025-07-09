@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 
-const ACEsQuestionnaire = ({ onComplete }) => {
+const ACEsQuestionnaire = ({ onComplete, onBack }) => {
   const [currentAge, setCurrentAge] = useState('');
   const [biologicalSex, setBiologicalSex] = useState('');
   const [answers, setAnswers] = useState({});
   const [currentSection, setCurrentSection] = useState(0);
+  const [showIntro, setShowIntro] = useState(true);
 
   const handleAnswerChange = (questionId, field, value) => {
     setAnswers(prev => ({
@@ -33,15 +34,42 @@ const ACEsQuestionnaire = ({ onComplete }) => {
     { id: 'parental_separation', text: 'Were your parents ever separated or divorced?', category: 'household' },
     { id: 'incarceration', text: 'Did anyone in your household go to prison?', category: 'household' },
     
-    // Expanded ACEs
+    // Expanded ACEs - Community
     { id: 'peer_bullying', text: 'Were you bullied by peers?', category: 'community' },
     { id: 'community_violence', text: 'Did you witness or experience violence in your neighborhood?', category: 'community' },
     { id: 'economic_hardship', text: 'Did your family struggle with not having enough money for basic needs?', category: 'community' },
     { id: 'discrimination', text: 'Did you experience ongoing discrimination or unfair treatment?', category: 'community' },
+    { id: 'social_isolation', text: 'Were you socially isolated or excluded from peer groups?', category: 'community' },
+    
+    // Life-Threatening Events
+    { id: 'near_death_experience', text: 'Did you have an experience where you thought you might die (trapped, drowning, accident)?', category: 'life_threat' },
+    { id: 'severe_accident', text: 'Were you in a severe accident or injured badly (even if not hospitalized)?', category: 'life_threat' },
+    { id: 'natural_disaster', text: 'Did you experience a natural disaster (fire, flood, earthquake)?', category: 'life_threat' },
+    { id: 'witnessed_death', text: 'Did you witness someone dying or being severely injured?', category: 'life_threat' },
+    
+    // Medical & Health
     { id: 'medical_trauma', text: 'Did you experience serious illness or medical procedures?', category: 'health' },
-    { id: 'caregiver_changes', text: 'Did you experience multiple changes in who took care of you?', category: 'stability' },
-    { id: 'caregiver_death', text: 'Did a parent or primary caregiver die?', category: 'stability' },
-    { id: 'educational_disruption', text: 'Did you experience significant disruptions to your education?', category: 'stability' }
+    { id: 'chronic_pain', text: 'Did you experience chronic pain or illness as a child?', category: 'health' },
+    { id: 'surgery_hospitalization', text: 'Were you hospitalized or had major surgery?', category: 'health' },
+    
+    // Attachment & Loss
+    { id: 'caregiver_changes', text: 'Did you experience multiple changes in who took care of you?', category: 'attachment' },
+    { id: 'caregiver_death', text: 'Did a parent or primary caregiver die?', category: 'attachment' },
+    { id: 'sibling_death', text: 'Did a sibling or close family member die?', category: 'attachment' },
+    { id: 'pet_loss', text: 'Did you lose a beloved pet in a traumatic way?', category: 'attachment' },
+    { id: 'abandonment', text: 'Were you abandoned or left alone for extended periods?', category: 'attachment' },
+    
+    // Educational & Developmental
+    { id: 'educational_disruption', text: 'Did you experience significant disruptions to your education?', category: 'developmental' },
+    { id: 'learning_difficulties', text: 'Did you struggle with unaddressed learning difficulties?', category: 'developmental' },
+    { id: 'academic_pressure', text: 'Did you experience extreme academic pressure or failure?', category: 'developmental' },
+    
+    // Additional Traumas
+    { id: 'forced_separation', text: 'Were you forcibly separated from family (custody, immigration)?', category: 'separation' },
+    { id: 'homelessness', text: 'Did you experience homelessness or housing instability?', category: 'stability' },
+    { id: 'food_insecurity', text: 'Did you regularly worry about having enough food?', category: 'stability' },
+    { id: 'parentification', text: 'Did you have to act as a parent to siblings or parents?', category: 'role_reversal' },
+    { id: 'cult_extremism', text: 'Were you raised in a cult or extremist environment?', category: 'environment' }
   ];
 
   const sections = [
@@ -50,7 +78,11 @@ const ACEsQuestionnaire = ({ onComplete }) => {
     { title: 'Neglect', questions: questions.filter(q => q.category === 'neglect') },
     { title: 'Household Dysfunction', questions: questions.filter(q => q.category === 'household') },
     { title: 'Community & Social', questions: questions.filter(q => q.category === 'community') },
-    { title: 'Health & Stability', questions: questions.filter(q => q.category === 'health' || q.category === 'stability') },
+    { title: 'Life-Threatening Events', questions: questions.filter(q => q.category === 'life_threat') },
+    { title: 'Medical & Health', questions: questions.filter(q => q.category === 'health') },
+    { title: 'Attachment & Loss', questions: questions.filter(q => q.category === 'attachment') },
+    { title: 'Educational & Developmental', questions: questions.filter(q => q.category === 'developmental' || q.category === 'separation') },
+    { title: 'Stability & Environment', questions: questions.filter(q => q.category === 'stability' || q.category === 'role_reversal' || q.category === 'environment') },
     { title: 'Protective Factors', questions: [] }
   ];
 
@@ -62,7 +94,7 @@ const ACEsQuestionnaire = ({ onComplete }) => {
 
   const handlePrevious = () => {
     if (currentSection > 0) {
-      setCurrentSection(currentSection - 1);
+      setCurrentSection(prev => prev - 1);
     }
   };
 
@@ -186,28 +218,61 @@ const ACEsQuestionnaire = ({ onComplete }) => {
                         <div className="mt-4 space-y-3 pl-4 border-l-2 border-purple-500/50">
                           <div>
                             <label className="block text-sm text-gray-300 mb-1">
-                              At what age(s) did this occur?
+                              At what age(s) did this occur? (Select all that apply)
                             </label>
-                            <input
-                              type="text"
-                              value={answer.ages || ''}
-                              onChange={(e) => handleAnswerChange(question.id, 'ages', e.target.value)}
-                              placeholder="e.g., 5-7 or 3, 8, 12"
-                              className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-500 text-sm focus:outline-none focus:border-purple-500 transition-colors"
-                            />
+                            <div className="space-y-2">
+                              {[
+                                { value: '0-3', label: '0-3 years (Infancy/Toddler)' },
+                                { value: '4-6', label: '4-6 years (Preschool)' },
+                                { value: '7-9', label: '7-9 years (Early Elementary)' },
+                                { value: '10-12', label: '10-12 years (Late Elementary)' },
+                                { value: '13-15', label: '13-15 years (Early Adolescence)' },
+                                { value: '16-18', label: '16-18 years (Late Adolescence)' }
+                              ].map(ageOption => {
+                                const selectedAges = answer.ageRanges || [];
+                                const isChecked = selectedAges.includes(ageOption.value);
+                                
+                                return (
+                                  <label key={ageOption.value} className="flex items-center gap-2 cursor-pointer hover:bg-white/5 p-2 rounded-lg transition-colors">
+                                    <input
+                                      type="checkbox"
+                                      checked={isChecked}
+                                      onChange={(e) => {
+                                        const newAges = e.target.checked 
+                                          ? [...selectedAges, ageOption.value]
+                                          : selectedAges.filter(age => age !== ageOption.value);
+                                        handleAnswerChange(question.id, 'ageRanges', newAges);
+                                      }}
+                                      className="w-4 h-4 text-purple-600 bg-white/10 border-white/30 rounded focus:ring-purple-500 focus:ring-2"
+                                    />
+                                    <span className="text-white text-sm">{ageOption.label}</span>
+                                  </label>
+                                );
+                              })}
+                            </div>
                           </div>
                           
                           <div>
                             <label className="block text-sm text-gray-300 mb-1">
                               How long did this last?
                             </label>
-                            <input
-                              type="text"
+                            <select
                               value={answer.duration || ''}
                               onChange={(e) => handleAnswerChange(question.id, 'duration', e.target.value)}
-                              placeholder="e.g., 6 months, 2 years, throughout childhood"
-                              className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-500 text-sm focus:outline-none focus:border-purple-500 transition-colors"
-                            />
+                              className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:border-purple-500 transition-colors text-sm"
+                            >
+                              <option value="" className="bg-gray-900">Select duration</option>
+                              <option value="single" className="bg-gray-900">Single incident</option>
+                              <option value="days" className="bg-gray-900">Several days</option>
+                              <option value="weeks" className="bg-gray-900">Several weeks</option>
+                              <option value="months" className="bg-gray-900">Several months</option>
+                              <option value="<1year" className="bg-gray-900">Less than 1 year</option>
+                              <option value="1-2years" className="bg-gray-900">1-2 years</option>
+                              <option value="3-5years" className="bg-gray-900">3-5 years</option>
+                              <option value="5+years" className="bg-gray-900">More than 5 years</option>
+                              <option value="throughout" className="bg-gray-900">Throughout childhood</option>
+                              <option value="ongoing" className="bg-gray-900">Still ongoing</option>
+                            </select>
                           </div>
                         </div>
                       )}
@@ -276,13 +341,14 @@ const ACEsQuestionnaire = ({ onComplete }) => {
           {/* Navigation */}
           <div className="p-6 border-t border-white/10 flex justify-between">
             <button
-              onClick={handlePrevious}
-              disabled={currentSection === 0}
-              className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
-                currentSection === 0
-                  ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
-                  : 'bg-white/10 text-white hover:bg-white/20'
-              }`}
+              onClick={() => {
+                if (currentSection === 0 && onBack) {
+                  onBack();
+                } else {
+                  handlePrevious();
+                }
+              }}
+              className="px-6 py-3 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-all duration-300"
             >
               Previous
             </button>

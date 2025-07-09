@@ -55,19 +55,26 @@ const ResultsSummary = ({ traumaAnalysis, onViewBrain, onRetakeAssessment }) => 
           <h2 className="text-2xl font-light text-white mb-6">Primary Neural Impacts</h2>
           <div className="space-y-4">
             {summary.primaryImpacts.map((impact, idx) => (
-              <div key={idx} className="bg-gradient-to-r from-red-500/10 to-orange-500/10 rounded-xl border border-red-500/20 p-6">
+              <div key={idx} className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-xl border border-purple-500/20 p-6">
                 <div className="flex justify-between items-start">
-                  <div>
+                  <div className="flex-1">
                     <h3 className="text-xl text-white font-medium mb-2">
-                      {impact.region.replace(/([A-Z])/g, ' $1').trim()}
+                      {impact.region}
                     </h3>
-                    <p className="text-gray-300">{impact.mainEffect}</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-light text-orange-400">
-                      {impact.severity}/10
+                    <p className="text-gray-300 mb-3">{impact.mainEffect}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {impact.ageRanges.map((age, ageIdx) => (
+                        <span key={ageIdx} className="text-xs px-3 py-1 bg-white/10 rounded-full text-gray-400">
+                          Ages {age}
+                        </span>
+                      ))}
                     </div>
-                    <p className="text-xs text-gray-500">Severity</p>
+                  </div>
+                  <div className="text-right ml-6">
+                    <div className="text-2xl font-light text-purple-400">
+                      {impact.traumaCount}
+                    </div>
+                    <p className="text-xs text-gray-500">Trauma{impact.traumaCount > 1 ? 's' : ''}</p>
                   </div>
                 </div>
               </div>
@@ -106,23 +113,56 @@ const ResultsSummary = ({ traumaAnalysis, onViewBrain, onRetakeAssessment }) => 
           </div>
         </div>
 
+        {/* Developmental Periods */}
+        <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-8 mb-12">
+          <h2 className="text-2xl font-light text-white mb-6">Developmental Periods Affected</h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            {Object.entries(summary.criticalPeriods).map(([period, affected]) => (
+              <div key={period} className={`rounded-lg p-4 border ${
+                affected ? 'bg-purple-500/10 border-purple-500/30' : 'bg-white/5 border-white/10'
+              }`}>
+                <h3 className="text-white font-medium mb-2">
+                  {period === 'earlyChildhood' ? 'Early Childhood (0-6)' :
+                   period === 'middleChildhood' ? 'Middle Childhood (7-12)' :
+                   period === 'adolescence' ? 'Adolescence (13-18)' :
+                   'Chronic/Throughout'}
+                </h3>
+                <p className="text-sm text-gray-400">
+                  {affected ? 
+                    `ACEs during this period: ${summary.acesByAge[
+                      period === 'earlyChildhood' ? '0-3' : 
+                      period === 'middleChildhood' ? '7-9' : 
+                      period === 'adolescence' ? '13-15' : 
+                      'throughout'
+                    ]?.length || 0}` : 
+                    'No reported ACEs'
+                  }
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Understanding Section */}
         <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-8 mb-12">
           <h2 className="text-2xl font-light text-white mb-4">Understanding Your Results</h2>
           <div className="space-y-4 text-gray-300">
             <p>
-              These results are based on extensive neuroscience research showing how adverse childhood 
-              experiences can influence brain development. The affected regions and severity levels 
-              indicate areas where your neural pathways may have adapted to cope with challenging experiences.
+              Your assessment shows <strong className="text-white">{summary.totalACEs} Adverse Childhood Experiences</strong> affecting
+              <strong className="text-white"> {summary.totalRegionsAffected} brain regions</strong>. Each experience and its timing 
+              influences brain development differently, as different regions mature at different ages.
             </p>
             <p>
-              <strong className="text-white">Important:</strong> The brain's neuroplasticity means these 
-              patterns can change. Many people with similar experiences have developed remarkable resilience 
-              and unique strengths as a result of their adaptations.
+              <strong className="text-white">Important:</strong> This is not a severity scale or diagnosis. The number of ACEs 
+              and affected regions simply indicates areas where your brain adapted to your environment. These adaptations were 
+              protective at the time and may have developed into unique strengths.
             </p>
             <p>
-              This visualization is for educational purposes and should not replace professional mental 
-              health assessment or treatment.
+              The brain's neuroplasticity means these patterns can continue to change throughout life. Many people with 
+              similar experiences develop remarkable resilience through supportive relationships, therapy, and self-care practices.
+            </p>
+            <p className="text-sm italic">
+              This visualization is for educational purposes and should not replace professional mental health assessment or treatment.
             </p>
           </div>
         </div>
