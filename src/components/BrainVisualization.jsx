@@ -53,8 +53,8 @@ function BrainVisualization() {
         <SimpleBrainVisualization />
       </div>
       
-      {/* Left Panel - Redesigned layout */}
-      <div className="absolute top-24 left-0 bottom-0 w-full max-w-md lg:w-96 p-6 overflow-y-auto">
+      {/* Right Panel - Redesigned layout */}
+      <div className="absolute top-24 right-0 bottom-0 w-full max-w-md lg:w-96 p-6 overflow-y-auto">
         <div className="space-y-4">
           {/* Understanding Brain Development */}
           <div className="bg-white/5 backdrop-blur-xl rounded-xl border border-white/10 p-6">

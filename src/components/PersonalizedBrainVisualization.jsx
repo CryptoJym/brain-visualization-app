@@ -69,7 +69,7 @@ function PersonalizedBrainVisualization({ assessmentResults }) {
       </div>
       
       {/* Enhanced Impact Summary Panel with Research Data */}
-      <div className="absolute top-24 left-6 w-full max-w-md lg:w-96 max-h-[calc(100vh-8rem)] overflow-y-auto pointer-events-none">
+      <div className="absolute top-24 right-6 w-full max-w-md lg:w-96 max-h-[calc(100vh-8rem)] overflow-y-auto pointer-events-none">
         <div className="pointer-events-auto">
         <div className="bg-white/5 backdrop-blur-xl rounded-xl border border-white/10 p-4">
           <h2 className="text-lg font-medium text-white mb-4">Impact Analysis</h2>

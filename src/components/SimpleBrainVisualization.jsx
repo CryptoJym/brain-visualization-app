@@ -233,7 +233,7 @@ export default function SimpleBrainVisualization() {
       </div>
 
       {/* Region Info Panel */}
-      <div className="absolute top-20 left-4 bg-black/80 backdrop-blur-xl rounded-lg p-4 border border-white/10 max-w-sm">
+      <div className="absolute top-20 right-4 bg-black/80 backdrop-blur-xl rounded-lg p-4 border border-white/10 max-w-sm">
         {selectedRegion ? (
           <div className="space-y-3">
             <div className="flex items-center justify-between">
