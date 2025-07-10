@@ -117,7 +117,7 @@ function App() {
   if (currentView === 'default') {
     return (
       <div className="relative">
-        <BrainVisualization />
+        <SimpleThreeTest />
         <button
           onClick={() => setCurrentView('questionnaire')}
           className="fixed bottom-6 right-6 z-30 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-purple-600/25 transition-all duration-300"
