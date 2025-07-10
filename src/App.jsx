@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import BrainVisualization from './components/BrainVisualization'
 import ACEsQuestionnaire from './components/ACEsQuestionnaire'
-import PersonalizedBrainVisualization from './components/PersonalizedBrainVisualization'
+import ResponsivePersonalizedBrain from './components/ResponsivePersonalizedBrain'
 import ResultsSummary from './components/ResultsSummary'
-import SimpleThreeTest from './components/SimpleThreeTest'
+import ResponsiveBrainVis from './components/ResponsiveBrainVis'
 import { analyzeTraumaImpact } from './utils/traumaBrainMapping'
 
 function App() {
@@ -103,7 +103,7 @@ function App() {
   if (currentView === 'personalized' && assessmentResults) {
     return (
       <div className="relative">
-        <PersonalizedBrainVisualization assessmentResults={assessmentResults} />
+        <ResponsivePersonalizedBrain assessmentResults={assessmentResults} />
         <button
           onClick={handleRestartAssessment}
           className="fixed bottom-6 right-6 z-30 px-6 py-3 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-all duration-300 backdrop-blur"
@@ -117,7 +117,7 @@ function App() {
   if (currentView === 'default') {
     return (
       <div className="relative">
-        <SimpleThreeTest />
+        <ResponsiveBrainVis />
         <button
           onClick={() => setCurrentView('questionnaire')}
           className="fixed bottom-6 right-6 z-30 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-purple-600/25 transition-all duration-300"
