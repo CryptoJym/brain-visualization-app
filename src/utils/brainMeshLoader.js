@@ -164,8 +164,10 @@ export function createFallbackBrainMesh() {
     new THREE.MeshPhongMaterial({ 
       color: 0xffc0cb,
       transparent: true,
-      opacity: 0.3,
-      side: THREE.DoubleSide
+      opacity: 0.8,
+      side: THREE.DoubleSide,
+      emissive: 0xffc0cb,
+      emissiveIntensity: 0.1
     })
   );
   leftHemisphere.position.set(-0.6, 0, 0);
@@ -176,8 +178,10 @@ export function createFallbackBrainMesh() {
     new THREE.MeshPhongMaterial({ 
       color: 0xffc0cb,
       transparent: true,
-      opacity: 0.3,
-      side: THREE.DoubleSide
+      opacity: 0.8,
+      side: THREE.DoubleSide,
+      emissive: 0xffc0cb,
+      emissiveIntensity: 0.1
     })
   );
   rightHemisphere.position.set(0.6, 0, 0);
@@ -192,8 +196,10 @@ export function createFallbackBrainMesh() {
     new THREE.MeshPhongMaterial({ 
       color: 0xffd4e5,
       transparent: true,
-      opacity: 0.4,
-      bumpScale: 0.1
+      opacity: 0.8,
+      bumpScale: 0.1,
+      emissive: 0xffd4e5,
+      emissiveIntensity: 0.1
     })
   );
   cerebellum.position.set(0, -2.5, -2.5);
@@ -212,7 +218,9 @@ export function createFallbackBrainMesh() {
     new THREE.MeshPhongMaterial({ 
       color: 0xffe4e1,
       transparent: true,
-      opacity: 0.4
+      opacity: 0.8,
+      emissive: 0xffe4e1,
+      emissiveIntensity: 0.1
     })
   );
   

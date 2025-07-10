@@ -18,17 +18,60 @@
   -webkit-text-size-adjust: 100%;
 }
 
-body {
+html, body {
   margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
   display: flex;
   min-width: 320px;
-  min-height: 100vh;
 }
 
 #root {
   width: 100%;
   min-height: 100vh;
-  margin: 0 auto;
+  margin: 0;
+  position: relative;
+}
+
+/* Ensure canvas elements are visible */
+canvas {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Focus indicators for accessibility */
+*:focus {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}
+
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .text-gray-400 {
+    color: #e5e7eb;
+  }
+  
+  .text-gray-500 {
+    color: #d1d5db;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Custom scrollbar for dark theme */

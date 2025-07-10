@@ -3,6 +3,7 @@ import BrainVisualization from './components/BrainVisualization'
 import ACEsQuestionnaire from './components/ACEsQuestionnaire'
 import PersonalizedBrainVisualization from './components/PersonalizedBrainVisualization'
 import ResultsSummary from './components/ResultsSummary'
+import SimpleThreeTest from './components/SimpleThreeTest'
 import { analyzeTraumaImpact } from './utils/traumaBrainMapping'
 
 function App() {

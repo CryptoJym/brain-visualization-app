@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import EnterpriseBrainVisualization from './EnterpriseBrainVisualization';
+import WorkingBrainVisualization from './WorkingBrainVisualization';
 import { brainRegions } from '../utils/traumaBrainMapping';
 
 function BrainVisualization() {
@@ -50,16 +50,11 @@ function BrainVisualization() {
       
       {/* Main visualization */}
       <div className="w-full h-full">
-        <EnterpriseBrainVisualization 
-          brainImpacts={exampleImpacts}
-          onRegionSelect={(regionKey, regionData) => {
-            console.log('Selected region:', regionKey, regionData);
-          }}
-        />
+        <WorkingBrainVisualization />
       </div>
       
       {/* Left Panel - Redesigned layout */}
-      <div className="absolute top-24 left-0 bottom-0 w-96 p-6 overflow-y-auto">
+      <div className="absolute top-24 left-0 bottom-0 w-full max-w-md lg:w-96 p-6 overflow-y-auto">
         <div className="space-y-4">
           {/* Understanding Brain Development */}
           <div className="bg-white/5 backdrop-blur-xl rounded-xl border border-white/10 p-6">

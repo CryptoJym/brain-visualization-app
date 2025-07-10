@@ -113,22 +113,42 @@ const ACEsQuestionnaire = ({ onComplete, onBack }) => {
   const progress = ((currentSection + 1) / sections.length) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-purple-900/10 to-black overflow-y-auto">
-      <div className="max-w-4xl mx-auto p-6">
-        {/* Header */}
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl md:text-4xl font-light text-white mb-4">
-            Adverse Childhood Experiences Assessment
-          </h1>
-          <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-            This confidential assessment helps create a personalized visualization of how experiences may have shaped your neural development.
-          </p>
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-purple-900/10 to-black">
+      <div className="h-screen overflow-y-auto">
+        <div className="max-w-4xl mx-auto p-6 pb-20">
+        {/* Header with Navigation */}
+        <div className="mb-8">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-4"
+            aria-label="Back to home"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            <span>Back to Home</span>
+          </button>
+          
+          <div className="text-center">
+            <h1 className="text-3xl md:text-4xl font-light text-white mb-4">
+              Adverse Childhood Experiences Assessment
+            </h1>
+            <p className="text-gray-300 text-lg max-w-2xl mx-auto mb-2">
+              This confidential assessment helps create a personalized visualization of how experiences may have shaped your neural development.
+            </p>
+            <p className="text-sm text-gray-500">
+              Estimated time: 15-20 minutes • {sections.length} sections • {questions.length} questions
+            </p>
+          </div>
         </div>
 
         {/* Progress Bar */}
         <div className="mb-8">
-          <div className="flex justify-between text-sm text-gray-400 mb-2">
-            <span>Section {currentSection + 1} of {sections.length}</span>
+          <div className="flex justify-between items-center text-sm text-gray-400 mb-2">
+            <span className="font-medium">
+              {currentSectionData.title} 
+              <span className="ml-2 text-gray-500">({currentSection + 1}/{sections.length})</span>
+            </span>
             <span>{Math.round(progress)}% Complete</span>
           </div>
           <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
@@ -192,25 +212,25 @@ const ACEsQuestionnaire = ({ onComplete, onBack }) => {
                       <h3 className="text-white mb-4">{question.text}</h3>
                       
                       <div className="flex gap-4 mb-4">
-                        <label className="flex items-center gap-2 cursor-pointer">
+                        <label className="flex items-center gap-3 cursor-pointer px-4 py-2 rounded-lg hover:bg-white/10 transition-colors">
                           <input
                             type="radio"
                             name={question.id}
                             checked={answer.experienced === 'yes'}
                             onChange={() => handleAnswerChange(question.id, 'experienced', 'yes')}
-                            className="w-4 h-4 text-blue-600"
+                            className="w-5 h-5 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
                           />
-                          <span className="text-white">Yes</span>
+                          <span className="text-white text-lg">Yes</span>
                         </label>
-                        <label className="flex items-center gap-2 cursor-pointer">
+                        <label className="flex items-center gap-3 cursor-pointer px-4 py-2 rounded-lg hover:bg-white/10 transition-colors">
                           <input
                             type="radio"
                             name={question.id}
                             checked={answer.experienced === 'no'}
                             onChange={() => handleAnswerChange(question.id, 'experienced', 'no')}
-                            className="w-4 h-4 text-blue-600"
+                            className="w-5 h-5 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
                           />
-                          <span className="text-white">No</span>
+                          <span className="text-white text-lg">No</span>
                         </label>
                       </div>
 
@@ -222,18 +242,19 @@ const ACEsQuestionnaire = ({ onComplete, onBack }) => {
                             </label>
                             <div className="space-y-2">
                               {[
-                                { value: '0-3', label: '0-3 years (Infancy/Toddler)' },
-                                { value: '4-6', label: '4-6 years (Preschool)' },
-                                { value: '7-9', label: '7-9 years (Early Elementary)' },
-                                { value: '10-12', label: '10-12 years (Late Elementary)' },
-                                { value: '13-15', label: '13-15 years (Early Adolescence)' },
-                                { value: '16-18', label: '16-18 years (Late Adolescence)' }
+                                { value: '0-3', label: '0-3 years (Infancy/Early Toddlerhood - HPA axis programming)' },
+                                { value: '3-5', label: '3-5 years (Preschool - Hippocampal vulnerability peak)' },
+                                { value: '6-11', label: '6-11 years (School Age - Amygdala peaks at 10-11)' },
+                                { value: '11-13', label: '11-13 years (Early Adolescence - 2nd hippocampal window)' },
+                                { value: '14-18', label: '14-18 years (Adolescence - Prefrontal maturation)' },
+                                { value: 'throughout', label: 'Throughout childhood' },
+                                { value: 'multiple', label: 'Multiple periods' }
                               ].map(ageOption => {
                                 const selectedAges = answer.ageRanges || [];
                                 const isChecked = selectedAges.includes(ageOption.value);
                                 
                                 return (
-                                  <label key={ageOption.value} className="flex items-center gap-2 cursor-pointer hover:bg-white/5 p-2 rounded-lg transition-colors">
+                                  <label key={ageOption.value} className="flex items-center gap-3 cursor-pointer hover:bg-white/10 p-3 rounded-lg transition-colors">
                                     <input
                                       type="checkbox"
                                       checked={isChecked}
@@ -243,9 +264,9 @@ const ACEsQuestionnaire = ({ onComplete, onBack }) => {
                                           : selectedAges.filter(age => age !== ageOption.value);
                                         handleAnswerChange(question.id, 'ageRanges', newAges);
                                       }}
-                                      className="w-4 h-4 text-purple-600 bg-white/10 border-white/30 rounded focus:ring-purple-500 focus:ring-2"
+                                      className="w-5 h-5 text-purple-600 bg-white/10 border-white/30 rounded focus:ring-purple-500 focus:ring-2 cursor-pointer"
                                     />
-                                    <span className="text-white text-sm">{ageOption.label}</span>
+                                    <span className="text-white">{ageOption.label}</span>
                                   </label>
                                 );
                               })}
@@ -374,6 +395,7 @@ const ACEsQuestionnaire = ({ onComplete, onBack }) => {
               </button>
             )}
           </div>
+        </div>
         </div>
       </div>
     </div>
