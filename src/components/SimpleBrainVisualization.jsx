@@ -6,6 +6,65 @@ export default function SimpleBrainVisualization() {
   const mountRef = useRef(null);
   const sceneRef = useRef(null);
   const [selectedRegion, setSelectedRegion] = useState(null);
+  
+  // Region information
+  const regionInfo = {
+    'Frontal Lobe': {
+      function: 'Executive Function',
+      description: 'Controls planning, decision-making, voluntary movement, and personality',
+      trauma: 'ACEs can impair emotional regulation and impulse control'
+    },
+    'Parietal Lobe': {
+      function: 'Sensory Integration',
+      description: 'Processes sensory information and spatial awareness',
+      trauma: 'Early trauma may affect body awareness and sensory processing'
+    },
+    'Temporal Lobe (L)': {
+      function: 'Language & Memory',
+      description: 'Processes auditory information, language comprehension, and memory formation',
+      trauma: 'Stress can impact verbal memory and language processing'
+    },
+    'Temporal Lobe (R)': {
+      function: 'Non-verbal Memory',
+      description: 'Processes visual memory, facial recognition, and emotional tone',
+      trauma: 'May affect emotional memory and social cue recognition'
+    },
+    'Occipital Lobe': {
+      function: 'Visual Processing',
+      description: 'Primary visual cortex processes visual information',
+      trauma: 'Trauma can heighten visual vigilance and threat detection'
+    },
+    'Cerebellum': {
+      function: 'Motor Control & Learning',
+      description: 'Coordinates movement, balance, and motor learning',
+      trauma: 'Chronic stress affects motor coordination and procedural learning'
+    },
+    'Brain Stem': {
+      function: 'Basic Life Functions',
+      description: 'Controls breathing, heart rate, and arousal',
+      trauma: 'Hypervigilance and altered stress response patterns'
+    },
+    'Amygdala (L)': {
+      function: 'Fear & Emotion',
+      description: 'Processes fear, emotional memories, and threat detection',
+      trauma: 'Becomes hyperactive with chronic stress, increasing fear responses'
+    },
+    'Amygdala (R)': {
+      function: 'Emotional Processing',
+      description: 'Processes emotional significance and social emotions',
+      trauma: 'Overactivation leads to heightened emotional reactivity'
+    },
+    'Hippocampus (L)': {
+      function: 'Verbal Memory',
+      description: 'Forms new memories and processes verbal/narrative memory',
+      trauma: 'Chronic stress can reduce volume and impair memory formation'
+    },
+    'Hippocampus (R)': {
+      function: 'Spatial Memory',
+      description: 'Processes spatial memory and navigation',
+      trauma: 'Early trauma affects spatial processing and memory consolidation'
+    }
+  };
 
   useEffect(() => {
     if (!mountRef.current) return;
@@ -173,51 +232,82 @@ export default function SimpleBrainVisualization() {
         <p className="text-gray-400 text-sm">Hover to highlight • Click for details</p>
       </div>
 
-      {/* Region List */}
-      <div className="absolute top-20 left-4 bg-black/80 backdrop-blur-xl rounded-lg p-4 border border-white/10 max-w-xs">
-        <h3 className="text-white text-sm font-medium mb-3">Major Regions</h3>
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-blue-500" />
-            <span className="text-gray-300 text-xs">Frontal Lobe - Executive Function</span>
+      {/* Region Info Panel */}
+      <div className="absolute top-20 left-4 bg-black/80 backdrop-blur-xl rounded-lg p-4 border border-white/10 max-w-sm">
+        {selectedRegion ? (
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-white text-lg font-medium">{selectedRegion}</h3>
+              <button
+                onClick={() => setSelectedRegion(null)}
+                className="text-gray-400 hover:text-white text-xl"
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="space-y-3">
+              <div>
+                <h4 className="text-blue-400 text-sm font-medium mb-1">Primary Function</h4>
+                <p className="text-white text-sm">{regionInfo[selectedRegion]?.function}</p>
+              </div>
+              
+              <div>
+                <h4 className="text-green-400 text-sm font-medium mb-1">Description</h4>
+                <p className="text-gray-300 text-xs leading-relaxed">
+                  {regionInfo[selectedRegion]?.description}
+                </p>
+              </div>
+              
+              <div>
+                <h4 className="text-orange-400 text-sm font-medium mb-1">Impact of Trauma</h4>
+                <p className="text-gray-300 text-xs leading-relaxed">
+                  {regionInfo[selectedRegion]?.trauma}
+                </p>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-green-500" />
-            <span className="text-gray-300 text-xs">Parietal Lobe - Sensory Integration</span>
+        ) : (
+          <div>
+            <h3 className="text-white text-sm font-medium mb-3">Brain Regions</h3>
+            <p className="text-gray-400 text-xs mb-3">Click on any region to learn more</p>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-blue-500" />
+                <span className="text-gray-300 text-xs">Frontal Lobe</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-green-500" />
+                <span className="text-gray-300 text-xs">Parietal Lobe</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-red-500" />
+                <span className="text-gray-300 text-xs">Temporal Lobes</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                <span className="text-gray-300 text-xs">Occipital Lobe</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-orange-500" />
+                <span className="text-gray-300 text-xs">Amygdala</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full" style={{backgroundColor: '#88ff44'}} />
+                <span className="text-gray-300 text-xs">Hippocampus</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-pink-500" />
+                <span className="text-gray-300 text-xs">Cerebellum</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-cyan-500" />
+                <span className="text-gray-300 text-xs">Brain Stem</span>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-red-500" />
-            <span className="text-gray-300 text-xs">Temporal Lobes - Memory & Language</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-yellow-500" />
-            <span className="text-gray-300 text-xs">Occipital Lobe - Vision</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-orange-500" />
-            <span className="text-gray-300 text-xs">Amygdala - Fear & Emotion</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{backgroundColor: '#88ff44'}} />
-            <span className="text-gray-300 text-xs">Hippocampus - Memory Formation</span>
-          </div>
-        </div>
+        )}
       </div>
-
-      {/* Selected Region Info */}
-      {selectedRegion && (
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/90 backdrop-blur-xl rounded-lg p-4 border border-white/20">
-          <div className="flex items-center justify-between gap-4">
-            <h3 className="text-white font-medium">{selectedRegion}</h3>
-            <button
-              onClick={() => setSelectedRegion(null)}
-              className="text-gray-400 hover:text-white"
-            >
-              ×
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
