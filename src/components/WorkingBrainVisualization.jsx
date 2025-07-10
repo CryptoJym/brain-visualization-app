@@ -141,8 +141,20 @@ export default function WorkingBrainVisualization() {
       canvas.width = 256;
       canvas.height = 64;
       
+      // Draw rounded rectangle background (browser-compatible)
       context.fillStyle = 'rgba(0, 0, 0, 0.8)';
-      context.roundRect(0, 0, 256, 64, 10);
+      context.beginPath();
+      const x = 0, y = 0, w = 256, h = 64, r = 10;
+      context.moveTo(x + r, y);
+      context.lineTo(x + w - r, y);
+      context.quadraticCurveTo(x + w, y, x + w, y + r);
+      context.lineTo(x + w, y + h - r);
+      context.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      context.lineTo(x + r, y + h);
+      context.quadraticCurveTo(x, y + h, x, y + h - r);
+      context.lineTo(x, y + r);
+      context.quadraticCurveTo(x, y, x + r, y);
+      context.closePath();
       context.fill();
       
       context.font = '24px Arial';
@@ -156,7 +168,6 @@ export default function WorkingBrainVisualization() {
 
     regions.forEach(region => {
       const categoryColor = regionCategories[region.category].color;
-      const isVisible = selectedCategory === 'all' || region.category === selectedCategory;
       
       // Create sphere for the region
       const sphereGeometry = new THREE.SphereGeometry(region.size * 0.6, 32, 32);
@@ -165,7 +176,7 @@ export default function WorkingBrainVisualization() {
         emissive: categoryColor,
         emissiveIntensity: 0.2,
         transparent: true,
-        opacity: isVisible ? 0.8 : 0.2,
+        opacity: 0.8,
         shininess: 100
       });
       const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
@@ -198,6 +209,7 @@ export default function WorkingBrainVisualization() {
       labelSprite.position.copy(sphere.position);
       labelSprite.position.y += region.size * 1.2;
       labelSprite.scale.set(4, 1, 1);
+      labelSprite.userData = { category: region.category };
       
       brainGroup.add(sphere);
       brainGroup.add(labelSprite);
@@ -286,12 +298,22 @@ export default function WorkingBrainVisualization() {
       }
     };
     
-    // Update label visibility
-    const updateLabelVisibility = () => {
-      labelSprites.forEach(sprite => {
-        sprite.material.opacity = showLabels ? 0.9 : 0;
+    // Update visibility based on category filter
+    const updateVisibility = () => {
+      regionMeshes.forEach((mesh, index) => {
+        const isVisible = selectedCategory === 'all' || mesh.userData.category === selectedCategory;
+        mesh.visible = isVisible;
+        if (labelSprites[index]) {
+          labelSprites[index].visible = isVisible && showLabels;
+        }
       });
     };
+    
+    // Initial visibility update
+    updateVisibility();
+    
+    // Store refs for external updates
+    window.updateBrainVisibility = updateVisibility;
     
     renderer.domElement.addEventListener('mousemove', onMouseMove);
     renderer.domElement.addEventListener('click', onClick);
@@ -337,7 +359,7 @@ export default function WorkingBrainVisualization() {
       mountRef.current?.removeChild(renderer.domElement);
       renderer.dispose();
     };
-  }, []);
+  }, [selectedCategory, showLabels]);
 
   return (
     <div className="w-full h-full relative bg-gradient-to-b from-gray-900 to-black">
@@ -352,7 +374,12 @@ export default function WorkingBrainVisualization() {
         
         <div className="flex gap-2">
           <button
-            onClick={() => setShowLabels(!showLabels)}
+            onClick={() => {
+              setShowLabels(!showLabels);
+              if (window.updateBrainVisibility) {
+                setTimeout(() => window.updateBrainVisibility(), 0);
+              }
+            }}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
               showLabels 
                 ? 'bg-blue-600 text-white' 
@@ -369,7 +396,12 @@ export default function WorkingBrainVisualization() {
         <h3 className="text-white text-sm font-medium mb-3">Filter by Function</h3>
         <div className="flex flex-wrap gap-2 max-w-md">
           <button
-            onClick={() => setSelectedCategory('all')}
+            onClick={() => {
+              setSelectedCategory('all');
+              if (window.updateBrainVisibility) {
+                setTimeout(() => window.updateBrainVisibility(), 0);
+              }
+            }}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
               selectedCategory === 'all'
                 ? 'bg-white text-black'
@@ -381,7 +413,12 @@ export default function WorkingBrainVisualization() {
           {Object.entries(regionCategories).map(([category, data]) => (
             <button
               key={category}
-              onClick={() => setSelectedCategory(category)}
+              onClick={() => {
+                setSelectedCategory(category);
+                if (window.updateBrainVisibility) {
+                  setTimeout(() => window.updateBrainVisibility(), 0);
+                }
+              }}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                 selectedCategory === category
                   ? 'bg-white text-black'

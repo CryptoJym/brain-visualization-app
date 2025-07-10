@@ -149,15 +149,30 @@ export default function WorkingPersonalizedBrain({ brainImpacts = {}, onRegionCl
       canvas.width = 512;
       canvas.height = 128;
       
+      // Draw rounded rectangle background (browser-compatible)
+      const drawRoundedRect = (x, y, w, h, r) => {
+        context.beginPath();
+        context.moveTo(x + r, y);
+        context.lineTo(x + w - r, y);
+        context.quadraticCurveTo(x + w, y, x + w, y + r);
+        context.lineTo(x + w, y + h - r);
+        context.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        context.lineTo(x + r, y + h);
+        context.quadraticCurveTo(x, y + h, x, y + h - r);
+        context.lineTo(x, y + r);
+        context.quadraticCurveTo(x, y, x + r, y);
+        context.closePath();
+      };
+      
       // Background
       context.fillStyle = 'rgba(0, 0, 0, 0.85)';
-      context.roundRect(10, 10, canvas.width - 20, canvas.height - 20, 20);
+      drawRoundedRect(10, 10, canvas.width - 20, canvas.height - 20, 20);
       context.fill();
       
       // Border
       context.strokeStyle = color;
       context.lineWidth = 3;
-      context.roundRect(10, 10, canvas.width - 20, canvas.height - 20, 20);
+      drawRoundedRect(10, 10, canvas.width - 20, canvas.height - 20, 20);
       context.stroke();
       
       // Text

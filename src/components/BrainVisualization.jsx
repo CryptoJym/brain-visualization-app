@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import WorkingBrainVisualization from './WorkingBrainVisualization';
+import SimpleBrainVisualization from './SimpleBrainVisualization';
 import { brainRegions } from '../utils/traumaBrainMapping';
 
 function BrainVisualization() {
@@ -50,7 +50,7 @@ function BrainVisualization() {
       
       {/* Main visualization */}
       <div className="w-full h-full">
-        <WorkingBrainVisualization />
+        <SimpleBrainVisualization />
       </div>
       
       {/* Left Panel - Redesigned layout */}
