@@ -1,13 +1,17 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { brainRegions } from '../utils/traumaBrainMapping';
 
 export default function WorkingBrainVisualization() {
   const mountRef = useRef(null);
   const sceneRef = useRef(null);
   const rendererRef = useRef(null);
   const frameId = useRef(null);
-  const [selectedRegion, setSelectedRegion] = React.useState(null);
+  const [selectedRegion, setSelectedRegion] = useState(null);
+  const [hoveredRegion, setHoveredRegion] = useState(null);
+  const [showLabels, setShowLabels] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
   useEffect(() => {
     if (!mountRef.current) return;
@@ -93,60 +97,141 @@ export default function WorkingBrainVisualization() {
 
     scene.add(brainGroup);
 
-    // Add interactive region markers
+    // Define region categories and colors
+    const regionCategories = {
+      'Emotional Processing': { color: 0xff4444, regions: ['amygdala', 'insula'] },
+      'Memory & Learning': { color: 0x44ff44, regions: ['hippocampus', 'temporal_cortex'] },
+      'Executive Function': { color: 0x4444ff, regions: ['dlPFC', 'vmPFC', 'OFC', 'ACC'] },
+      'Sensory Processing': { color: 0xffff44, regions: ['occipital_cortex', 'somatosensory_cortex'] },
+      'Motor Control': { color: 0xff44ff, regions: ['motor_cortex', 'cerebellum'] },
+      'Basic Functions': { color: 0x44ffff, regions: ['brain_stem', 'thalamus', 'hypothalamus'] },
+      'Integration': { color: 0xffffff, regions: ['parietal_cortex', 'corpus_callosum'] }
+    };
+
+    // Create comprehensive region list with proper categorization
     const regionMeshes = [];
+    const labelSprites = [];
     const regions = [
-      { name: 'Amygdala (Left)', position: [-3, -1, 2], color: 0xff0000, size: 1.5 },
-      { name: 'Amygdala (Right)', position: [3, -1, 2], color: 0xff0000, size: 1.5 },
-      { name: 'Hippocampus (Left)', position: [-3.5, -1.5, 0], color: 0xff6600, size: 1.8 },
-      { name: 'Hippocampus (Right)', position: [3.5, -1.5, 0], color: 0xff6600, size: 1.8 },
-      { name: 'Prefrontal Cortex', position: [0, 2.5, 5.5], color: 0x00ff00, size: 2.0 },
-      { name: 'Temporal Lobe (Left)', position: [-6, 0, 0], color: 0x0066ff, size: 1.8 },
-      { name: 'Temporal Lobe (Right)', position: [6, 0, 0], color: 0x0066ff, size: 1.8 },
-      { name: 'Occipital Lobe', position: [0, 0, -6.5], color: 0xffff00, size: 1.8 },
-      { name: 'Parietal Lobe', position: [0, 4.5, -2], color: 0x00ffff, size: 1.8 },
-      { name: 'ACC', position: [0, 1, 3.5], color: 0xff00ff, size: 1.5 },
-      { name: 'Insula (Left)', position: [-4, 0, 1], color: 0xffa500, size: 1.5 },
-      { name: 'Insula (Right)', position: [4, 0, 1], color: 0xffa500, size: 1.5 }
+      { id: 'amygdala_left', name: 'Left Amygdala', position: [-3, -1, 2], category: 'Emotional Processing', size: 1.5 },
+      { id: 'amygdala_right', name: 'Right Amygdala', position: [3, -1, 2], category: 'Emotional Processing', size: 1.5 },
+      { id: 'hippocampus_left', name: 'Left Hippocampus', position: [-3.5, -1.5, 0], category: 'Memory & Learning', size: 1.8 },
+      { id: 'hippocampus_right', name: 'Right Hippocampus', position: [3.5, -1.5, 0], category: 'Memory & Learning', size: 1.8 },
+      { id: 'dlPFC', name: 'Dorsolateral PFC', position: [-2, 3, 5], category: 'Executive Function', size: 2.0 },
+      { id: 'vmPFC', name: 'Ventromedial PFC', position: [0, 2.5, 5.5], category: 'Executive Function', size: 1.8 },
+      { id: 'OFC', name: 'Orbitofrontal Cortex', position: [0, 0.5, 6], category: 'Executive Function', size: 1.5 },
+      { id: 'ACC', name: 'Anterior Cingulate', position: [0, 1, 3.5], category: 'Executive Function', size: 1.5 },
+      { id: 'temporal_left', name: 'Left Temporal Lobe', position: [-6, 0, 0], category: 'Memory & Learning', size: 1.8 },
+      { id: 'temporal_right', name: 'Right Temporal Lobe', position: [6, 0, 0], category: 'Memory & Learning', size: 1.8 },
+      { id: 'occipital', name: 'Occipital Lobe', position: [0, 0, -6.5], category: 'Sensory Processing', size: 1.8 },
+      { id: 'parietal', name: 'Parietal Lobe', position: [0, 4.5, -2], category: 'Integration', size: 1.8 },
+      { id: 'insula_left', name: 'Left Insula', position: [-4, 0, 1], category: 'Emotional Processing', size: 1.5 },
+      { id: 'insula_right', name: 'Right Insula', position: [4, 0, 1], category: 'Emotional Processing', size: 1.5 },
+      { id: 'motor_cortex', name: 'Motor Cortex', position: [-2, 4, 0], category: 'Motor Control', size: 1.5 },
+      { id: 'somatosensory', name: 'Somatosensory Cortex', position: [2, 4, 0], category: 'Sensory Processing', size: 1.5 },
+      { id: 'cerebellum', name: 'Cerebellum', position: [0, -3.5, -3.5], category: 'Motor Control', size: 2.0 },
+      { id: 'brain_stem', name: 'Brain Stem', position: [0, -5, -1.5], category: 'Basic Functions', size: 1.2 },
+      { id: 'thalamus', name: 'Thalamus', position: [0, 0, 0], category: 'Basic Functions', size: 1.0 },
+      { id: 'hypothalamus', name: 'Hypothalamus', position: [0, -0.5, 1], category: 'Basic Functions', size: 0.8 }
     ];
 
+    // Create label texture function
+    const createLabelTexture = (text) => {
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      canvas.width = 256;
+      canvas.height = 64;
+      
+      context.fillStyle = 'rgba(0, 0, 0, 0.8)';
+      context.roundRect(0, 0, 256, 64, 10);
+      context.fill();
+      
+      context.font = '24px Arial';
+      context.fillStyle = 'white';
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText(text, 128, 32);
+      
+      return new THREE.CanvasTexture(canvas);
+    };
+
     regions.forEach(region => {
+      const categoryColor = regionCategories[region.category].color;
+      const isVisible = selectedCategory === 'all' || region.category === selectedCategory;
+      
       // Create sphere for the region
-      const sphereGeometry = new THREE.SphereGeometry(region.size * 0.7, 32, 32);
+      const sphereGeometry = new THREE.SphereGeometry(region.size * 0.6, 32, 32);
       const sphereMaterial = new THREE.MeshPhongMaterial({
-        color: region.color,
-        emissive: region.color,
-        emissiveIntensity: 0.4,
+        color: categoryColor,
+        emissive: categoryColor,
+        emissiveIntensity: 0.2,
         transparent: true,
-        opacity: 0.9,
+        opacity: isVisible ? 0.8 : 0.2,
         shininess: 100
       });
       const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
       sphere.position.set(...region.position);
-      sphere.userData = { name: region.name, originalColor: region.color };
+      sphere.userData = { 
+        id: region.id,
+        name: region.name, 
+        category: region.category,
+        originalColor: categoryColor 
+      };
       
-      // Add glow effect
-      const glowGeometry = new THREE.SphereGeometry(region.size * 0.85, 16, 16);
-      const glowMaterial = new THREE.MeshBasicMaterial({
-        color: region.color,
+      // Add outer ring for better visibility
+      const ringGeometry = new THREE.TorusGeometry(region.size * 0.8, 0.1, 16, 100);
+      const ringMaterial = new THREE.MeshBasicMaterial({
+        color: categoryColor,
         transparent: true,
-        opacity: 0.3
+        opacity: 0.6
       });
-      const glow = new THREE.Mesh(glowGeometry, glowMaterial);
-      sphere.add(glow);
+      const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+      sphere.add(ring);
+      
+      // Add label sprite
+      const labelTexture = createLabelTexture(region.name);
+      const labelMaterial = new THREE.SpriteMaterial({ 
+        map: labelTexture,
+        transparent: true,
+        opacity: showLabels ? 0.9 : 0
+      });
+      const labelSprite = new THREE.Sprite(labelMaterial);
+      labelSprite.position.copy(sphere.position);
+      labelSprite.position.y += region.size * 1.2;
+      labelSprite.scale.set(4, 1, 1);
       
       brainGroup.add(sphere);
+      brainGroup.add(labelSprite);
       regionMeshes.push(sphere);
+      labelSprites.push(labelSprite);
     });
     
-    // Add labels for regions
-    const labelContainer = document.createElement('div');
-    labelContainer.style.position = 'absolute';
-    labelContainer.style.top = '0';
-    labelContainer.style.left = '0';
-    labelContainer.style.pointerEvents = 'none';
-    labelContainer.style.zIndex = '100';
-    mountRef.current.appendChild(labelContainer);
+    // Create connection lines between related regions
+    const createConnection = (start, end, opacity = 0.3) => {
+      const points = [];
+      points.push(new THREE.Vector3(...start));
+      points.push(new THREE.Vector3(...end));
+      
+      const geometry = new THREE.BufferGeometry().setFromPoints(points);
+      const material = new THREE.LineBasicMaterial({
+        color: 0x666666,
+        transparent: true,
+        opacity: opacity
+      });
+      
+      return new THREE.Line(geometry, material);
+    };
+    
+    // Add key connections
+    const connections = [
+      { start: [-3, -1, 2], end: [3, -1, 2] }, // Between amygdalae
+      { start: [-3.5, -1.5, 0], end: [3.5, -1.5, 0] }, // Between hippocampi
+      { start: [0, 1, 3.5], end: [0, 2.5, 5.5] }, // ACC to vmPFC
+    ];
+    
+    connections.forEach(conn => {
+      const line = createConnection(conn.start, conn.end);
+      brainGroup.add(line);
+    });
 
     // Raycaster for mouse interaction
     const raycaster = new THREE.Raycaster();
@@ -163,55 +248,49 @@ export default function WorkingBrainVisualization() {
       const intersects = raycaster.intersectObjects(regionMeshes);
       
       // Reset previous hover
-      if (hoveredRegion && hoveredRegion !== intersects[0]?.object) {
+      if (hoveredRegion && (!intersects.length || hoveredRegion !== intersects[0].object)) {
         hoveredRegion.material.emissiveIntensity = 0.2;
         hoveredRegion.scale.setScalar(1);
         renderer.domElement.style.cursor = 'default';
+        setHoveredRegion(null);
       }
       
       // Apply hover effect
       if (intersects.length > 0) {
-        hoveredRegion = intersects[0].object;
-        hoveredRegion.material.emissiveIntensity = 0.5;
-        hoveredRegion.scale.setScalar(1.3);
+        const hovered = intersects[0].object;
+        hoveredRegion = hovered;
+        hovered.material.emissiveIntensity = 0.6;
+        hovered.scale.setScalar(1.2);
         renderer.domElement.style.cursor = 'pointer';
-        
-        // Update label
-        updateLabel(hoveredRegion.userData.name);
+        setHoveredRegion(hovered.userData);
       } else {
         hoveredRegion = null;
-        updateLabel('');
       }
     };
     
     // Click handler
     const onClick = (event) => {
       if (hoveredRegion) {
-        setSelectedRegion(hoveredRegion.userData.name);
+        setSelectedRegion(hoveredRegion.userData);
+        
+        // Highlight selected region
+        regionMeshes.forEach(mesh => {
+          if (mesh === hoveredRegion) {
+            mesh.material.emissiveIntensity = 0.8;
+            mesh.material.opacity = 1;
+          } else {
+            mesh.material.emissiveIntensity = 0.1;
+            mesh.material.opacity = 0.3;
+          }
+        });
       }
     };
     
-    // Label update function
-    const updateLabel = (text) => {
-      if (labelContainer.firstChild) {
-        labelContainer.removeChild(labelContainer.firstChild);
-      }
-      
-      if (text) {
-        const label = document.createElement('div');
-        label.style.position = 'fixed';
-        label.style.bottom = '20px';
-        label.style.left = '50%';
-        label.style.transform = 'translateX(-50%)';
-        label.style.background = 'rgba(0, 0, 0, 0.8)';
-        label.style.color = 'white';
-        label.style.padding = '10px 20px';
-        label.style.borderRadius = '20px';
-        label.style.fontSize = '16px';
-        label.style.fontWeight = 'bold';
-        label.textContent = text;
-        labelContainer.appendChild(label);
-      }
+    // Update label visibility
+    const updateLabelVisibility = () => {
+      labelSprites.forEach(sprite => {
+        sprite.material.opacity = showLabels ? 0.9 : 0;
+      });
     };
     
     renderer.domElement.addEventListener('mousemove', onMouseMove);
@@ -221,14 +300,15 @@ export default function WorkingBrainVisualization() {
     const animate = () => {
       frameId.current = requestAnimationFrame(animate);
       controls.update();
-      // brainGroup.rotation.y += 0.005; // Disabled auto-rotation for better interaction
+      // Subtle rotation for depth perception
+      if (!hoveredRegion && !selectedRegion) {
+        brainGroup.rotation.y += 0.002;
+      }
       
-      // Pulse effect for regions
-      regionMeshes.forEach((mesh, index) => {
-        const time = Date.now() * 0.001;
-        const scale = 1 + Math.sin(time * 2 + index) * 0.05;
-        if (mesh !== hoveredRegion) {
-          mesh.scale.setScalar(scale);
+      // Update ring rotations
+      regionMeshes.forEach((mesh) => {
+        if (mesh.children[0]) { // Ring
+          mesh.children[0].rotation.z += 0.01;
         }
       });
       
@@ -255,65 +335,144 @@ export default function WorkingBrainVisualization() {
       renderer.domElement.removeEventListener('mousemove', onMouseMove);
       renderer.domElement.removeEventListener('click', onClick);
       mountRef.current?.removeChild(renderer.domElement);
-      mountRef.current?.removeChild(labelContainer);
       renderer.dispose();
     };
   }, []);
 
   return (
-    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
-      <div 
-        ref={mountRef} 
-        style={{ 
-          width: '100%', 
-          height: '100%',
-          position: 'absolute',
-          top: 0,
-          left: 0
-        }} 
-      />
-      <div style={{
-        position: 'absolute',
-        top: '20px',
-        left: '20px',
-        color: 'white',
-        fontSize: '24px',
-        fontWeight: 'bold',
-        textShadow: '2px 2px 4px rgba(0,0,0,0.5)'
-      }}>
-        Interactive Brain Regions
+    <div className="w-full h-full relative bg-gradient-to-b from-gray-900 to-black">
+      <div ref={mountRef} className="w-full h-full" />
+      
+      {/* Top Controls */}
+      <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
+        <div>
+          <h2 className="text-2xl font-light text-white mb-2">Interactive Brain Map</h2>
+          <p className="text-gray-400 text-sm">Click regions to explore • Hover for details</p>
+        </div>
+        
+        <div className="flex gap-2">
+          <button
+            onClick={() => setShowLabels(!showLabels)}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              showLabels 
+                ? 'bg-blue-600 text-white' 
+                : 'bg-white/10 text-gray-300 hover:bg-white/20'
+            }`}
+          >
+            {showLabels ? 'Hide' : 'Show'} Labels
+          </button>
+        </div>
       </div>
       
-      {selectedRegion && (
-        <div style={{
-          position: 'absolute',
-          top: '80px',
-          right: '20px',
-          background: 'rgba(0, 0, 0, 0.9)',
-          color: 'white',
-          padding: '20px',
-          borderRadius: '10px',
-          maxWidth: '300px',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.5)'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
-            <h3 style={{ margin: '0 0 10px 0', fontSize: '18px' }}>{selectedRegion}</h3>
-            <button 
-              onClick={() => setSelectedRegion(null)}
+      {/* Category Filter */}
+      <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur-xl rounded-xl p-4 border border-white/10">
+        <h3 className="text-white text-sm font-medium mb-3">Filter by Function</h3>
+        <div className="flex flex-wrap gap-2 max-w-md">
+          <button
+            onClick={() => setSelectedCategory('all')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              selectedCategory === 'all'
+                ? 'bg-white text-black'
+                : 'bg-white/10 text-gray-300 hover:bg-white/20'
+            }`}
+          >
+            All Regions
+          </button>
+          {Object.entries(regionCategories).map(([category, data]) => (
+            <button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                selectedCategory === category
+                  ? 'bg-white text-black'
+                  : 'bg-white/10 text-gray-300 hover:bg-white/20'
+              }`}
               style={{
-                background: 'none',
-                border: 'none',
-                color: 'white',
-                fontSize: '20px',
-                cursor: 'pointer',
-                padding: '0',
-                marginLeft: '10px'
+                borderLeft: selectedCategory === category ? `4px solid #${data.color.toString(16)}` : 'none'
               }}
-            >×</button>
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+      </div>
+      
+      {/* Hover Info */}
+      {hoveredRegion && (
+        <div className="absolute top-24 left-4 bg-black/90 backdrop-blur-xl rounded-xl p-4 border border-white/20 animate-fadeIn">
+          <div className="flex items-center gap-3 mb-2">
+            <div 
+              className="w-4 h-4 rounded-full"
+              style={{ backgroundColor: `#${regionCategories[hoveredRegion.category].color.toString(16)}` }}
+            />
+            <h3 className="text-white font-medium">{hoveredRegion.name}</h3>
           </div>
-          <p style={{ margin: 0, fontSize: '14px', lineHeight: '1.5' }}>
-            Click on different brain regions to learn about their functions and how trauma affects them.
-          </p>
+          <p className="text-gray-400 text-sm">{hoveredRegion.category}</p>
+          <p className="text-gray-500 text-xs mt-1">Click for detailed information</p>
+        </div>
+      )}
+      
+      {/* Selected Region Panel */}
+      {selectedRegion && (
+        <div className="absolute top-4 right-4 w-96 bg-black/90 backdrop-blur-xl rounded-xl border border-white/20 animate-slideUp">
+          <div 
+            className="p-4 border-b border-white/10 flex justify-between items-center"
+            style={{
+              background: `linear-gradient(to right, #${regionCategories[selectedRegion.category].color.toString(16)}20, transparent)`
+            }}
+          >
+            <div>
+              <h3 className="text-xl font-medium text-white">{selectedRegion.name}</h3>
+              <p className="text-gray-400 text-sm">{selectedRegion.category}</p>
+            </div>
+            <button 
+              onClick={() => {
+                setSelectedRegion(null);
+                // Reset all regions
+                regionMeshes.forEach(mesh => {
+                  mesh.material.emissiveIntensity = 0.2;
+                  mesh.material.opacity = 0.8;
+                });
+              }}
+              className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+            >
+              <span className="text-white text-lg">×</span>
+            </button>
+          </div>
+          
+          <div className="p-4 space-y-4">
+            {brainRegions[selectedRegion.id] && (
+              <>
+                <div>
+                  <h4 className="text-white text-sm font-medium mb-2">Primary Functions</h4>
+                  <p className="text-gray-300 text-sm leading-relaxed">
+                    {brainRegions[selectedRegion.id].description || 'This region plays a crucial role in neural processing and brain function.'}
+                  </p>
+                </div>
+                
+                <div>
+                  <h4 className="text-white text-sm font-medium mb-2">Impact of Trauma</h4>
+                  <p className="text-gray-300 text-sm leading-relaxed">
+                    Adverse experiences during critical developmental windows can affect this region's structure and function.
+                  </p>
+                </div>
+                
+                <div>
+                  <h4 className="text-white text-sm font-medium mb-2">Vulnerable Periods</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {brainRegions[selectedRegion.id].vulnerablePeriods?.map(period => (
+                      <span 
+                        key={period}
+                        className="px-2 py-1 bg-white/10 rounded text-xs text-gray-300"
+                      >
+                        {period}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       )}
     </div>

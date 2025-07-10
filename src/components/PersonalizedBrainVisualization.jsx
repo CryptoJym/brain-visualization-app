@@ -58,8 +58,8 @@ function PersonalizedBrainVisualization({ assessmentResults }) {
         </div>
       </div>
       
-      {/* Main visualization */}
-      <div className="w-full h-full">
+      {/* Main visualization - full screen */}
+      <div className="absolute inset-0">
         <WorkingPersonalizedBrain 
           brainImpacts={brainImpacts}
           onRegionClick={(regionKey, regionData) => {
@@ -69,7 +69,8 @@ function PersonalizedBrainVisualization({ assessmentResults }) {
       </div>
       
       {/* Enhanced Impact Summary Panel with Research Data */}
-      <div className="absolute top-24 left-6 w-full max-w-md lg:w-96 max-h-[calc(100vh-8rem)] overflow-y-auto">
+      <div className="absolute top-24 left-6 w-full max-w-md lg:w-96 max-h-[calc(100vh-8rem)] overflow-y-auto pointer-events-none">
+        <div className="pointer-events-auto">
         <div className="bg-white/5 backdrop-blur-xl rounded-xl border border-white/10 p-4">
           <h2 className="text-lg font-medium text-white mb-4">Impact Analysis</h2>
           
@@ -170,30 +171,6 @@ function PersonalizedBrainVisualization({ assessmentResults }) {
             </div>
           )}
         </div>
-      </div>
-      
-      {/* Legend - Positioned to avoid conflicts */}
-      <div className="absolute bottom-6 left-6 z-20">
-        <div className="bg-gray-900/90 backdrop-blur-xl rounded-lg p-4 border border-white/20">
-          <h3 className="text-sm font-medium text-white mb-3">Impact Severity</h3>
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-red-500" />
-              <span className="text-xs text-gray-400">High Impact (&gt;0.8)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-orange-500" />
-              <span className="text-xs text-gray-400">Moderate Impact (0.5-0.8)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-yellow-500" />
-              <span className="text-xs text-gray-400">Low Impact (&lt;0.5)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-gray-500" />
-              <span className="text-xs text-gray-400">No Impact</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>
