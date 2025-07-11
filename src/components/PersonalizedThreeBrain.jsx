@@ -5,6 +5,9 @@ import { analyzeQuestionnaireImpacts } from '../utils/transformQuestionnaireData
 export default function PersonalizedThreeBrain({ assessmentResults, brainImpacts }) {
   const containerRef = useRef(null);
   const viewerRef = useRef(null);
+  const sceneRef = useRef(null);
+  const cameraRef = useRef(null);
+  const rendererRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadStatus, setLoadStatus] = useState('Loading library...');
   const [error, setError] = useState(null);
@@ -110,15 +113,21 @@ export default function PersonalizedThreeBrain({ assessmentResults, brainImpacts
           return;
         }
 
-        // Access scene from canvas
+        // Access scene from canvas and store references
         const scene = viewer.canvas.scene;
         const camera = viewer.canvas.camera;
+        const renderer = viewer.canvas.renderer;
         
         if (!scene || !camera) {
           setError('Scene or camera not available');
           setIsLoading(false);
           return;
         }
+        
+        // Store references for later use
+        sceneRef.current = scene;
+        cameraRef.current = camera;
+        rendererRef.current = renderer;
 
         // Set background
         scene.background = new THREE.Color(0x000814);
@@ -292,11 +301,16 @@ export default function PersonalizedThreeBrain({ assessmentResults, brainImpacts
         let hoveredMesh = null;
 
         const handleMouseMove = (event) => {
+          if (!cameraRef.current || !sceneRef.current) {
+            console.warn('Scene or camera not available yet');
+            return;
+          }
+          
           const rect = containerRef.current.getBoundingClientRect();
           mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
           mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-          raycaster.setFromCamera(mouse, camera);
+          raycaster.setFromCamera(mouse, cameraRef.current);
           const intersects = raycaster.intersectObjects(regionMeshes);
 
           // Reset previous hover

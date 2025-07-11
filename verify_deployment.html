@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Verify Brain Visualization Deployment</title>
+</head>
+<body>
+    <h1>Brain Visualization Deployment Verification</h1>
+    <p>Testing production deployment...</p>
+    
+    <div id="results"></div>
+    
+    <script>
+        const results = document.getElementById('results');
+        const tests = [];
+        
+        // Test 1: Main page loads
+        fetch('https://brain-visualization-app.vercel.app/')
+            .then(r => {
+                tests.push(`Main page: ${r.ok ? 'OK' : 'FAIL'} (${r.status})`);
+                return fetch('https://brain-visualization-app.vercel.app/libs/threebrain-main.js');
+            })
+            .then(r => {
+                tests.push(`Three-brain library: ${r.ok ? 'OK' : 'FAIL'} (${r.status})`);
+                results.innerHTML = '<h2>Test Results:</h2><ul>' + 
+                    tests.map(t => `<li>${t}</li>`).join('') + 
+                    '</ul>';
+                
+                if (tests.every(t => t.includes('OK'))) {
+                    results.innerHTML += '<p style="color: green; font-weight: bold;">✅ All tests passed! The brain visualization should be working.</p>';
+                } else {
+                    results.innerHTML += '<p style="color: red; font-weight: bold;">❌ Some tests failed. Checking further...</p>';
+                }
+            })
+            .catch(error => {
+                results.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            });
+    </script>
+</body>
+</html>
