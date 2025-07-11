@@ -1,11 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { analyzeQuestionnaireImpacts } from '../utils/transformQuestionnaireData';
 
-export default function SimpleBrainVisualization() {
+export default function SimpleBrainVisualization({ assessmentResults, brainImpacts }) {
   const mountRef = useRef(null);
   const sceneRef = useRef(null);
   const [selectedRegion, setSelectedRegion] = useState(null);
+  
+  // If assessmentResults provided, analyze them
+  const impacts = brainImpacts || (assessmentResults ? analyzeQuestionnaireImpacts(assessmentResults) : {});
   
   // Region information
   const regionInfo = {
@@ -136,19 +140,45 @@ export default function SimpleBrainVisualization() {
     const mouse = new THREE.Vector2();
 
     regions.forEach(region => {
+      // Check if this region is impacted
+      const impactData = impacts[region.name];
+      const isImpacted = impactData && impactData.impactLevel > 0;
+      const impactLevel = isImpacted ? impactData.impactLevel : 0;
+      
+      // Color based on impact level
+      let color = region.color;
+      let emissiveIntensity = 0.2;
+      let opacity = 0.8;
+      
+      if (isImpacted) {
+        // Red gradient based on impact level
+        const hue = 0; // Red
+        const saturation = 0.8 + (impactLevel * 0.2);
+        const lightness = 0.6 - (impactLevel * 0.3);
+        color = new THREE.Color().setHSL(hue, saturation, lightness);
+        emissiveIntensity = 0.3 + (impactLevel * 0.4);
+        opacity = 0.8 + (impactLevel * 0.2);
+      }
+      
       // Create sphere
       const geometry = new THREE.SphereGeometry(region.size, 32, 32);
       const material = new THREE.MeshPhongMaterial({
-        color: region.color,
-        emissive: region.color,
-        emissiveIntensity: 0.2,
+        color: color,
+        emissive: color,
+        emissiveIntensity: emissiveIntensity,
         transparent: true,
-        opacity: 0.8
+        opacity: opacity
       });
       
       const mesh = new THREE.Mesh(geometry, material);
       mesh.position.set(...region.position);
-      mesh.userData = { name: region.name, color: region.color };
+      mesh.userData = { 
+        name: region.name, 
+        originalColor: region.color,
+        isImpacted: isImpacted,
+        impactLevel: impactLevel,
+        impactData: impactData
+      };
       
       brainGroup.add(mesh);
       regionMeshes.push(mesh);
@@ -220,7 +250,7 @@ export default function SimpleBrainVisualization() {
       mountRef.current?.removeChild(renderer.domElement);
       renderer.dispose();
     };
-  }, []);
+  }, [impacts]);
 
   return (
     <div className="w-full h-full relative">

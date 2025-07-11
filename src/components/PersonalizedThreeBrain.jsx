@@ -17,16 +17,64 @@ export default function PersonalizedThreeBrain({ assessmentResults, brainImpacts
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const script = document.createElement('script');
-    // Use absolute URL for production
-    const baseUrl = window.location.origin;
-    script.src = `${baseUrl}/libs/threebrain-main.js`;
-    script.async = true;
-    script.crossOrigin = 'anonymous';
-
-    script.onload = () => {
-      setLoadStatus('Library loaded, initializing...');
+    let script = null;
+    let loadAttempt = 0;
+    
+    const loadScript = (src) => {
+      return new Promise((resolve, reject) => {
+        script = document.createElement('script');
+        script.src = src;
+        script.async = true;
+        script.crossOrigin = 'anonymous';
+        
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error(`Failed to load from ${src}`));
+        
+        document.head.appendChild(script);
+      });
+    };
+    
+    const tryLoadLibrary = async () => {
+      const sources = [
+        // Primary: local file
+        `${window.location.origin}/libs/threebrain-main.js`,
+        // Fallback 1: without origin (relative)
+        '/libs/threebrain-main.js',
+        // Fallback 2: direct GitHub raw file (as last resort)
+        'https://raw.githubusercontent.com/dipterix/threeBrain/master/inst/js_raws/dist/threebrain.js'
+      ];
       
+      for (const src of sources) {
+        try {
+          setLoadStatus(`Loading library from ${src.includes('github') ? 'CDN' : 'local'}...`);
+          await loadScript(src);
+          
+          // Check if library loaded successfully
+          if (window.threeBrain) {
+            setLoadStatus('Library loaded, initializing...');
+            initializeVisualization();
+            return;
+          }
+        } catch (error) {
+          console.warn(`Failed to load from ${src}:`, error);
+          // Clean up failed script
+          if (script && script.parentNode) {
+            script.parentNode.removeChild(script);
+          }
+        }
+      }
+      
+      // All sources failed
+      setError('Failed to load three-brain library from all sources');
+      setIsLoading(false);
+      
+      // Dispatch event to trigger fallback
+      window.dispatchEvent(new CustomEvent('brainVisualizationError', {
+        detail: { fallbackToSimple: true }
+      }));
+    };
+    
+    const initializeVisualization = () => {
       if (!window.threeBrain) {
         setError('threeBrain not found on window');
         setIsLoading(false);
@@ -331,15 +379,11 @@ export default function PersonalizedThreeBrain({ assessmentResults, brainImpacts
       }
     };
 
-    script.onerror = () => {
-      setError('Failed to load three-brain library');
-      setIsLoading(false);
-    };
-
-    document.head.appendChild(script);
+    // Start loading process
+    tryLoadLibrary();
 
     return () => {
-      if (script.parentNode) {
+      if (script && script.parentNode) {
         script.parentNode.removeChild(script);
       }
     };
