@@ -18,8 +18,11 @@ export default function PersonalizedThreeBrain({ assessmentResults, brainImpacts
     if (!containerRef.current) return;
 
     const script = document.createElement('script');
-    script.src = '/libs/threebrain-main.js';
+    // Use absolute URL for production
+    const baseUrl = window.location.origin;
+    script.src = `${baseUrl}/libs/threebrain-main.js`;
     script.async = true;
+    script.crossOrigin = 'anonymous';
 
     script.onload = () => {
       setLoadStatus('Library loaded, initializing...');
