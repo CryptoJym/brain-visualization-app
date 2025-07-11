@@ -4,6 +4,7 @@ import ACEsQuestionnaire from './components/ACEsQuestionnaire'
 import ResponsivePersonalizedBrain from './components/ResponsivePersonalizedBrain'
 import ResultsSummary from './components/ResultsSummary'
 import ResponsiveBrainVis from './components/ResponsiveBrainVis'
+import CleanBrainVis from './components/CleanBrainVis'
 import { analyzeTraumaImpact } from './utils/traumaBrainMapping'
 
 function App() {
