@@ -1,20 +1,23 @@
 import { useState } from 'react'
 import BrainVisualization from './components/BrainVisualization'
 import ACEsQuestionnaire from './components/ACEsQuestionnaire'
-import ResponsivePersonalizedBrain from './components/ResponsivePersonalizedBrain'
 import ResultsSummary from './components/ResultsSummary'
-import ResponsiveBrainVis from './components/ResponsiveBrainVis'
-import CleanBrainVis from './components/CleanBrainVis'
-import { analyzeTraumaImpact } from './utils/traumaBrainMapping'
+import PersonalizedThreeBrain from './components/PersonalizedThreeBrain'
+import { analyzeProfessionalTraumaImpact } from './utils/professionalTraumaBrainMapping'
 
 function App() {
-  const [currentView, setCurrentView] = useState('intro') // 'intro', 'questionnaire', 'results', 'personalized', 'default'
+  // Check URL parameter for direct view access
+  const urlParams = new URLSearchParams(window.location.search);
+  const viewParam = urlParams.get('view');
+  const initialView = viewParam || 'intro';
+  
+  const [currentView, setCurrentView] = useState(initialView) // 'intro', 'questionnaire', 'results', 'personalized', 'default'
   const [assessmentResults, setAssessmentResults] = useState(null)
   const [traumaAnalysis, setTraumaAnalysis] = useState(null)
 
   const handleQuestionnaireComplete = (results) => {
     setAssessmentResults(results)
-    const analysis = analyzeTraumaImpact(results)
+    const analysis = analyzeProfessionalTraumaImpact(results)
     setTraumaAnalysis(analysis)
     setCurrentView('results')
   }
@@ -104,7 +107,7 @@ function App() {
   if (currentView === 'personalized' && assessmentResults) {
     return (
       <div className="relative">
-        <ResponsivePersonalizedBrain assessmentResults={assessmentResults} />
+        <PersonalizedThreeBrain assessmentResults={assessmentResults} />
         <button
           onClick={handleRestartAssessment}
           className="fixed bottom-6 right-6 z-30 px-6 py-3 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-all duration-300 backdrop-blur"
@@ -116,9 +119,33 @@ function App() {
   }
 
   if (currentView === 'default') {
+    // Example impacts for demonstration
+    const exampleImpacts = {
+      'Amygdala': { 
+        impactLevel: 0.8, 
+        traumaTypes: ['emotional_neglect', 'physical_abuse'],
+        ageRanges: ['4-6', '7-9']
+      },
+      'Hippocampus': { 
+        impactLevel: 0.7, 
+        traumaTypes: ['chronic_stress'],
+        ageRanges: ['0-3', '4-6']
+      },
+      'Rostral Middle Frontal': { 
+        impactLevel: 0.6, 
+        traumaTypes: ['emotional_abuse'],
+        ageRanges: ['10-12', '13-15']
+      },
+      'Caudal Anterior Cingulate': { 
+        impactLevel: 0.5, 
+        traumaTypes: ['physical_abuse'],
+        ageRanges: ['7-9']
+      }
+    };
+    
     return (
       <div className="relative">
-        <ResponsiveBrainVis />
+        <PersonalizedThreeBrain brainImpacts={exampleImpacts} />
         <button
           onClick={() => setCurrentView('questionnaire')}
           className="fixed bottom-6 right-6 z-30 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-purple-600/25 transition-all duration-300"

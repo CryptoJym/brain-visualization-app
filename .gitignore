@@ -30,4 +30,28 @@ dist-ssr
 .env.test.local
 .env.production.local
 .vercel
-.vercel
+
+# Test files
+test-*.html
+debug-*.html
+brain-preview.html
+*-test.html
+*-debug.html
+browser-test.html
+test-console-capture.html
+webgl-test.html
+
+# Screenshots and reports
+*.png
+*.jpg
+*.jpeg
+DIAGNOSTIC_REPORT.md
+*-report.md
+website-inspection-report.md
+
+# Python scripts
+*.py
+
+# Debug files
+debug-*.js
+test-*.js

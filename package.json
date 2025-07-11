@@ -11,9 +11,11 @@
   "dependencies": {
     "@niivue/niivue": "^0.60.0",
     "@radix-ui/react-dialog": "^1.1.14",
+    "@rave-ieeg/three-brain": "^1.2.0",
     "@react-three/drei": "^9.96.0",
     "@react-three/fiber": "^8.15.0",
     "framer-motion": "^12.23.3",
+    "puppeteer": "^24.12.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "three": "^0.160.0"
