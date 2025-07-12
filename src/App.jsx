@@ -12,11 +12,10 @@ import RealBrainViewer from './components/RealBrainViewer'
 import IntegratedBrainSurvey from './components/IntegratedBrainSurvey'
 import CombinedBrainAnalysis from './components/CombinedBrainAnalysis'
 import DemoBrainHighlighting from './components/DemoBrainHighlighting'
-import AuthForm from './components/AuthForm'
-import SavedAssessments from './components/SavedAssessments'
+import Mem0AuthForm from './components/Mem0AuthForm'
+import Mem0SavedAssessments from './components/Mem0SavedAssessments'
 import { analyzeProfessionalTraumaImpact } from './utils/professionalTraumaBrainMapping'
-import { getCurrentUser, onAuthStateChange } from './lib/supabase'
-import { storeAssessmentMemory } from './lib/mem0'
+import { mem0Auth, storeUserAssessment } from './lib/mem0-auth'
 
 function App() {
   // Check URL parameter for direct view access
@@ -36,16 +35,11 @@ function App() {
   // Check authentication on mount
   useEffect(() => {
     checkAuth()
-    const unsubscribe = onAuthStateChange((event, session) => {
-      setUser(session?.user || null)
-      setAuthChecked(true)
-    })
-    return () => unsubscribe()
   }, [])
 
-  const checkAuth = async () => {
+  const checkAuth = () => {
     try {
-      const currentUser = await getCurrentUser()
+      const currentUser = mem0Auth.getCurrentUser()
       setUser(currentUser)
     } catch (error) {
       console.error('Auth check error:', error)
@@ -63,7 +57,7 @@ function App() {
     
     // Store in Mem0 if user is authenticated
     if (user) {
-      const saveResult = await storeAssessmentMemory(user.id, results, analysis)
+      const saveResult = await storeUserAssessment(results, analysis)
       console.log('Assessment saved to memory:', saveResult)
     }
     
@@ -247,9 +241,10 @@ function App() {
   
   if (currentView === 'auth') {
     return (
-      <AuthForm 
+      <Mem0AuthForm 
         onSuccess={(authUser) => {
           setUser(authUser)
+          checkAuth() // Refresh user state
           setCurrentView('questionnaire')
         }}
       />
@@ -258,7 +253,7 @@ function App() {
   
   if (currentView === 'saved') {
     return (
-      <SavedAssessments 
+      <Mem0SavedAssessments 
         onSelectAssessment={(savedAssessment) => {
           if (savedAssessment) {
             // Load saved assessment
