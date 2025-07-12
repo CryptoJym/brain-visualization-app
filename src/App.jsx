@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import BrainVisualization from './components/BrainVisualization'
 import ACEsQuestionnaire from './components/ACEsQuestionnaire'
 import ResultsSummary from './components/ResultsSummary'
@@ -12,7 +12,11 @@ import RealBrainViewer from './components/RealBrainViewer'
 import IntegratedBrainSurvey from './components/IntegratedBrainSurvey'
 import CombinedBrainAnalysis from './components/CombinedBrainAnalysis'
 import DemoBrainHighlighting from './components/DemoBrainHighlighting'
+import AuthForm from './components/AuthForm'
+import SavedAssessments from './components/SavedAssessments'
 import { analyzeProfessionalTraumaImpact } from './utils/professionalTraumaBrainMapping'
+import { getCurrentUser, onAuthStateChange } from './lib/supabase'
+import { storeAssessmentMemory } from './lib/mem0'
 
 function App() {
   // Check URL parameter for direct view access
@@ -21,18 +25,48 @@ function App() {
   // Default to intro view to explain the app
   const initialView = viewParam || 'intro';
   
-  const [currentView, setCurrentView] = useState(initialView) // 'intro', 'questionnaire', 'results', 'personalized', 'default', 'combined'
+  const [currentView, setCurrentView] = useState(initialView) // 'intro', 'questionnaire', 'results', 'personalized', 'default', 'combined', 'auth', 'saved'
+  const [user, setUser] = useState(null)
+  const [authChecked, setAuthChecked] = useState(false)
   
   console.log('App mounting with view:', initialView, 'from URL param:', viewParam);
   const [assessmentResults, setAssessmentResults] = useState(null)
   const [traumaAnalysis, setTraumaAnalysis] = useState(null)
 
-  const handleQuestionnaireComplete = (results) => {
+  // Check authentication on mount
+  useEffect(() => {
+    checkAuth()
+    const unsubscribe = onAuthStateChange((event, session) => {
+      setUser(session?.user || null)
+      setAuthChecked(true)
+    })
+    return () => unsubscribe()
+  }, [])
+
+  const checkAuth = async () => {
+    try {
+      const currentUser = await getCurrentUser()
+      setUser(currentUser)
+    } catch (error) {
+      console.error('Auth check error:', error)
+    } finally {
+      setAuthChecked(true)
+    }
+  }
+
+  const handleQuestionnaireComplete = async (results) => {
     console.log('Survey completed, results:', results)
     setAssessmentResults(results)
     const analysis = analyzeProfessionalTraumaImpact(results)
     console.log('Analysis generated:', analysis)
     setTraumaAnalysis(analysis)
+    
+    // Store in Mem0 if user is authenticated
+    if (user) {
+      const saveResult = await storeAssessmentMemory(user.id, results, analysis)
+      console.log('Assessment saved to memory:', saveResult)
+    }
+    
     // Skip results summary and go straight to brain visualization
     setCurrentView('personalized')
   }
@@ -88,7 +122,13 @@ function App() {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
-              onClick={() => setCurrentView('questionnaire')}
+              onClick={() => {
+                if (user) {
+                  setCurrentView('questionnaire')
+                } else {
+                  setCurrentView('auth')
+                }
+              }}
               className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-purple-600/25 transition-all duration-300 transform hover:scale-105"
             >
               Start Personalized Assessment
@@ -100,6 +140,17 @@ function App() {
               View Demo
             </button>
           </div>
+          
+          {user && (
+            <div className="mt-6">
+              <button
+                onClick={() => setCurrentView('saved')}
+                className="text-purple-400 hover:text-purple-300 transition-colors"
+              >
+                View Your Saved Assessments →
+              </button>
+            </div>
+          )}
           
           <p className="text-xs text-gray-500 mt-8">
             This tool is for educational purposes only and does not provide medical advice or diagnosis.
@@ -191,6 +242,40 @@ function App() {
           Take Real Assessment
         </button>
       </div>
+    )
+  }
+  
+  if (currentView === 'auth') {
+    return (
+      <AuthForm 
+        onSuccess={(authUser) => {
+          setUser(authUser)
+          setCurrentView('questionnaire')
+        }}
+      />
+    )
+  }
+  
+  if (currentView === 'saved') {
+    return (
+      <SavedAssessments 
+        onSelectAssessment={(savedAssessment) => {
+          if (savedAssessment) {
+            // Load saved assessment
+            if (savedAssessment.assessmentData && savedAssessment.analysis) {
+              setAssessmentResults(savedAssessment.assessmentData)
+              setTraumaAnalysis(savedAssessment.analysis)
+              setCurrentView('personalized')
+            } else {
+              // Handle legacy format
+              setCurrentView('questionnaire')
+            }
+          } else {
+            // Start new assessment
+            setCurrentView('questionnaire')
+          }
+        }}
+      />
     )
   }
 
