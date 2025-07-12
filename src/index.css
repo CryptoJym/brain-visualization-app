@@ -40,8 +40,6 @@ body {
 /* Ensure canvas elements are visible */
 canvas {
   display: block !important;
-  width: 100% !important;
-  height: 100% !important;
 }
 
 /* Focus indicators for accessibility */

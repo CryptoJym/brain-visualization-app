@@ -75,6 +75,8 @@ export default function SimpleBrainVisualization({ assessmentResults, brainImpac
 
     const width = mountRef.current.clientWidth;
     const height = mountRef.current.clientHeight;
+    
+    console.log('SimpleBrainVisualization mounting, dimensions:', { width, height });
 
     // Scene setup
     const scene = new THREE.Scene();
@@ -253,8 +255,8 @@ export default function SimpleBrainVisualization({ assessmentResults, brainImpac
   }, [impacts]);
 
   return (
-    <div className="w-full h-full relative">
-      <div ref={mountRef} className="w-full h-full" />
+    <div className="w-full h-full relative" style={{ minHeight: '100vh' }}>
+      <div ref={mountRef} className="w-full h-full" style={{ minHeight: '100vh' }} />
       
       {/* Header */}
       <div className="absolute top-4 left-4">
