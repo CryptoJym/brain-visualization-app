@@ -11,14 +11,15 @@ import NiiVueBrain from './components/NiiVueBrain'
 import RealBrainViewer from './components/RealBrainViewer'
 import IntegratedBrainSurvey from './components/IntegratedBrainSurvey'
 import CombinedBrainAnalysis from './components/CombinedBrainAnalysis'
+import DemoBrainHighlighting from './components/DemoBrainHighlighting'
 import { analyzeProfessionalTraumaImpact } from './utils/professionalTraumaBrainMapping'
 
 function App() {
   // Check URL parameter for direct view access
   const urlParams = new URLSearchParams(window.location.search);
   const viewParam = urlParams.get('view');
-  // Default to brain view for easier access
-  const initialView = viewParam || 'default';
+  // Default to intro view to explain the app
+  const initialView = viewParam || 'intro';
   
   const [currentView, setCurrentView] = useState(initialView) // 'intro', 'questionnaire', 'results', 'personalized', 'default', 'combined'
   
@@ -61,16 +62,23 @@ function App() {
           
           <div className="space-y-4 mb-8">
             <div className="bg-white/5 backdrop-blur-xl rounded-xl p-6 border border-white/10">
-              <h3 className="text-white font-medium mb-2">Personalized Experience</h3>
+              <h3 className="text-white font-medium mb-2">🧠 Automatic Brain Highlighting</h3>
               <p className="text-gray-300 text-sm">
-                Take a confidential assessment to see how specific experiences may have influenced your unique neural development
+                Complete our trauma assessment and watch as affected brain regions automatically light up based on your responses
               </p>
             </div>
             
             <div className="bg-white/5 backdrop-blur-xl rounded-xl p-6 border border-white/10">
-              <h3 className="text-white font-medium mb-2">General Exploration</h3>
+              <h3 className="text-white font-medium mb-2">📊 EEG Integration Ready</h3>
               <p className="text-gray-300 text-sm">
-                Skip the assessment and explore how trauma generally affects brain regions and pathways
+                Connect your Neurable MW75 headphones to add real-time brain activity data to your personalized analysis
+              </p>
+            </div>
+            
+            <div className="bg-white/5 backdrop-blur-xl rounded-xl p-6 border border-white/10">
+              <h3 className="text-white font-medium mb-2">🎯 See Demo First</h3>
+              <p className="text-gray-300 text-sm">
+                View an example of how trauma impacts are visualized with automatic region highlighting
               </p>
             </div>
           </div>
@@ -86,7 +94,7 @@ function App() {
               onClick={handleSkipQuestionnaire}
               className="px-8 py-4 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-all duration-300 backdrop-blur"
             >
-              Explore General Model
+              View Demo
             </button>
           </div>
           
@@ -156,38 +164,14 @@ function App() {
   }
 
   if (currentView === 'default') {
-    // Example impacts for demonstration
-    const exampleImpacts = {
-      'Amygdala': { 
-        impactLevel: 0.8, 
-        traumaTypes: ['emotional_neglect', 'physical_abuse'],
-        ageRanges: ['4-6', '7-9']
-      },
-      'Hippocampus': { 
-        impactLevel: 0.7, 
-        traumaTypes: ['chronic_stress'],
-        ageRanges: ['0-3', '4-6']
-      },
-      'Rostral Middle Frontal': { 
-        impactLevel: 0.6, 
-        traumaTypes: ['emotional_abuse'],
-        ageRanges: ['10-12', '13-15']
-      },
-      'Caudal Anterior Cingulate': { 
-        impactLevel: 0.5, 
-        traumaTypes: ['physical_abuse'],
-        ageRanges: ['7-9']
-      }
-    };
-    
     return (
       <div className="relative">
-        <RealBrainViewer />
+        <DemoBrainHighlighting />
         <button
           onClick={() => setCurrentView('questionnaire')}
-          className="fixed bottom-6 right-6 z-30 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-purple-600/25 transition-all duration-300"
+          className="fixed top-6 right-6 z-30 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-purple-600/25 transition-all duration-300"
         >
-          Take Assessment
+          Take Real Assessment
         </button>
       </div>
     )
