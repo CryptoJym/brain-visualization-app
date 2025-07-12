@@ -227,14 +227,31 @@ export function convertToProfessionalNames(oldMapping) {
 
 // Main analysis function using professional names
 export function analyzeProfessionalTraumaImpact(assessmentResults) {
-  const { aceTypes = [], ageRanges = [], gender = 'female' } = assessmentResults;
+  const { answers = {}, biologicalSex = 'female' } = assessmentResults;
   const brainImpacts = {};
+  
+  // Extract ACE types and age ranges from answers
+  const aceTypes = [];
+  const allAgeRanges = new Set();
+  
+  Object.entries(answers).forEach(([aceType, answerData]) => {
+    if (answerData.experienced === 'yes' && professionalAceMapping[aceType]) {
+      aceTypes.push(aceType);
+      
+      // Collect age ranges for this trauma
+      if (answerData.ageRanges) {
+        answerData.ageRanges.forEach(range => allAgeRanges.add(range));
+      }
+    }
+  });
   
   // Process each ACE type
   aceTypes.forEach(aceType => {
     const mapping = professionalAceMapping[aceType];
+    const answerData = answers[aceType];
+    
     if (mapping) {
-      Object.entries(mapping).forEach(([region, impact]) => {
+      Object.entries(mapping).forEach(([region, baseImpact]) => {
         if (!brainImpacts[region]) {
           brainImpacts[region] = {
             impact: 0,
@@ -242,14 +259,40 @@ export function analyzeProfessionalTraumaImpact(assessmentResults) {
             developmentalPeriods: new Set()
           };
         }
-        brainImpacts[region].impact = Math.max(brainImpacts[region].impact, impact);
+        
+        // Adjust impact based on duration
+        let adjustedImpact = baseImpact;
+        if (answerData.duration) {
+          const durationMultipliers = {
+            'single': 0.7,
+            'days': 0.8,
+            'weeks': 0.9,
+            'months': 1.0,
+            '<1year': 1.1,
+            '1-2years': 1.2,
+            '3-5years': 1.3,
+            '5+years': 1.4,
+            'throughout': 1.5,
+            'ongoing': 1.5
+          };
+          adjustedImpact *= durationMultipliers[answerData.duration] || 1.0;
+        }
+        
+        brainImpacts[region].impact = Math.max(brainImpacts[region].impact, adjustedImpact);
         brainImpacts[region].traumaTypes.push(aceType);
+        
+        // Add age ranges for this trauma
+        if (answerData.ageRanges) {
+          answerData.ageRanges.forEach(range => {
+            brainImpacts[region].developmentalPeriods.add(range);
+          });
+        }
       });
     }
   });
   
   // Add developmental period vulnerabilities
-  ageRanges.forEach(ageRange => {
+  Array.from(allAgeRanges).forEach(ageRange => {
     const vulnerability = developmentalVulnerabilities[ageRange];
     if (vulnerability) {
       vulnerability.vulnerableRegions.forEach(region => {
@@ -267,12 +310,20 @@ export function analyzeProfessionalTraumaImpact(assessmentResults) {
   });
   
   // Add gender-specific vulnerabilities
-  const genderVuln = genderVulnerabilities[gender];
+  const genderVuln = genderVulnerabilities[biologicalSex];
   if (genderVuln) {
     genderVuln.vulnerableRegions.forEach(region => {
       if (brainImpacts[region]) {
         brainImpacts[region].impact *= genderVuln.hpaReactivity;
       }
+    });
+  }
+  
+  // Apply protective factors if present
+  if (answers.protective?.experienced === 'yes') {
+    // Protective factors reduce impact by 10-20%
+    Object.values(brainImpacts).forEach(data => {
+      data.impact *= 0.85;
     });
   }
   
@@ -282,6 +333,7 @@ export function analyzeProfessionalTraumaImpact(assessmentResults) {
     if (data.impact > 0.3) {
       significantImpacts[region] = {
         ...data,
+        impact: Math.min(1, data.impact), // Cap at 1.0
         developmentalPeriods: Array.from(data.developmentalPeriods)
       };
     }
@@ -304,7 +356,8 @@ export function analyzeProfessionalTraumaImpact(assessmentResults) {
       genderSpecificRisks: genderVuln ? {
         hpaReactivity: genderVuln.hpaReactivity,
         vulnerableRegions: genderVuln.vulnerableRegions
-      } : null
+      } : null,
+      hasProtectiveFactors: answers.protective?.experienced === 'yes'
     }
   };
 }

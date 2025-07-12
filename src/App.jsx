@@ -9,6 +9,8 @@ import SimplifiedBrain from './components/SimplifiedBrain'
 import AnatomicallyAccurateBrain from './components/AnatomicallyAccurateBrain'
 import NiiVueBrain from './components/NiiVueBrain'
 import RealBrainViewer from './components/RealBrainViewer'
+import IntegratedBrainSurvey from './components/IntegratedBrainSurvey'
+import CombinedBrainAnalysis from './components/CombinedBrainAnalysis'
 import { analyzeProfessionalTraumaImpact } from './utils/professionalTraumaBrainMapping'
 
 function App() {
@@ -18,7 +20,7 @@ function App() {
   // Default to brain view for easier access
   const initialView = viewParam || 'default';
   
-  const [currentView, setCurrentView] = useState(initialView) // 'intro', 'questionnaire', 'results', 'personalized', 'default'
+  const [currentView, setCurrentView] = useState(initialView) // 'intro', 'questionnaire', 'results', 'personalized', 'default', 'combined'
   
   console.log('App mounting with view:', initialView, 'from URL param:', viewParam);
   const [assessmentResults, setAssessmentResults] = useState(null)
@@ -116,7 +118,33 @@ function App() {
   if (currentView === 'personalized' && assessmentResults) {
     return (
       <div className="relative">
-        <RealBrainViewer />
+        <IntegratedBrainSurvey surveyResults={assessmentResults} />
+        <button
+          onClick={() => setCurrentView('combined')}
+          className="fixed bottom-6 left-6 z-30 px-6 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-all duration-300"
+        >
+          Add EEG Analysis
+        </button>
+        <button
+          onClick={handleRestartAssessment}
+          className="fixed bottom-6 right-6 z-30 px-6 py-3 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-all duration-300 backdrop-blur"
+        >
+          Retake Assessment
+        </button>
+      </div>
+    )
+  }
+  
+  if (currentView === 'combined' && assessmentResults) {
+    return (
+      <div className="relative h-screen">
+        <CombinedBrainAnalysis surveyResults={assessmentResults} />
+        <button
+          onClick={() => setCurrentView('personalized')}
+          className="fixed bottom-6 left-6 z-30 px-6 py-3 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-all duration-300 backdrop-blur"
+        >
+          Back to Survey View
+        </button>
         <button
           onClick={handleRestartAssessment}
           className="fixed bottom-6 right-6 z-30 px-6 py-3 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-all duration-300 backdrop-blur"
