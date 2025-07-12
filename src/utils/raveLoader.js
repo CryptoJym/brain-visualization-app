@@ -2,6 +2,7 @@
 // Handles loading the library from multiple CDN sources with fallback
 
 export async function loadRAVELibrary() {
+  console.log('loadRAVELibrary called');
   // Check if already loaded
   if (window.threeBrain) {
     console.log('✅ RAVE library already loaded');

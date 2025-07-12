@@ -4,6 +4,7 @@ import ACEsQuestionnaire from './components/ACEsQuestionnaire'
 import ResultsSummary from './components/ResultsSummary'
 import RaveThreeBrain from './components/RaveThreeBrain'
 import AdvancedRAVEBrain from './components/AdvancedRAVEBrain'
+import TestBrain from './components/TestBrain'
 import { analyzeProfessionalTraumaImpact } from './utils/professionalTraumaBrainMapping'
 
 function App() {
@@ -13,6 +14,8 @@ function App() {
   const initialView = viewParam || 'intro';
   
   const [currentView, setCurrentView] = useState(initialView) // 'intro', 'questionnaire', 'results', 'personalized', 'default'
+  
+  console.log('App mounting with view:', initialView, 'from URL param:', viewParam);
   const [assessmentResults, setAssessmentResults] = useState(null)
   const [traumaAnalysis, setTraumaAnalysis] = useState(null)
 

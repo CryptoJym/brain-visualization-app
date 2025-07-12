@@ -27,6 +27,7 @@ export default function AdvancedRAVEBrain({
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    console.log('AdvancedRAVEBrain mounting...');
     initializeViewer();
     
     return () => {
@@ -53,6 +54,7 @@ export default function AdvancedRAVEBrain({
 
   async function initializeViewer() {
     try {
+      console.log('Starting viewer initialization...');
       // Stage 1: Load RAVE library
       setLoadingStage('Loading RAVE three-brain library...');
       await loadRAVELibrary();

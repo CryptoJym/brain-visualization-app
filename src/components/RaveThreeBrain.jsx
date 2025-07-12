@@ -1,12 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
-import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils';
 import { analyzeQuestionnaireImpacts } from '../utils/transformQuestionnaireData';
 
 // Make THREE available globally for the RAVE library
 if (typeof window !== 'undefined') {
   window.THREE = THREE;
-  window.THREE.BufferGeometryUtils = BufferGeometryUtils;
 }
 
 export default function RaveThreeBrain({ assessmentResults, brainImpacts }) {
@@ -308,8 +306,9 @@ export default function RaveThreeBrain({ assessmentResults, brainImpacts }) {
       temporalGeo.translate(hemisphere === 'left' ? -35 : 35, -20, 0);
       geometries.push(temporalGeo);
       
-      // Merge all geometries
-      const mergedGeo = window.THREE.BufferGeometryUtils.mergeGeometries(geometries);
+      // Merge all geometries manually since BufferGeometryUtils might not be available
+      // For now, just use the main geometry
+      const mergedGeo = mainGeo;
       
       // Add some surface detail
       const noise = 0.5;
