@@ -5,6 +5,7 @@ import ResultsSummary from './components/ResultsSummary'
 import RaveThreeBrain from './components/RaveThreeBrain'
 import AdvancedRAVEBrain from './components/AdvancedRAVEBrain'
 import TestBrain from './components/TestBrain'
+import SimplifiedBrain from './components/SimplifiedBrain'
 import { analyzeProfessionalTraumaImpact } from './utils/professionalTraumaBrainMapping'
 
 function App() {
@@ -111,11 +112,7 @@ function App() {
   if (currentView === 'personalized' && assessmentResults) {
     return (
       <div className="relative">
-        <AdvancedRAVEBrain 
-          showElectrodes={true}
-          showSubcortical={true}
-          onRegionClick={(region) => console.log('Clicked region:', region)}
-        />
+        <SimplifiedBrain />
         <button
           onClick={handleRestartAssessment}
           className="fixed bottom-6 right-6 z-30 px-6 py-3 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-all duration-300 backdrop-blur"
@@ -153,12 +150,7 @@ function App() {
     
     return (
       <div className="relative">
-        <AdvancedRAVEBrain 
-          showElectrodes={true}
-          showSubcortical={true}
-          surfaceType="pial"
-          onRegionClick={(region) => console.log('Clicked region:', region)}
-        />
+        <SimplifiedBrain />
         <button
           onClick={() => setCurrentView('questionnaire')}
           className="fixed bottom-6 right-6 z-30 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-purple-600/25 transition-all duration-300"
