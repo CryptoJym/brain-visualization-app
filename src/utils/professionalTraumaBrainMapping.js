@@ -168,6 +168,165 @@ export const professionalAceMapping = {
     'Medial Orbitofrontal': 0.6,
     'Amygdala': 0.6,
     'Hippocampus': 0.5
+  },
+  
+  // Community and expanded ACEs
+  peer_bullying: {
+    'Superior Frontal': 0.7,
+    'Amygdala': 0.8,
+    'Hippocampus': 0.6,
+    'Caudal Anterior Cingulate': 0.7
+  },
+  
+  community_violence: {
+    'Amygdala': 0.9,
+    'Hippocampus': 0.7,
+    'Superior Frontal': 0.6,
+    'Pericalcarine': 0.5
+  },
+  
+  economic_hardship: {
+    'Superior Frontal': 0.6,
+    'Hippocampus': 0.5,
+    'Lateral Orbitofrontal': 0.5
+  },
+  
+  discrimination: {
+    'Caudal Anterior Cingulate': 0.7,
+    'Superior Frontal': 0.6,
+    'Amygdala': 0.7
+  },
+  
+  social_isolation: {
+    'Medial Orbitofrontal': 0.8,
+    'Superior Frontal': 0.7,
+    'Temporal Pole': 0.6
+  },
+  
+  // Life-threatening events
+  near_death_experience: {
+    'Amygdala': 1.0,
+    'Hippocampus': 0.9,
+    'Midbrain': 0.8,
+    'Pericalcarine': 0.7
+  },
+  
+  severe_accident: {
+    'Amygdala': 0.9,
+    'Hippocampus': 0.8,
+    'Postcentral': 0.7
+  },
+  
+  natural_disaster: {
+    'Amygdala': 0.8,
+    'Hippocampus': 0.7,
+    'Superior Frontal': 0.6
+  },
+  
+  witnessed_death: {
+    'Amygdala': 1.0,
+    'Hippocampus': 0.9,
+    'Pericalcarine': 0.8,
+    'Superior Temporal': 0.7
+  },
+  
+  // Medical trauma
+  medical_trauma: {
+    'Amygdala': 0.7,
+    'Hippocampus': 0.6,
+    'Postcentral': 0.6
+  },
+  
+  chronic_pain: {
+    'Caudal Anterior Cingulate': 0.8,
+    'Postcentral': 0.9,
+    'Thalamus': 0.7
+  },
+  
+  surgery_hospitalization: {
+    'Amygdala': 0.7,
+    'Hippocampus': 0.6,
+    'Superior Frontal': 0.5
+  },
+  
+  // Attachment and loss
+  caregiver_changes: {
+    'Medial Orbitofrontal': 0.8,
+    'Amygdala': 0.7,
+    'Hippocampus': 0.6
+  },
+  
+  caregiver_death: {
+    'Medial Orbitofrontal': 0.9,
+    'Amygdala': 0.9,
+    'Hippocampus': 0.8,
+    'Caudal Anterior Cingulate': 0.8
+  },
+  
+  sibling_death: {
+    'Amygdala': 0.8,
+    'Hippocampus': 0.7,
+    'Medial Orbitofrontal': 0.7
+  },
+  
+  pet_loss: {
+    'Amygdala': 0.5,
+    'Medial Orbitofrontal': 0.4
+  },
+  
+  abandonment: {
+    'Medial Orbitofrontal': 0.9,
+    'Amygdala': 0.8,
+    'Hippocampus': 0.7
+  },
+  
+  // Educational
+  educational_disruption: {
+    'Superior Frontal': 0.6,
+    'Hippocampus': 0.5
+  },
+  
+  learning_difficulties: {
+    'Superior Frontal': 0.6,
+    'Rostral Middle Frontal': 0.6,
+    'Superior Parietal': 0.5
+  },
+  
+  academic_pressure: {
+    'Superior Frontal': 0.7,
+    'Hippocampus': 0.6,
+    'Amygdala': 0.6
+  },
+  
+  // Additional
+  forced_separation: {
+    'Medial Orbitofrontal': 0.8,
+    'Amygdala': 0.8,
+    'Hippocampus': 0.7
+  },
+  
+  homelessness: {
+    'Amygdala': 0.8,
+    'Hippocampus': 0.8,
+    'Superior Frontal': 0.7
+  },
+  
+  food_insecurity: {
+    'Amygdala': 0.7,
+    'Hippocampus': 0.6,
+    'Hypothalamus': 0.8
+  },
+  
+  parentification: {
+    'Superior Frontal': 0.8,
+    'Rostral Middle Frontal': 0.7,
+    'Caudal Anterior Cingulate': 0.6
+  },
+  
+  cult_extremism: {
+    'Superior Frontal': 0.8,
+    'Medial Orbitofrontal': 0.8,
+    'Temporal Pole': 0.7
   }
 };
 

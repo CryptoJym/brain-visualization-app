@@ -28,10 +28,13 @@ function App() {
   const [traumaAnalysis, setTraumaAnalysis] = useState(null)
 
   const handleQuestionnaireComplete = (results) => {
+    console.log('Survey completed, results:', results)
     setAssessmentResults(results)
     const analysis = analyzeProfessionalTraumaImpact(results)
+    console.log('Analysis generated:', analysis)
     setTraumaAnalysis(analysis)
-    setCurrentView('results')
+    // Skip results summary and go straight to brain visualization
+    setCurrentView('personalized')
   }
 
   const handleSkipQuestionnaire = () => {
@@ -113,7 +116,14 @@ function App() {
     />
   }
 
-  if (currentView === 'results' && traumaAnalysis) {
+  if (currentView === 'results') {
+    if (!traumaAnalysis || !assessmentResults) {
+      console.error('No trauma analysis available in results view')
+      // Skip directly to personalized view
+      setCurrentView('personalized')
+      return null
+    }
+    
     return (
       <ResultsSummary 
         traumaAnalysis={traumaAnalysis}
@@ -123,7 +133,14 @@ function App() {
     )
   }
 
-  if (currentView === 'personalized' && assessmentResults) {
+  if (currentView === 'personalized') {
+    if (!assessmentResults) {
+      console.error('No assessment results in personalized view')
+      // Redirect to questionnaire
+      setCurrentView('questionnaire')
+      return null
+    }
+    
     return (
       <div className="relative">
         <IntegratedBrainSurvey surveyResults={assessmentResults} />
