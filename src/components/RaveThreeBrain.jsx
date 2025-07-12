@@ -1,5 +1,13 @@
 import React, { useRef, useEffect, useState } from 'react';
+import * as THREE from 'three';
+import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils';
 import { analyzeQuestionnaireImpacts } from '../utils/transformQuestionnaireData';
+
+// Make THREE available globally for the RAVE library
+if (typeof window !== 'undefined') {
+  window.THREE = THREE;
+  window.THREE.BufferGeometryUtils = BufferGeometryUtils;
+}
 
 export default function RaveThreeBrain({ assessmentResults, brainImpacts }) {
   const containerRef = useRef(null);
@@ -22,7 +30,40 @@ export default function RaveThreeBrain({ assessmentResults, brainImpacts }) {
       try {
         // Load the RAVE three-brain library
         script = document.createElement('script');
-        script.src = '/libs/threebrain-main.js';
+        // Try multiple CDN sources for the RAVE three-brain library
+        const cdnUrls = [
+          'https://unpkg.com/@dipterix/threebrain-js@2.1.0/dist/threebrain.min.js',
+          'https://cdn.jsdelivr.net/npm/@dipterix/threebrain-js@2.1.0/dist/threebrain.min.js',
+          '/libs/threebrain-main.js' // fallback to local
+        ];
+        
+        let loaded = false;
+        for (const url of cdnUrls) {
+          if (loaded) break;
+          script = document.createElement('script');
+          script.src = url;
+          script.async = true;
+          
+          try {
+            await new Promise((resolve, reject) => {
+              script.onload = () => { loaded = true; resolve(); };
+              script.onerror = () => reject(new Error(`Failed to load from ${url}`));
+              document.head.appendChild(script);
+              
+              // Timeout after 5 seconds
+              setTimeout(() => reject(new Error('Timeout')), 5000);
+            });
+          } catch (err) {
+            console.warn(`Failed to load from ${url}, trying next...`);
+            if (script.parentNode) {
+              script.parentNode.removeChild(script);
+            }
+          }
+        }
+        
+        if (!loaded) {
+          throw new Error('Failed to load RAVE three-brain library from all sources');
+        }
         script.async = true;
         
         await new Promise((resolve, reject) => {
@@ -129,41 +170,31 @@ export default function RaveThreeBrain({ assessmentResults, brainImpacts }) {
           electrodes: generateEEGElectrodes()
         };
 
-        // Add demo brain surface with high detail
-        viewer.add_hemisphere({
-          hemisphere: 'left',
-          surface_type: 'pial',
-          color: [0.8, 0.7, 0.7],
-          opacity: 1.0,
-          material_type: 'MeshPhysicalMaterial',
-          clearcoat: 0.3,
-          clearcoatRoughness: 0.4
-        });
+        // Access Three.js scene from viewer
+        const scene = viewer.canvas.scene;
+        const camera = viewer.canvas.camera;
         
-        viewer.add_hemisphere({
-          hemisphere: 'right',
-          surface_type: 'pial',
-          color: [0.8, 0.7, 0.7],
-          opacity: 1.0,
-          material_type: 'MeshPhysicalMaterial',
-          clearcoat: 0.3,
-          clearcoatRoughness: 0.4
-        });
+        // Add lighting for better visualization
+        const ambientLight = new window.THREE.AmbientLight(0xffffff, 0.4);
+        scene.add(ambientLight);
         
-        // Add subcortical structures
-        viewer.add_subcortical({
-          opacity: 0.7,
-          material_type: 'MeshPhysicalMaterial'
-        });
+        const directionalLight = new window.THREE.DirectionalLight(0xffffff, 0.6);
+        directionalLight.position.set(50, 50, 50);
+        scene.add(directionalLight);
+        
+        const directionalLight2 = new window.THREE.DirectionalLight(0xffffff, 0.3);
+        directionalLight2.position.set(-50, 50, -50);
+        scene.add(directionalLight2);
+        
+        // Load brain surfaces from URLs
+        loadBrainSurfaces(scene, brainData.groups);
         
         // Add EEG electrodes
         const electrodeData = generateEEGElectrodes();
-        electrodeData.forEach(electrode => {
-          viewer.add_electrode(electrode);
-        });
+        addElectrodes(scene, electrodeData);
         
         // Set up interactions
-        if (viewer.scene && viewer.raycaster) {
+        if (viewer.canvas && viewer.canvas.renderer) {
           addRegionInteractions(viewer, impacts);
         }
         
@@ -210,18 +241,139 @@ export default function RaveThreeBrain({ assessmentResults, brainImpacts }) {
       return electrodes;
     }
 
+    // Load brain surfaces from URLs
+    async function loadBrainSurfaces(scene, groups) {
+      const loader = new window.THREE.BufferGeometryLoader();
+      
+      for (const groupName in groups) {
+        const group = groups[groupName];
+        for (const surfaceName in group.surfaces) {
+          const surface = group.surfaces[surfaceName];
+          
+          try {
+            // For demo purposes, create placeholder geometries
+            // In production, you would load actual brain surface data
+            const geometry = createBrainGeometry(surface.hemisphere, surface.surface_type);
+            
+            const material = new window.THREE.MeshPhysicalMaterial({
+              color: new window.THREE.Color(...surface.color),
+              opacity: surface.opacity,
+              transparent: surface.opacity < 1,
+              clearcoat: 0.3,
+              clearcoatRoughness: 0.4,
+              metalness: 0.1,
+              roughness: 0.7
+            });
+            
+            const mesh = new window.THREE.Mesh(geometry, material);
+            mesh.visible = surface.visible !== false;
+            mesh.userData = {
+              hemisphere: surface.hemisphere,
+              surface_type: surface.surface_type,
+              group: groupName
+            };
+            
+            scene.add(mesh);
+          } catch (error) {
+            console.error(`Failed to load surface ${surfaceName}:`, error);
+          }
+        }
+      }
+    }
+    
+    // Create placeholder brain geometry
+    function createBrainGeometry(hemisphere, surfaceType) {
+      // Create a more brain-like shape using merged geometries
+      const geometries = [];
+      
+      // Main brain hemisphere
+      const mainGeo = new window.THREE.SphereGeometry(40, 32, 24);
+      mainGeo.scale(1.2, 1, 1.4);
+      if (hemisphere === 'left') {
+        mainGeo.translate(-15, 0, 0);
+      } else if (hemisphere === 'right') {
+        mainGeo.translate(15, 0, 0);
+      }
+      geometries.push(mainGeo);
+      
+      // Add frontal lobe bulge
+      const frontalGeo = new window.THREE.SphereGeometry(25, 16, 12);
+      frontalGeo.scale(1, 0.8, 1.2);
+      frontalGeo.translate(hemisphere === 'left' ? -20 : 20, 15, 30);
+      geometries.push(frontalGeo);
+      
+      // Add temporal lobe
+      const temporalGeo = new window.THREE.SphereGeometry(20, 16, 12);
+      temporalGeo.scale(1.5, 0.7, 1);
+      temporalGeo.translate(hemisphere === 'left' ? -35 : 35, -20, 0);
+      geometries.push(temporalGeo);
+      
+      // Merge all geometries
+      const mergedGeo = window.THREE.BufferGeometryUtils.mergeGeometries(geometries);
+      
+      // Add some surface detail
+      const noise = 0.5;
+      const positions = mergedGeo.attributes.position;
+      for (let i = 0; i < positions.count; i++) {
+        const x = positions.getX(i);
+        const y = positions.getY(i);
+        const z = positions.getZ(i);
+        const offset = (Math.random() - 0.5) * noise;
+        positions.setXYZ(i, x + offset, y + offset, z + offset);
+      }
+      positions.needsUpdate = true;
+      mergedGeo.computeVertexNormals();
+      
+      return mergedGeo;
+    }
+    
+    // Add EEG electrodes to scene
+    function addElectrodes(scene, electrodes) {
+      electrodes.forEach(electrode => {
+        const geometry = new window.THREE.SphereGeometry(electrode.radius || 3, 16, 16);
+        const material = new window.THREE.MeshPhysicalMaterial({
+          color: electrode.color || '#FFD700',
+          metalness: 0.8,
+          roughness: 0.2,
+          clearcoat: 1,
+          clearcoatRoughness: 0
+        });
+        
+        const mesh = new window.THREE.Mesh(geometry, material);
+        mesh.position.set(...electrode.position);
+        mesh.userData = {
+          type: 'electrode',
+          name: electrode.name,
+          group: electrode.group
+        };
+        
+        scene.add(mesh);
+      });
+    }
+    
     // Add region-specific interactions
     function addRegionInteractions(viewer, impacts) {
-      // This would be customized based on the specific brain regions
-      // and trauma impacts from the assessment
+      const raycaster = new window.THREE.Raycaster();
+      const mouse = new window.THREE.Vector2();
+      const canvas = viewer.canvas.renderer.domElement;
       
       // Add custom event listeners for region selection
-      viewer.canvas.addEventListener('click', (event) => {
-        const intersects = viewer.raycaster.intersectObjects(viewer.scene.children, true);
+      canvas.addEventListener('click', (event) => {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+        
+        raycaster.setFromCamera(mouse, viewer.canvas.camera);
+        const intersects = raycaster.intersectObjects(viewer.canvas.scene.children, true);
+        
         if (intersects.length > 0) {
           const object = intersects[0].object;
-          if (object.userData && object.userData.region) {
-            setSelectedRegion(object.userData.region);
+          if (object.userData) {
+            if (object.userData.type === 'electrode') {
+              setSelectedRegion(`Electrode: ${object.userData.name}`);
+            } else if (object.userData.hemisphere) {
+              setSelectedRegion(`${object.userData.hemisphere} hemisphere - ${object.userData.surface_type}`);
+            }
           }
         }
       });

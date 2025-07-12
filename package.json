@@ -17,12 +17,12 @@
     "framer-motion": "^12.23.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "three": "^0.160.0"
+    "three": "^0.178.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
-    "@types/three": "^0.160.0",
+    "@types/three": "^0.178.1",
     "@vercel/analytics": "^1.5.0",
     "@vitejs/plugin-react": "^4.2.0",
     "autoprefixer": "^10.4.16",
