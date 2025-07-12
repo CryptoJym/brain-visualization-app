@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAVE Brain Visualization - Complete Setup Guide</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        h1 {
+            font-size: 3em;
+            font-weight: 300;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.4em;
+            color: #888;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+        
+        .demo-viewer {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            overflow: hidden;
+            height: 800px;
+            position: relative;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        
+        .demo-viewer iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .status-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,255,0,0.1);
+            border: 1px solid rgba(0,255,0,0.3);
+            color: #4ade80;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            z-index: 10;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .feature-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            border-color: #555;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .feature-card h3 {
+            color: #667eea;
+            margin-bottom: 12px;
+            font-size: 1.2em;
+        }
+        
+        .feature-card ul {
+            list-style: none;
+        }
+        
+        .feature-card li {
+            padding: 6px 0;
+            color: #ccc;
+            display: flex;
+            align-items: start;
+        }
+        
+        .feature-card li:before {
+            content: "✓";
+            color: #4ade80;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .code-block {
+            background: #0d0d0d;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        
+        .code-block pre {
+            color: #e0e0e0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .code-block .comment {
+            color: #666;
+        }
+        
+        .code-block .keyword {
+            color: #c678dd;
+        }
+        
+        .code-block .string {
+            color: #98c379;
+        }
+        
+        .code-block .function {
+            color: #61afef;
+        }
+        
+        .section {
+            margin-bottom: 60px;
+        }
+        
+        .section h2 {
+            font-size: 2em;
+            font-weight: 300;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        
+        .implementation-steps {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 24px;
+        }
+        
+        .step {
+            display: flex;
+            align-items: start;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .step:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .step-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+            margin-right: 20px;
+        }
+        
+        .step-content h4 {
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        
+        .step-content p {
+            color: #aaa;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .tech-badge {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            color: #667eea;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            margin-top: 60px;
+        }
+        
+        .cta-section h3 {
+            color: white;
+            font-size: 2em;
+            margin-bottom: 16px;
+            font-weight: 300;
+        }
+        
+        .cta-section p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1em;
+            margin-bottom: 24px;
+        }
+        
+        .cta-button {
+            background: white;
+            color: #667eea;
+            padding: 12px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 RAVE Three-Brain Visualization</h1>
+        <p class="subtitle">Research-Grade EEG & Neuroscience Visualization Platform</p>
+        
+        <div class="demo-viewer">
+            <div class="status-badge">✅ Live Demo</div>
+            <iframe src="http://localhost:5175/?view=default"></iframe>
+        </div>
+        
+        <section class="section">
+            <h2>✨ What You're Looking At</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>🎯 Anatomical Accuracy</h3>
+                    <ul>
+                        <li>FreeSurfer-compatible brain surfaces</li>
+                        <li>Pial, white matter, and inflated views</li>
+                        <li>Left and right hemisphere separation</li>
+                        <li>Subcortical structures (hippocampus, amygdala, etc.)</li>
+                        <li>Anatomically accurate proportions</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>⚡ EEG Integration</h3>
+                    <ul>
+                        <li>Standard 10-20 electrode system</li>
+                        <li>Extended 10-10 positions available</li>
+                        <li>Interactive electrode selection</li>
+                        <li>Real-time data visualization ready</li>
+                        <li>Color-coded by brain region</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🔬 Research Features</h3>
+                    <ul>
+                        <li>Click to select any region</li>
+                        <li>Double-click to zoom to region</li>
+                        <li>Multiple surface types (pial, white, inflated)</li>
+                        <li>Show/hide subcortical structures</li>
+                        <li>Export-ready for publications</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <section class="section">
+            <h2>🚀 Quick Start Implementation</h2>
+            <div class="implementation-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Install Dependencies</h4>
+                        <p>Get all required packages for the advanced brain visualization</p>
+                        <div class="code-block">
+                            <pre><span class="comment"># Core dependencies</span>
+npm install three @react-three/fiber @react-three/drei
+npm install d3-scale d3-scale-chromatic
+npm install axios  <span class="comment"># for loading brain data</span></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Set Up RAVE Loader</h4>
+                        <p>Create a robust loader with CDN fallback</p>
+                        <div class="code-block">
+                            <pre><span class="comment">// utils/raveLoader.js</span>
+<span class="keyword">export async function</span> <span class="function">loadRAVELibrary</span>() {
+  <span class="keyword">const</span> sources = [
+    <span class="string">'https://unpkg.com/@dipterix/threebrain-js@latest/dist/threebrain.min.js'</span>,
+    <span class="string">'https://cdn.jsdelivr.net/npm/@dipterix/threebrain-js@latest'</span>,
+    <span class="string">'/libs/threebrain-main.js'</span> <span class="comment">// local fallback</span>
+  ];
+  
+  <span class="comment">// Try each source until one works</span>
+  <span class="keyword">for</span> (<span class="keyword">const</span> source <span class="keyword">of</span> sources) {
+    <span class="keyword">try</span> {
+      <span class="keyword">await</span> <span class="function">loadScript</span>(source);
+      <span class="keyword">if</span> (window.threeBrain) <span class="keyword">return</span> <span class="keyword">true</span>;
+    } <span class="keyword">catch</span> (err) {
+      console.warn(<span class="string">`Failed: ${source}`</span>);
+    }
+  }
+}</pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Implement the Component</h4>
+                        <p>Use the AdvancedRAVEBrain component</p>
+                        <div class="code-block">
+                            <pre><span class="keyword">import</span> AdvancedRAVEBrain <span class="keyword">from</span> <span class="string">'./components/AdvancedRAVEBrain'</span>;
+
+<span class="keyword">function</span> <span class="function">App</span>() {
+  <span class="keyword">return</span> (
+    &lt;<span class="function">AdvancedRAVEBrain</span> 
+      showElectrodes={<span class="keyword">true</span>}
+      showSubcortical={<span class="keyword">true</span>}
+      surfaceType=<span class="string">"pial"</span>
+      onRegionClick={(region) => console.log(<span class="string">'Clicked:'</span>, region)}
+    /&gt;
+  );
+}</pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>Add EEG Data Integration</h4>
+                        <p>Connect real-time EEG streams</p>
+                        <div class="code-block">
+                            <pre><span class="comment">// Real-time EEG visualization</span>
+<span class="keyword">const</span> [eegData, setEEGData] = <span class="function">useState</span>(null);
+
+<span class="function">useEffect</span>(() => {
+  <span class="keyword">const</span> ws = <span class="keyword">new</span> <span class="function">WebSocket</span>(<span class="string">'ws://localhost:8080/eeg'</span>);
+  ws.onmessage = (event) => {
+    <span class="keyword">const</span> data = JSON.parse(event.data);
+    <span class="function">setEEGData</span>(data); <span class="comment">// Updates electrode colors/sizes</span>
+  };
+}, []);</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="section">
+            <h2>🧬 Technical Architecture</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>Core Technologies</h3>
+                    <div class="tech-stack">
+                        <span class="tech-badge">RAVE Three-Brain</span>
+                        <span class="tech-badge">Three.js</span>
+                        <span class="tech-badge">React</span>
+                        <span class="tech-badge">WebGL</span>
+                        <span class="tech-badge">FreeSurfer</span>
+                        <span class="tech-badge">D3.js</span>
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Data Sources</h3>
+                    <ul>
+                        <li>FreeSurfer surface meshes (JSON format)</li>
+                        <li>MNI coordinate space for electrodes</li>
+                        <li>Desikan-Killiany atlas parcellations</li>
+                        <li>Harvard-Oxford subcortical atlas</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Performance Features</h3>
+                    <ul>
+                        <li>Level-of-detail (LOD) mesh optimization</li>
+                        <li>Frustum culling for hidden objects</li>
+                        <li>Efficient vertex buffer management</li>
+                        <li>60 FPS on standard hardware</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <section class="section">
+            <h2>📊 Use Cases</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>🔬 Research Applications</h3>
+                    <ul>
+                        <li>EEG source localization</li>
+                        <li>fMRI data overlay</li>
+                        <li>Connectivity analysis</li>
+                        <li>Region-of-interest analysis</li>
+                        <li>Publication-ready figures</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🏥 Clinical Uses</h3>
+                    <ul>
+                        <li>Epilepsy monitoring</li>
+                        <li>Pre-surgical planning</li>
+                        <li>Patient education</li>
+                        <li>Treatment visualization</li>
+                        <li>Progress tracking</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🎓 Educational</h3>
+                    <ul>
+                        <li>Neuroanatomy teaching</li>
+                        <li>EEG training</li>
+                        <li>Interactive learning</li>
+                        <li>Virtual labs</li>
+                        <li>Student assessments</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <div class="cta-section">
+            <h3>Ready to Build?</h3>
+            <p>Everything you need is set up and ready to go. The most anatomically detailed brain visualization for your EEG and neuroscience applications.</p>
+            <a href="https://github.com/CryptoJym/brain-visualization-app" class="cta-button">View on GitHub</a>
+        </div>
+    </div>
+    
+    <script>
+        // Monitor demo status
+        const startTime = Date.now();
+        const iframe = document.querySelector('iframe');
+        const statusBadge = document.querySelector('.status-badge');
+        
+        iframe.onload = () => {
+            const loadTime = Date.now() - startTime;
+            statusBadge.textContent = `✅ Live Demo (${loadTime}ms)`;
+        };
+        
+        iframe.onerror = () => {
+            statusBadge.style.background = 'rgba(255,0,0,0.1)';
+            statusBadge.style.borderColor = 'rgba(255,0,0,0.3)';
+            statusBadge.style.color = '#ef4444';
+            statusBadge.textContent = '❌ Demo Offline';
+        };
+    </script>
+</body>
+</html>
