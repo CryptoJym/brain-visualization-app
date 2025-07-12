@@ -12,7 +12,8 @@ function App() {
   // Check URL parameter for direct view access
   const urlParams = new URLSearchParams(window.location.search);
   const viewParam = urlParams.get('view');
-  const initialView = viewParam || 'intro';
+  // Default to brain view for easier access
+  const initialView = viewParam || 'default';
   
   const [currentView, setCurrentView] = useState(initialView) // 'intro', 'questionnaire', 'results', 'personalized', 'default'
   
