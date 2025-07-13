@@ -18,6 +18,7 @@ import Mem0AuthForm from './components/Mem0AuthForm'
 import Mem0SavedAssessments from './components/Mem0SavedAssessments'
 import { analyzeProfessionalTraumaImpact } from './utils/professionalTraumaBrainMapping'
 import { mem0Auth, storeUserAssessment } from './lib/mem0-auth'
+import ARTherapyPage from './pages/ARTherapyPage'
 
 function App() {
   // Check URL parameter for direct view access
@@ -26,7 +27,7 @@ function App() {
   // Default to intro view to explain the app
   const initialView = viewParam || 'intro';
   
-  const [currentView, setCurrentView] = useState(initialView) // 'intro', 'assessment-choice', 'questionnaire', 'conversational', 'results', 'personalized', 'default', 'combined', 'auth', 'saved'
+  const [currentView, setCurrentView] = useState(initialView) // 'intro', 'assessment-choice', 'questionnaire', 'conversational', 'results', 'personalized', 'default', 'combined', 'auth', 'saved', 'ar-therapy'
   const [user, setUser] = useState(null)
   const [authChecked, setAuthChecked] = useState(false)
   
@@ -128,6 +129,12 @@ function App() {
               className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-purple-600/25 transition-all duration-300 transform hover:scale-105"
             >
               Start Personalized Assessment
+            </button>
+            <button
+              onClick={() => setCurrentView('ar-therapy')}
+              className="px-8 py-4 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-green-600/25 transition-all duration-300 transform hover:scale-105"
+            >
+              Try AR Therapy
             </button>
             <button
               onClick={handleSkipQuestionnaire}
@@ -280,6 +287,10 @@ function App() {
       user={user}
       onComplete={handleQuestionnaireComplete}
     />
+  }
+
+  if (currentView === 'ar-therapy') {
+    return <ARTherapyPage />
   }
 
   if (currentView === 'results') {
