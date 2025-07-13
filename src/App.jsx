@@ -10,6 +10,7 @@ import AnatomicallyAccurateBrain from './components/AnatomicallyAccurateBrain'
 import NiiVueBrain from './components/NiiVueBrain'
 import RealBrainViewer from './components/RealBrainViewer'
 import IntegratedBrainSurvey from './components/IntegratedBrainSurvey'
+import PersonalizedBrainMap from './components/PersonalizedBrainMap'
 import CombinedBrainAnalysis from './components/CombinedBrainAnalysis'
 import DemoBrainHighlighting from './components/DemoBrainHighlighting'
 import Mem0AuthForm from './components/Mem0AuthForm'
@@ -188,7 +189,7 @@ function App() {
     
     return (
       <div className="relative">
-        <IntegratedBrainSurvey surveyResults={assessmentResults} />
+        <PersonalizedBrainMap surveyResults={assessmentResults} />
         <button
           onClick={() => setCurrentView('combined')}
           className="fixed bottom-6 left-6 z-30 px-6 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-all duration-300"

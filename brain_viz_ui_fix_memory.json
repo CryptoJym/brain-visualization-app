@@ -1,0 +1,28 @@
+{
+  "title": "Brain Visualization App - Demo vs Real Assessment Fixed",
+  "date": "2025-07-13",
+  "project": "brain-visualization-app",
+  "type": "bug_fix",
+  "category": "UI/UX",
+  "importance": "high",
+  "problem": {
+    "user_complaint": "Why is the demo different than the final result?",
+    "issue": "Demo showed custom SVG brain visualization with colored regions, but real assessment just displayed embedded iframes from external websites (BrainFacts.org)",
+    "user_frustration": "I was looking for something that I could use for people to better understand their Traumatized brain to see the different brain parts, and I want to actually look like a goddamn brain"
+  },
+  "solution": {
+    "summary": "Created PersonalizedBrainMap component that uses BrainCanvas for actual brain visualization",
+    "changes": [
+      "Replaced IntegratedBrainSurvey (iframe-based) with PersonalizedBrainMap in App.jsx",
+      "Now both demo and real assessment show proper brain visualizations",
+      "Brain regions are colored based on trauma impact severity (red=severe, orange=high, yellow=moderate, green=mild)",
+      "Users can click regions for details, view impact/timeline modes, and export their brain map"
+    ],
+    "key_files_updated": [
+      "/Users/jamesbrady/brain-visualization-app/src/App.jsx (line 192)",
+      "/Users/jamesbrady/brain-visualization-app/src/components/CombinedBrainAnalysis.jsx (line 173)"
+    ]
+  },
+  "result": "The app now shows an anatomically-inspired brain with regions that light up based on survey responses",
+  "timestamp": "2025-07-13T10:00:15.961367"
+}

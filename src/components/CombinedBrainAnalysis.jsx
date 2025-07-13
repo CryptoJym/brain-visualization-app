@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import IntegratedBrainSurvey from './IntegratedBrainSurvey';
+import PersonalizedBrainMap from './PersonalizedBrainMap';
 import NeurableIntegration from './NeurableIntegration';
 import { analyzeProfessionalTraumaImpact } from '../utils/professionalTraumaBrainMapping';
 
@@ -170,7 +170,7 @@ export default function CombinedBrainAnalysis({ surveyResults }) {
       {/* Main content area */}
       <div className="flex-1">
         {viewMode === 'survey' && surveyResults && (
-          <IntegratedBrainSurvey surveyResults={surveyResults} />
+          <PersonalizedBrainMap surveyResults={surveyResults} />
         )}
         
         {viewMode === 'eeg' && (

@@ -63,7 +63,7 @@ const regionNameMapping = {
   'cerebellar_vermis': 'Cerebellar Vermis',
   
   // Other regions
-  'insula': 'Caudal Anterior Cingulate', // Group with cingulate for now
+  'insula': 'Insula',
   'corpus_callosum': 'Superior Frontal', // Distributed connection
   'entorhinal': 'Entorhinal',
   'parahippocampal': 'Parahippocampal',
