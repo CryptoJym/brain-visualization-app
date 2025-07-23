@@ -500,6 +500,7 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
       results.brainImpacts[region].totalImpact *= mitigationFactor;
     });
 
+    console.log('Assessment Results:', results);
     onComplete(results);
   };
 
@@ -519,6 +520,9 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
             {currentQuestion?.officialACE ? 'Original ACE Study Question' : 
              currentQuestion?.expandedACE ? 'Expanded ACE Question' :
              currentQuestion?.isProtective ? 'Protective Factor' : ''}
+          </p>
+          <p className="text-sm text-gray-500 mt-2">
+            Answer honestly - your responses help create a personalized brain impact visualization
           </p>
         </div>
 
@@ -558,13 +562,13 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
               <div className="space-y-3">
                 <button
                   onClick={() => handleResponse(currentQuestion.id, 'yes')}
-                  className="w-full p-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white transition-all text-lg"
+                  className="w-full p-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white transition-all text-lg hover:scale-[1.02] active:scale-[0.98]"
                 >
                   Yes
                 </button>
                 <button
                   onClick={() => handleResponse(currentQuestion.id, 'no')}
-                  className="w-full p-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white transition-all text-lg"
+                  className="w-full p-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white transition-all text-lg hover:scale-[1.02] active:scale-[0.98]"
                 >
                   No
                 </button>

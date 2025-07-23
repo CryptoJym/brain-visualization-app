@@ -496,3 +496,15 @@ button:disabled {
 .space-y-1 > * + * {
   margin-top: 0.25rem;
 }
+
+.hover\:scale-\[1\.02\]:hover {
+  transform: scale(1.02);
+}
+
+.active\:scale-\[0\.98\]:active {
+  transform: scale(0.98);
+}
+
+.transform {
+  transform: translateZ(0);
+}

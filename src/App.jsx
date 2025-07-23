@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import OfficialACEsQuestionnaire from './components/OfficialACEsQuestionnaire';
-import DetailedBrainImpactResults from './components/DetailedBrainImpactResults';
+import SimpleBrainResults from './components/SimpleBrainResults';
 
 const App = () => {
   const [assessmentResults, setAssessmentResults] = useState(null);
 
   const MainApp = () => {
     if (assessmentResults) {
-      return <DetailedBrainImpactResults assessmentResults={assessmentResults} />;
+      return <SimpleBrainResults assessmentResults={assessmentResults} />;
     }
     
     return (
