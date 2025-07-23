@@ -226,17 +226,6 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
           }
         },
         {
-          id: 'food_insecurity',
-          question: "Did you often worry that your family wouldn't have enough food or went hungry because there wasn't enough money?",
-          expandedACE: true,
-          brainImpact: {
-            regions: [
-              { name: 'Reward Processing', impact: 'altered', research: 'Darcey et al. (2020)' },
-              { name: 'Hippocampus', impact: -8, research: 'Hair et al. (2015)' }
-            ]
-          }
-        },
-        {
           id: 'homeless',
           question: 'Did you ever have to live on the street, in a shelter, or move frequently because of housing problems?',
           expandedACE: true,
