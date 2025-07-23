@@ -19,8 +19,9 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
           brainImpact: {
             regions: [
               { name: 'Medial Prefrontal Cortex', impact: -14, research: 'van Harmelen et al. (2010)' },
-              { name: 'Amygdala', impact: +22, research: 'Dannlowski et al. (2012)' },
-              { name: 'Anterior Cingulate', impact: -9, research: 'Edmiston et al. (2011)' }
+              { name: 'Anterior Cingulate', impact: -9.8, research: 'Dannlowski et al. (2012)' },
+              { name: 'Insula', impact: -7.2, research: 'Edmiston et al. (2011)' },
+              { name: 'Amygdala', impact: +19, research: 'Tottenham et al. (2011) - reactivity not volume' }
             ]
           }
         }
@@ -35,9 +36,11 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
           officialACE: true,
           brainImpact: {
             regions: [
-              { name: 'Prefrontal Cortex', impact: -12, research: 'Teicher et al. (2016)' },
-              { name: 'Amygdala', impact: +18, research: 'Hanson et al. (2010)' },
-              { name: 'Hippocampus', impact: -8.5, research: 'Carrion et al. (2001)' }
+              { name: 'Orbitofrontal Cortex', impact: -18.1, research: 'Hanson et al. (2010)' },
+              { name: 'Dorsolateral Prefrontal Cortex', impact: -12.6, research: 'De Brito et al. (2013)' },
+              { name: 'Hippocampus', impact: -6.5, research: 'Woon & Hedges (2008) meta-analysis' },
+              { name: 'Amygdala', impact: +9.8, research: 'Whittle et al. (2013) - males only' },
+              { name: 'Cerebellum', impact: -10, research: 'Anderson et al. (2002) - vermis region' }
             ]
           }
         }
@@ -52,10 +55,10 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
           officialACE: true,
           brainImpact: {
             regions: [
-              { name: 'Corpus Callosum', impact: -17, research: 'Andersen et al. (2008)' },
-              { name: 'Sensory Cortex', impact: -30, research: 'Heim et al. (2013)' },
-              { name: 'Visual Cortex', impact: -18, research: 'Tomoda et al. (2009)' },
-              { name: 'Hippocampus', impact: -19, research: 'Stein et al. (1997)' }
+              { name: 'Corpus Callosum', impact: -17, research: 'Andersen et al. (2008) - females' },
+              { name: 'Visual Cortex', impact: -18.1, research: 'Tomoda et al. (2009)' },
+              { name: 'Sensory Cortex', impact: -30, research: 'Heim et al. (2013) - genital sensory' },
+              { name: 'Hippocampus', impact: -16.5, research: 'Teicher et al. (2012) - left hemisphere' }
             ]
           }
         }
@@ -70,9 +73,10 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
           officialACE: true,
           brainImpact: {
             regions: [
-              { name: 'Default Mode Network', impact: 'disrupted', research: 'Bluhm et al. (2009)' },
-              { name: 'Temporal Lobe', impact: -11, research: 'De Bellis et al. (2002)' },
-              { name: 'Attachment Circuits', impact: 'altered', research: 'Schore (2001)' }
+              { name: 'Anterior Cingulate', impact: -17, research: 'Cohen et al. (2006)' },
+              { name: 'Superior Temporal Gyrus', impact: -14, research: 'De Bellis et al. (2002)' },
+              { name: 'Overall Brain Volume', impact: -9, research: 'De Bellis et al. (2002)' },
+              { name: 'Amygdala', impact: -6, research: 'Gee et al. (2013) - initially smaller' }
             ]
           }
         }
@@ -87,9 +91,10 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
           officialACE: true,
           brainImpact: {
             regions: [
-              { name: 'Orbitofrontal Cortex', impact: -16, research: 'Hanson et al. (2013)' },
-              { name: 'Cerebellum', impact: -8, research: 'De Bellis et al. (2005)' },
-              { name: 'Overall Brain Volume', impact: -7, research: 'De Bellis et al. (2002)' }
+              { name: 'Overall Brain Volume', impact: -11, research: 'De Bellis et al. (2002)' },
+              { name: 'Anterior Cingulate', impact: -17, research: 'Cohen et al. (2006)' },
+              { name: 'Superior Temporal Gyrus', impact: -14, research: 'De Bellis et al. (2002)' },
+              { name: 'Amygdala', impact: +20, research: 'Gee et al. (2013) - reactive by adolescence' }
             ]
           }
         }
@@ -104,7 +109,7 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
           officialACE: true,
           brainImpact: {
             regions: [
-              { name: 'Visual Association Areas', impact: 'altered', research: 'Choi et al. (2012)' },
+              { name: 'Visual Association Areas', impact: -15, research: 'Choi et al. (2012)' },
               { name: 'Amygdala', impact: +15, research: 'McCrory et al. (2011)' },
               { name: 'Insula', impact: +12, research: 'Teicher et al. (2014)' }
             ]
@@ -122,7 +127,7 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
           brainImpact: {
             regions: [
               { name: 'White Matter Integrity', impact: -15, research: 'Tapert et al. (2012)' },
-              { name: 'Reward Circuits', impact: 'disrupted', research: 'Dube et al. (2006)' },
+              { name: 'Dopamine Reward Circuits', impact: -25, research: 'Dillon et al. (2009)' },
               { name: 'Executive Networks', impact: -12, research: 'Clark et al. (2008)' }
             ]
           }
@@ -139,7 +144,7 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
           brainImpact: {
             regions: [
               { name: 'Limbic System', impact: +20, research: 'Lebel et al. (2016)' },
-              { name: 'HPA Axis', impact: 'dysregulated', research: 'Essex et al. (2011)' },
+              { name: 'HPA Axis', impact: +18, research: 'Essex et al. (2011) - cortisol elevation' },
               { name: 'Prefrontal-Limbic Connectivity', impact: -25, research: 'Herringa et al. (2013)' }
             ]
           }
@@ -155,7 +160,7 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
           officialACE: true,
           brainImpact: {
             regions: [
-              { name: 'Attachment Systems', impact: 'reorganized', research: 'Tottenham et al. (2012)' },
+              { name: 'Attachment Systems', impact: -15, research: 'Tottenham et al. (2012) - reorganization' },
               { name: 'Stress Response System', impact: +10, research: 'Luecken (2000)' }
             ]
           }
@@ -171,7 +176,7 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
           officialACE: true,
           brainImpact: {
             regions: [
-              { name: 'Social Brain Network', impact: 'altered', research: 'Dallaire (2007)' },
+              { name: 'Social Brain Network', impact: -12, research: 'Dallaire (2007)' },
               { name: 'Prefrontal Development', impact: -8, research: 'Haskins (2014)' }
             ]
           }
@@ -242,7 +247,7 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
           expandedACE: true,
           brainImpact: {
             regions: [
-              { name: 'Attachment Systems', impact: 'disrupted', research: 'Bick et al. (2015)' },
+              { name: 'Attachment Systems', impact: -20, research: 'Bick et al. (2015) - disruption' },
               { name: 'Hippocampus', impact: -12, research: 'Mehta et al. (2009)' }
             ]
           }
@@ -318,13 +323,13 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
   const officialACEQuestions = allQuestions.filter(q => q.officialACE).length;
 
   const ageRanges = [
-    { value: '0-2', label: 'Before age 3', multiplier: 3.5, description: 'Critical attachment period' },
-    { value: '3-5', label: 'Ages 3-5', multiplier: 2.5, description: 'Early childhood' },
-    { value: '6-8', label: 'Ages 6-8', multiplier: 2.0, description: 'Early school age' },
-    { value: '9-11', label: 'Ages 9-11', multiplier: 1.7, description: 'Middle childhood' },
-    { value: '12-14', label: 'Ages 12-14', multiplier: 1.4, description: 'Early adolescence' },
-    { value: '15-17', label: 'Ages 15-17', multiplier: 1.2, description: 'Late adolescence' },
-    { value: 'throughout', label: 'Throughout childhood', multiplier: 2.8, description: 'Chronic exposure' }
+    { value: '0-2', label: 'Before age 3', multiplier: 2.2, description: 'Critical attachment period' },
+    { value: '3-5', label: 'Ages 3-5', multiplier: 1.8, description: 'Early childhood' },
+    { value: '6-8', label: 'Ages 6-8', multiplier: 1.5, description: 'Early school age' },
+    { value: '9-11', label: 'Ages 9-11', multiplier: 1.3, description: 'Middle childhood' },
+    { value: '12-14', label: 'Ages 12-14', multiplier: 1.1, description: 'Early adolescence' },
+    { value: '15-17', label: 'Ages 15-17', multiplier: 1.0, description: 'Late adolescence' },
+    { value: 'throughout', label: 'Throughout childhood', multiplier: 1.8, description: 'Chronic exposure' }
   ];
 
   const frequencies = [
