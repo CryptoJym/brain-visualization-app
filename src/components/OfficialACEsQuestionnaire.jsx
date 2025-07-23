@@ -3,8 +3,9 @@ import React, { useState } from 'react';
 const OfficialACEsQuestionnaire = ({ onComplete }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [responses, setResponses] = useState({});
-  const [ageData, setAgeData] = useState({});
+  const [ageData, setAgeData] = useState({}); // Now stores arrays of ages
   const [durationData, setDurationData] = useState({});
+  const [selectedAges, setSelectedAges] = useState([]); // Temporary storage for current question
 
   // Official ACE Study Questions (Kaiser Permanente/CDC)
   const questionCategories = [
@@ -363,9 +364,21 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
     }
   };
 
-  const handleAgeData = (questionId, age) => {
-    setAgeData({ ...ageData, [questionId]: age });
-    setCurrentStep(currentStep + 0.1); // Move to frequency
+  const handleAgeData = (age) => {
+    // Toggle age selection
+    if (selectedAges.includes(age)) {
+      setSelectedAges(selectedAges.filter(a => a !== age));
+    } else {
+      setSelectedAges([...selectedAges, age]);
+    }
+  };
+
+  const confirmAgeSelection = (questionId) => {
+    if (selectedAges.length > 0) {
+      setAgeData({ ...ageData, [questionId]: selectedAges });
+      setSelectedAges([]); // Reset for next question
+      setCurrentStep(currentStep + 0.1); // Move to frequency
+    }
   };
 
   const handleFrequencyData = (questionId, frequency) => {
@@ -406,10 +419,22 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
           if (q.brainImpact.regions) {
             q.brainImpact.regions.forEach(region => {
               if (typeof region.impact === 'number') {
-                const ageMultiplier = ageRanges.find(a => a.value === ageData[q.id])?.multiplier || 1;
+                // Handle multiple ages - use the highest multiplier
+                let maxAgeMultiplier = 1;
+                const ages = ageData[q.id];
+                if (Array.isArray(ages)) {
+                  ages.forEach(age => {
+                    const multiplier = ageRanges.find(a => a.value === age)?.multiplier || 1;
+                    maxAgeMultiplier = Math.max(maxAgeMultiplier, multiplier);
+                  });
+                } else {
+                  // Fallback for old single age format
+                  maxAgeMultiplier = ageRanges.find(a => a.value === ageData[q.id])?.multiplier || 1;
+                }
+                
                 const frequencyModifier = frequencies.find(f => f.value === durationData[q.id])?.modifier || 0;
                 
-                const impact = region.impact * ageMultiplier * (1 + frequencyModifier * 0.3);
+                const impact = region.impact * maxAgeMultiplier * (1 + frequencyModifier * 0.3);
                 
                 if (!results.brainImpacts[region.name]) {
                   results.brainImpacts[region.name] = {
@@ -439,11 +464,31 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
 
     // Calculate overall severity
     const baseSeverity = Math.min(10, results.aceScore * 1.0 + (results.expandedACEScore - results.aceScore) * 0.5);
-    const avgAgeMultiplier = Object.values(ageData).reduce((sum, age) => {
-      const range = ageRanges.find(r => r.value === age);
-      return sum + (range?.multiplier || 1);
-    }, 0) / (Object.values(ageData).length || 1);
     
+    // Calculate average age multiplier accounting for multiple ages per trauma
+    let totalMultiplier = 0;
+    let traumaCount = 0;
+    
+    Object.values(ageData).forEach(ages => {
+      if (Array.isArray(ages)) {
+        // For multiple ages, use the highest multiplier
+        let maxMultiplier = 1;
+        ages.forEach(age => {
+          const range = ageRanges.find(r => r.value === age);
+          if (range) {
+            maxMultiplier = Math.max(maxMultiplier, range.multiplier);
+          }
+        });
+        totalMultiplier += maxMultiplier;
+      } else {
+        // Fallback for single age
+        const range = ageRanges.find(r => r.value === ages);
+        totalMultiplier += (range?.multiplier || 1);
+      }
+      traumaCount++;
+    });
+    
+    const avgAgeMultiplier = traumaCount > 0 ? totalMultiplier / traumaCount : 1;
     results.overallSeverity = Math.min(10, baseSeverity * avgAgeMultiplier * 0.7);
     
     // Apply protective factors
@@ -530,21 +575,46 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
               {/* Age follow-up */}
               {currentStep % 1 < 0.2 && (
                 <>
-                  <h3 className="text-xl text-white mb-6">
-                    When did this first happen?
+                  <h3 className="text-xl text-white mb-2">
+                    When did this happen? (Select all that apply)
                   </h3>
+                  <p className="text-sm text-gray-400 mb-6">
+                    Trauma often occurs across multiple developmental periods. Select all age ranges when this occurred.
+                  </p>
                   <div className="space-y-3">
                     {ageRanges.map(range => (
                       <button
                         key={range.value}
-                        onClick={() => handleAgeData(currentQuestion.id, range.value)}
-                        className="w-full p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-left transition-all"
+                        onClick={() => handleAgeData(range.value)}
+                        className={`w-full p-4 border rounded-lg text-left transition-all ${
+                          selectedAges.includes(range.value)
+                            ? 'bg-purple-600/20 border-purple-500/50 ring-2 ring-purple-500/30'
+                            : 'bg-white/5 hover:bg-white/10 border-white/10'
+                        }`}
                       >
-                        <div className="text-white font-medium">{range.label}</div>
-                        <div className="text-sm text-gray-400">{range.description}</div>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="text-white font-medium">{range.label}</div>
+                            <div className="text-sm text-gray-400">{range.description}</div>
+                          </div>
+                          {selectedAges.includes(range.value) && (
+                            <div className="text-purple-400">✓</div>
+                          )}
+                        </div>
                       </button>
                     ))}
                   </div>
+                  <button
+                    onClick={() => confirmAgeSelection(currentQuestion.id)}
+                    disabled={selectedAges.length === 0}
+                    className={`mt-6 w-full p-4 rounded-lg font-medium transition-all ${
+                      selectedAges.length > 0
+                        ? 'bg-purple-600 text-white hover:bg-purple-700'
+                        : 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                    }`}
+                  >
+                    Continue ({selectedAges.length} age period{selectedAges.length !== 1 ? 's' : ''} selected)
+                  </button>
                 </>
               )}
 
