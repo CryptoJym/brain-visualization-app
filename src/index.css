@@ -451,3 +451,48 @@ button:disabled {
 .cursor-not-allowed {
   cursor: not-allowed;
 }
+
+.z-20 {
+  z-index: 20;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.tracking-wider {
+  letter-spacing: 0.05em;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.max-w-7xl {
+  max-width: 80rem;
+}
+
+.overflow-y-auto {
+  overflow-y: auto;
+}
+
+.h-screen {
+  height: 100vh;
+}
+
+.border-l-2 {
+  border-left-width: 2px;
+}
+
+.border-purple-500\/50 {
+  border-color: rgba(168, 85, 247, 0.5);
+}
+
+.pl-4 {
+  padding-left: 1rem;
+}
+
+.space-y-1 > * + * {
+  margin-top: 0.25rem;
+}
