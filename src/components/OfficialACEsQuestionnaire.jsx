@@ -542,45 +542,52 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
       <div className="max-w-3xl w-full">
-        {/* Header */}
+        {/* Modern Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-light text-white mb-2">
+          <h1 className="text-4xl font-extralight text-white mb-3 tracking-wide">
             Adverse Childhood Experiences Assessment
           </h1>
-          <p className="text-gray-400">
-            {currentQuestion?.officialACE ? 'Original ACE Study Question' : 
+          <p className="text-gray-300 text-lg">
+            {currentStep === -1 ? 'Demographic Information' :
+             currentQuestion?.officialACE ? 'Original ACE Study Question' : 
              currentQuestion?.expandedACE ? 'Expanded ACE Question' :
              currentQuestion?.isProtective ? 'Protective Factor' : ''}
           </p>
-          <p className="text-sm text-gray-500 mt-2">
-            Answer honestly - your responses help create a personalized brain impact visualization
+          <p className="text-sm text-gray-400 mt-3">
+            Your responses create a personalized neurological impact visualization
           </p>
         </div>
 
-        {/* Progress bar */}
+        {/* Modern Progress bar */}
         <div className="mb-8">
-          <div className="flex justify-between text-sm text-gray-400 mb-2">
-            <span>
-              {currentStep === -1 ? 'Demographics' : `Question ${Math.floor(currentStep) + 1} of ${totalQuestions}`}
+          <div className="flex justify-between text-sm text-gray-300 mb-3">
+            <span className="font-light">
+              {currentStep === -1 ? 'Getting Started' : `Question ${Math.floor(currentStep) + 1} of ${totalQuestions}`}
             </span>
-            <span>{currentStep === -1 ? 'Getting Started' : currentCategory?.category}</span>
-            <span>
+            <span className="text-purple-300">{currentStep === -1 ? 'Demographics' : currentCategory?.category}</span>
+            <span className="font-light">
               {currentStep === -1 ? '0%' : `${Math.round((Math.floor(currentStep) / totalQuestions) * 100)}%`}
             </span>
           </div>
-          <div className="w-full bg-gray-700 rounded-full h-3">
+          <div className="w-full bg-black/30 rounded-full h-2 overflow-hidden backdrop-blur-sm">
             <div 
-              className="bg-gradient-to-r from-purple-500 to-blue-500 h-3 rounded-full transition-all duration-300"
-              style={{ width: `${currentStep === -1 ? 0 : (Math.floor(currentStep) / totalQuestions) * 100}%` }}
+              className="bg-gradient-to-r from-purple-400 via-blue-400 to-purple-400 h-2 rounded-full transition-all duration-500 relative"
+              style={{ 
+                width: `${currentStep === -1 ? 0 : (Math.floor(currentStep) / totalQuestions) * 100}%`,
+                backgroundSize: '200% 100%',
+                animation: 'shimmer 3s linear infinite'
+              }}
             />
           </div>
         </div>
 
-        {/* Question card */}
-        <div className="bg-white/10 backdrop-blur-xl rounded-xl p-8 border border-white/20">
-          {currentStep === -1 ? (
+        {/* Modern Question card */}
+        <div className="relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-3xl blur-xl" />
+          <div className="relative bg-black/40 backdrop-blur-xl rounded-3xl p-8 border border-white/10">
+            {currentStep === -1 ? (
             // Gender selection
             <>
               <div className="mb-4">
@@ -598,24 +605,30 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
                 male and female brains differently during development.
               </p>
 
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <button
                   onClick={() => {
                     setGender('female');
                     setCurrentStep(0);
                   }}
-                  className="w-full p-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white transition-all text-lg hover:scale-[1.02] active:scale-[0.98]"
+                  className="w-full p-6 bg-gradient-to-r from-purple-600/10 to-blue-600/10 hover:from-purple-600/20 hover:to-blue-600/20 border border-purple-500/30 hover:border-purple-400/50 rounded-2xl text-white transition-all duration-300 text-lg group"
                 >
-                  Female
+                  <span className="flex items-center justify-center gap-3">
+                    <span className="text-2xl">♀</span>
+                    <span>Female</span>
+                  </span>
                 </button>
                 <button
                   onClick={() => {
                     setGender('male');
                     setCurrentStep(0);
                   }}
-                  className="w-full p-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white transition-all text-lg hover:scale-[1.02] active:scale-[0.98]"
+                  className="w-full p-6 bg-gradient-to-r from-blue-600/10 to-purple-600/10 hover:from-blue-600/20 hover:to-purple-600/20 border border-blue-500/30 hover:border-blue-400/50 rounded-2xl text-white transition-all duration-300 text-lg group"
                 >
-                  Male
+                  <span className="flex items-center justify-center gap-3">
+                    <span className="text-2xl">♂</span>
+                    <span>Male</span>
+                  </span>
                 </button>
               </div>
             </>
@@ -719,6 +732,7 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
               )}
             </>
           )}
+          </div>
         </div>
 
         {/* Navigation */}

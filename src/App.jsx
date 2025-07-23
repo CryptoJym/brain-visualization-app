@@ -4,10 +4,11 @@ import OfficialACEsQuestionnaire from './components/OfficialACEsQuestionnaire';
 import ComprehensiveResultsDisplay from './components/ComprehensiveResultsDisplay';
 import DataFocusedResults from './components/DataFocusedResults';
 import NeurologicalNarrativeResults from './components/NeurologicalNarrativeResults';
+import ModernResultsDisplay from './components/ModernResultsDisplay';
 
 const App = () => {
   const [assessmentResults, setAssessmentResults] = useState(null);
-  const [displayMode, setDisplayMode] = useState('narrative'); // 'comprehensive', 'data-focused', or 'narrative'
+  const [displayMode, setDisplayMode] = useState('modern'); // 'modern', 'narrative', 'data-focused', or 'comprehensive'
 
   const MainApp = () => {
     if (assessmentResults) {
@@ -17,13 +18,15 @@ const App = () => {
             <select
               value={displayMode}
               onChange={(e) => setDisplayMode(e.target.value)}
-              className="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-700 text-sm"
+              className="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-700 text-sm backdrop-blur-sm"
             >
+              <option value="modern">Modern View</option>
               <option value="narrative">Neurological Narrative</option>
               <option value="data-focused">Data-Focused</option>
               <option value="comprehensive">Comprehensive</option>
             </select>
           </div>
+          {displayMode === 'modern' && <ModernResultsDisplay assessmentResults={assessmentResults} />}
           {displayMode === 'comprehensive' && <ComprehensiveResultsDisplay assessmentResults={assessmentResults} />}
           {displayMode === 'data-focused' && <DataFocusedResults assessmentResults={assessmentResults} />}
           {displayMode === 'narrative' && <NeurologicalNarrativeResults assessmentResults={assessmentResults} />}
