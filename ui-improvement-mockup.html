@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Viz - UI Improvement Mockup</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            /* Enhanced color palette */
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --surface-1: #1a1f2e;
+            --surface-2: #252a3a;
+            --surface-3: #2f3546;
+            --impact-severe: #f56565;
+            --impact-moderate: #ed8936;
+            --impact-mild: #ecc94b;
+            --impact-positive: #48bb78;
+            --accent-blue: #4299e1;
+            --accent-purple: #9f7aea;
+            --accent-teal: #38b2ac;
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+            --text-muted: #718096;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--surface-1);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        /* Enhanced Questionnaire Mockup */
+        .questionnaire-enhanced {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* Progress Sidebar */
+        .progress-sidebar {
+            background: var(--surface-2);
+            padding: 2rem;
+            overflow-y: auto;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-header {
+            margin-bottom: 2rem;
+        }
+        
+        .sidebar-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .overall-progress {
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-gradient);
+            width: 35%;
+            transition: width 0.3s ease;
+        }
+        
+        /* Section Navigation */
+        .section-nav {
+            list-style: none;
+        }
+        
+        .section-item {
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .section-item.completed {
+            background: rgba(72, 187, 120, 0.1);
+        }
+        
+        .section-item.current {
+            background: var(--primary-gradient);
+        }
+        
+        .section-item:hover {
+            transform: translateX(4px);
+        }
+        
+        .section-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        .section-icon.completed {
+            background: var(--impact-positive);
+        }
+        
+        .section-icon.current {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .section-icon.pending {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        /* Main Content Area */
+        .question-content {
+            padding: 3rem;
+            overflow-y: auto;
+        }
+        
+        .question-group {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .group-header {
+            margin-bottom: 2rem;
+        }
+        
+        .group-header h1 {
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+        }
+        
+        .group-description {
+            color: var(--text-secondary);
+        }
+        
+        /* Enhanced Question Cards */
+        .question-card {
+            background: var(--surface-2);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .question-card:hover {
+            border-color: var(--accent-purple);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        
+        .question-text {
+            font-size: 1.125rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .answer-options {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .answer-btn {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid rgba(255,255,255,0.1);
+            background: transparent;
+            border-radius: 12px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+        }
+        
+        .answer-btn:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: var(--accent-purple);
+            transform: scale(1.02);
+        }
+        
+        .answer-btn.selected {
+            background: var(--primary-gradient);
+            border-color: transparent;
+        }
+        
+        /* Visual Age Timeline */
+        .age-timeline {
+            background: var(--surface-3);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .timeline-header {
+            margin-bottom: 1.5rem;
+        }
+        
+        .timeline-track {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .age-period {
+            flex: 1;
+            padding: 1rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+        
+        .age-period:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .age-period.selected {
+            background: var(--primary-gradient);
+            border-color: var(--accent-purple);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+        }
+        
+        .age-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .age-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Enhanced Results Dashboard */
+        .results-dashboard {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Hero Metrics */
+        .hero-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .metric-card {
+            background: var(--surface-2);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 48px rgba(0,0,0,0.3);
+        }
+        
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+        
+        .metric-value {
+            font-size: 4rem;
+            font-weight: 200;
+            line-height: 1;
+            margin: 1rem 0;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        /* Interactive Region Cards */
+        .region-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .region-card {
+            background: var(--surface-2);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .region-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 48px rgba(0,0,0,0.3);
+        }
+        
+        .region-header {
+            padding: 1.5rem;
+            background: var(--surface-3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .region-name {
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+        
+        .impact-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .impact-badge.severe {
+            background: rgba(245, 101, 101, 0.2);
+            color: var(--impact-severe);
+        }
+        
+        .impact-badge.moderate {
+            background: rgba(237, 137, 54, 0.2);
+            color: var(--impact-moderate);
+        }
+        
+        .region-preview {
+            padding: 1.5rem;
+        }
+        
+        .mini-visualization {
+            height: 120px;
+            background: var(--surface-3);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .brain-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.1); opacity: 0.5; }
+        }
+        
+        .region-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 0.5rem;
+            background: var(--surface-3);
+            border-radius: 8px;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent-blue);
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .fab:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .questionnaire-enhanced {
+                grid-template-columns: 1fr;
+            }
+            
+            .progress-sidebar {
+                display: none;
+            }
+            
+            .question-content {
+                padding: 1.5rem;
+            }
+            
+            .hero-metrics {
+                grid-template-columns: 1fr;
+            }
+            
+            .region-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Enhanced Questionnaire Example -->
+    <div class="questionnaire-enhanced" style="display: none;">
+        <aside class="progress-sidebar">
+            <div class="sidebar-header">
+                <h2>Assessment Progress</h2>
+            </div>
+            
+            <div class="overall-progress">
+                <div class="progress-info">
+                    <span>8 of 23 questions</span>
+                    <span style="float: right;">35%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+            
+            <ul class="section-nav">
+                <li class="section-item completed">
+                    <div class="section-icon completed">✓</div>
+                    <div>
+                        <div>Abuse</div>
+                        <div style="font-size: 0.875rem; color: var(--text-muted);">3 questions</div>
+                    </div>
+                </li>
+                <li class="section-item current">
+                    <div class="section-icon current">•</div>
+                    <div>
+                        <div>Neglect</div>
+                        <div style="font-size: 0.875rem; color: var(--text-muted);">2 questions</div>
+                    </div>
+                </li>
+                <li class="section-item">
+                    <div class="section-icon pending">○</div>
+                    <div>
+                        <div>Household Dysfunction</div>
+                        <div style="font-size: 0.875rem; color: var(--text-muted);">8 questions</div>
+                    </div>
+                </li>
+                <li class="section-item">
+                    <div class="section-icon pending">○</div>
+                    <div>
+                        <div>Expanded ACEs</div>
+                        <div style="font-size: 0.875rem; color: var(--text-muted);">5 questions</div>
+                    </div>
+                </li>
+                <li class="section-item">
+                    <div class="section-icon pending">○</div>
+                    <div>
+                        <div>Protective Factors</div>
+                        <div style="font-size: 0.875rem; color: var(--text-muted);">5 questions</div>
+                    </div>
+                </li>
+            </ul>
+        </aside>
+        
+        <main class="question-content">
+            <div class="question-group">
+                <div class="group-header">
+                    <h1>Neglect</h1>
+                    <p class="group-description">These questions ask about experiences of emotional and physical neglect during childhood.</p>
+                </div>
+                
+                <div class="question-card">
+                    <p class="question-text">Did you often or very often feel that no one in your family loved you or thought you were important or special?</p>
+                    <div class="answer-options">
+                        <button class="answer-btn">No</button>
+                        <button class="answer-btn selected">Yes</button>
+                    </div>
+                </div>
+                
+                <div class="age-timeline">
+                    <div class="timeline-header">
+                        <h3>When did this occur? (Select all that apply)</h3>
+                    </div>
+                    <div class="timeline-track">
+                        <div class="age-period selected">
+                            <div class="age-icon">👶</div>
+                            <div>0-2 years</div>
+                            <div class="age-label">Infancy</div>
+                        </div>
+                        <div class="age-period selected">
+                            <div class="age-icon">🧒</div>
+                            <div>3-5 years</div>
+                            <div class="age-label">Early Childhood</div>
+                        </div>
+                        <div class="age-period">
+                            <div class="age-icon">👦</div>
+                            <div>6-8 years</div>
+                            <div class="age-label">Middle Childhood</div>
+                        </div>
+                        <div class="age-period">
+                            <div class="age-icon">👧</div>
+                            <div>9-11 years</div>
+                            <div class="age-label">Late Childhood</div>
+                        </div>
+                        <div class="age-period">
+                            <div class="age-icon">🧑</div>
+                            <div>12-14 years</div>
+                            <div class="age-label">Early Adolescence</div>
+                        </div>
+                        <div class="age-period">
+                            <div class="age-icon">👱</div>
+                            <div>15-17 years</div>
+                            <div class="age-label">Late Adolescence</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question-card">
+                    <p class="question-text">Did you often or very often feel that your family didn't look out for each other, feel close to each other, or support each other?</p>
+                    <div class="answer-options">
+                        <button class="answer-btn">No</button>
+                        <button class="answer-btn">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Enhanced Results Dashboard Example -->
+    <div class="results-dashboard">
+        <h1 style="font-size: 3rem; font-weight: 200; margin-bottom: 3rem; text-align: center;">
+            Your Brain Impact Analysis
+        </h1>
+        
+        <div class="hero-metrics">
+            <div class="metric-card">
+                <div class="metric-label">ACE Score</div>
+                <div class="metric-value">3</div>
+                <div style="color: var(--text-secondary);">out of 10</div>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <small>Moderate risk level based on CDC research</small>
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-label">Brain Regions Affected</div>
+                <div class="metric-value">8</div>
+                <div style="color: var(--text-secondary);">interconnected areas</div>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <small>Including cascade effects</small>
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-label">Severity Index</div>
+                <div class="metric-value">6.5</div>
+                <div style="color: var(--text-secondary);">out of 10</div>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <small>Based on impact intensity</small>
+                </div>
+            </div>
+        </div>
+        
+        <h2 style="font-size: 2rem; font-weight: 300; margin-bottom: 2rem;">
+            Most Affected Brain Regions
+        </h2>
+        
+        <div class="region-grid">
+            <div class="region-card">
+                <div class="region-header">
+                    <div class="region-name">Prefrontal Cortex</div>
+                    <div class="impact-badge severe">-35.2%</div>
+                </div>
+                <div class="region-preview">
+                    <div class="mini-visualization">
+                        <div class="brain-icon"></div>
+                    </div>
+                    <div class="region-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">3</div>
+                            <div class="stat-label">Traumas</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">High</div>
+                            <div class="stat-label">Severity</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1rem; font-size: 0.875rem; color: var(--text-secondary);">
+                        Executive function, decision-making, and impulse control significantly impaired
+                    </p>
+                </div>
+            </div>
+            
+            <div class="region-card">
+                <div class="region-header">
+                    <div class="region-name">Amygdala</div>
+                    <div class="impact-badge severe">+52.8%</div>
+                </div>
+                <div class="region-preview">
+                    <div class="mini-visualization">
+                        <div class="brain-icon" style="background: linear-gradient(135deg, #f56565 0%, #ed8936 100%);"></div>
+                    </div>
+                    <div class="region-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">3</div>
+                            <div class="stat-label">Traumas</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">High</div>
+                            <div class="stat-label">Activity</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1rem; font-size: 0.875rem; color: var(--text-secondary);">
+                        Heightened fear response, anxiety, and emotional reactivity
+                    </p>
+                </div>
+            </div>
+            
+            <div class="region-card">
+                <div class="region-header">
+                    <div class="region-name">Hippocampus</div>
+                    <div class="impact-badge moderate">-28.5%</div>
+                </div>
+                <div class="region-preview">
+                    <div class="mini-visualization">
+                        <div class="brain-icon" style="background: linear-gradient(135deg, #4299e1 0%, #38b2ac 100%);"></div>
+                    </div>
+                    <div class="region-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">2</div>
+                            <div class="stat-label">Traumas</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">Moderate</div>
+                            <div class="stat-label">Severity</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1rem; font-size: 0.875rem; color: var(--text-secondary);">
+                        Memory formation and stress regulation compromised
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="fab">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <path d="M12 5v14M5 12h14"/>
+            </svg>
+        </div>
+    </div>
+</body>
+</html>
