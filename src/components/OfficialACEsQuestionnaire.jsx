@@ -366,7 +366,8 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
     if (selectedAges.length > 0) {
       setAgeData({ ...ageData, [questionId]: selectedAges });
       setSelectedAges([]); // Reset for next question
-      setCurrentStep(currentStep + 0.1); // Move to frequency
+      // Use more precise step increment to avoid floating point issues
+      setCurrentStep(Math.floor(currentStep) + 0.5); // Move to frequency
     }
   };
 
@@ -566,7 +567,7 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
           ) : (
             <>
               {/* Age follow-up */}
-              {currentStep % 1 < 0.2 && (
+              {currentStep % 1 > 0 && currentStep % 1 < 0.5 && (
                 <>
                   <h3 className="text-xl text-white mb-2">
                     At what age(s) did this occur?
@@ -612,7 +613,7 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
               )}
 
               {/* Frequency follow-up */}
-              {currentStep % 1 >= 0.2 && (
+              {currentStep % 1 >= 0.5 && (
                 <>
                   <h3 className="text-xl text-white mb-6">
                     How often did this happen?
