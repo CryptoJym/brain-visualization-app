@@ -194,6 +194,7 @@ const NeurologicalNarrativeResults = ({ assessmentResults }) => {
   const generatePrognosis = () => {
     const regionalNarratives = generateRegionalNarrative();
     const cascadeEffects = generateCascadeNarrative();
+    const gender = assessmentResults.gender;
     
     // Count severe vs moderate impacts
     const severeCount = regionalNarratives.filter(n => n.severity === 'severe').length;
@@ -222,6 +223,13 @@ const NeurologicalNarrativeResults = ({ assessmentResults }) => {
     
     if (earlyTrauma) {
       prognosisText += ` The early developmental timing of these insults (occurring during critical neurodevelopmental windows) fundamentally altered the brain's architectural blueprint, creating cascading effects throughout subsequent development. This early disruption established altered neural templates that shaped all subsequent brain maturation.`;
+    }
+    
+    // Add gender-specific considerations
+    if (gender === 'female') {
+      prognosisText += ` As a female, the neurological profile shows characteristic patterns of greater hippocampal vulnerability, enhanced corpus callosum disruption (particularly in cases of sexual trauma), and preferential impact on interoceptive and emotional processing regions. This manifests as heightened risk for internalizing symptomatology including anxiety, depression, and somatic complaints.`;
+    } else if (gender === 'male') {
+      prognosisText += ` As a male, the neurological profile demonstrates characteristic patterns of enhanced amygdala reactivity, greater prefrontal disruption, and preferential impact on executive control networks. This manifests as heightened risk for externalizing behaviors including impulsivity, aggression, and behavioral dysregulation.`;
     }
     
     return prognosisText;

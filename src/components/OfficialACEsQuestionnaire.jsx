@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 
 const OfficialACEsQuestionnaire = ({ onComplete }) => {
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(-1); // Start at -1 for gender selection
   const [responses, setResponses] = useState({});
   const [ageData, setAgeData] = useState({}); // Now stores arrays of ages
   const [durationData, setDurationData] = useState({});
   const [selectedAges, setSelectedAges] = useState([]); // Temporary storage for current question
+  const [gender, setGender] = useState(null);
 
   // Official ACE Study Questions (Kaiser Permanente/CDC)
   const questionCategories = [
@@ -339,8 +340,8 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
     { value: 'very_often', label: 'Very often', modifier: 1.2 }
   ];
 
-  const currentQuestion = allQuestions[Math.floor(currentStep)];
-  const isFollowUp = currentStep % 1 !== 0;
+  const currentQuestion = currentStep >= 0 ? allQuestions[Math.floor(currentStep)] : null;
+  const isFollowUp = currentStep >= 0 && currentStep % 1 !== 0;
 
   const handleResponse = (questionId, response) => {
     setResponses({ ...responses, [questionId]: response });
@@ -391,6 +392,7 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
       responses,
       ageData,
       durationData,
+      gender,
       aceScore: 0,
       expandedACEScore: 0,
       brainImpacts: {},
@@ -414,6 +416,42 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
           if (q.brainImpact.regions) {
             q.brainImpact.regions.forEach(region => {
               if (typeof region.impact === 'number') {
+                // Get base impact and apply gender-specific modifiers
+                let baseImpact = region.impact;
+                
+                // Apply gender-specific modifiers based on research
+                if (gender === 'male') {
+                  // Males show greater amygdala enlargement in physical abuse
+                  if (q.id === 'physical_abuse' && region.name === 'Amygdala') {
+                    baseImpact = baseImpact * 1.5; // Whittle et al. (2013) - males only
+                  }
+                  // Males show more externalizing behaviors (prefrontal impacts)
+                  if (region.name.includes('Prefrontal') && baseImpact < 0) {
+                    baseImpact = baseImpact * 1.1; // 10% more impact
+                  }
+                } else if (gender === 'female') {
+                  // Females show greater corpus callosum reduction in sexual abuse
+                  if (q.id === 'sexual_abuse' && region.name === 'Corpus Callosum') {
+                    baseImpact = baseImpact * 1.3; // Andersen et al. (2008) - females
+                  }
+                  // Females show greater hippocampal vulnerability
+                  if (region.name === 'Hippocampus' && baseImpact < 0) {
+                    baseImpact = baseImpact * 1.2; // 20% more impact
+                  }
+                  // Females show more internalizing (greater insula/ACC impacts)
+                  if ((region.name === 'Insula' || region.name.includes('Cingulate')) && baseImpact < 0) {
+                    baseImpact = baseImpact * 1.15; // 15% more impact
+                  }
+                  // Sexual abuse timing vulnerability
+                  if (q.id === 'sexual_abuse' && ageData[q.id]) {
+                    const hasEarlyExposure = Array.isArray(ageData[q.id]) ? 
+                      ageData[q.id].some(a => a === '3-5') : ageData[q.id] === '3-5';
+                    if (hasEarlyExposure) {
+                      baseImpact = baseImpact * 1.2; // Peak vulnerability ages 3-5 for females
+                    }
+                  }
+                }
+                
                 // Handle multiple ages - use the highest multiplier
                 let maxAgeMultiplier = 1;
                 const ages = ageData[q.id];
@@ -429,7 +467,7 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
                 
                 const frequencyModifier = frequencies.find(f => f.value === durationData[q.id])?.modifier || 0;
                 
-                const impact = region.impact * maxAgeMultiplier * (1 + frequencyModifier * 0.3);
+                const impact = baseImpact * maxAgeMultiplier * (1 + frequencyModifier * 0.3);
                 
                 if (!results.brainImpacts[region.name]) {
                   results.brainImpacts[region.name] = {
@@ -524,21 +562,64 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
         {/* Progress bar */}
         <div className="mb-8">
           <div className="flex justify-between text-sm text-gray-400 mb-2">
-            <span>Question {Math.floor(currentStep) + 1} of {totalQuestions}</span>
-            <span>{currentCategory?.category}</span>
-            <span>{Math.round((Math.floor(currentStep) / totalQuestions) * 100)}%</span>
+            <span>
+              {currentStep === -1 ? 'Demographics' : `Question ${Math.floor(currentStep) + 1} of ${totalQuestions}`}
+            </span>
+            <span>{currentStep === -1 ? 'Getting Started' : currentCategory?.category}</span>
+            <span>
+              {currentStep === -1 ? '0%' : `${Math.round((Math.floor(currentStep) / totalQuestions) * 100)}%`}
+            </span>
           </div>
           <div className="w-full bg-gray-700 rounded-full h-3">
             <div 
               className="bg-gradient-to-r from-purple-500 to-blue-500 h-3 rounded-full transition-all duration-300"
-              style={{ width: `${(Math.floor(currentStep) / totalQuestions) * 100}%` }}
+              style={{ width: `${currentStep === -1 ? 0 : (Math.floor(currentStep) / totalQuestions) * 100}%` }}
             />
           </div>
         </div>
 
         {/* Question card */}
         <div className="bg-white/10 backdrop-blur-xl rounded-xl p-8 border border-white/20">
-          {!isFollowUp ? (
+          {currentStep === -1 ? (
+            // Gender selection
+            <>
+              <div className="mb-4">
+                <span className="inline-block px-3 py-1 bg-indigo-600/20 text-indigo-400 rounded-full text-sm font-medium">
+                  Demographic Information
+                </span>
+              </div>
+              
+              <h2 className="text-xl font-light text-white mb-6 leading-relaxed">
+                What is your biological sex assigned at birth?
+              </h2>
+              
+              <p className="text-sm text-gray-400 mb-6">
+                This information helps us provide more accurate neurological impact assessments, as trauma affects 
+                male and female brains differently during development.
+              </p>
+
+              <div className="space-y-3">
+                <button
+                  onClick={() => {
+                    setGender('female');
+                    setCurrentStep(0);
+                  }}
+                  className="w-full p-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white transition-all text-lg hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  Female
+                </button>
+                <button
+                  onClick={() => {
+                    setGender('male');
+                    setCurrentStep(0);
+                  }}
+                  className="w-full p-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white transition-all text-lg hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  Male
+                </button>
+              </div>
+            </>
+          ) : !isFollowUp ? (
             <>
               <div className="mb-4">
                 <span className={`inline-block px-3 py-1 ${
@@ -643,9 +724,9 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
         {/* Navigation */}
         <div className="mt-6 flex justify-between">
           <button
-            onClick={() => setCurrentStep(Math.max(0, Math.floor(currentStep) - 1))}
+            onClick={() => setCurrentStep(Math.max(-1, Math.floor(currentStep) - 1))}
             className="text-gray-400 hover:text-white transition-colors"
-            disabled={currentStep === 0}
+            disabled={currentStep === -1}
           >
             ← Previous
           </button>
