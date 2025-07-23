@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import ResearchBasedACEsQuestionnaire from './components/ResearchBasedACEsQuestionnaire';
+import ComprehensiveACEsQuestionnaire from './components/ComprehensiveACEsQuestionnaire';
 import BrainImpactResults from './components/BrainImpactResults';
 
 const App = () => {
@@ -12,7 +12,7 @@ const App = () => {
     }
     
     return (
-      <ResearchBasedACEsQuestionnaire 
+      <ComprehensiveACEsQuestionnaire 
         onComplete={(results) => {
           if (results) {
             setAssessmentResults(results);
