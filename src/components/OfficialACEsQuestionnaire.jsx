@@ -580,10 +580,10 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
               {currentStep % 1 < 0.2 && (
                 <>
                   <h3 className="text-xl text-white mb-2">
-                    When did this happen? (Select all that apply)
+                    At what age(s) did this occur?
                   </h3>
                   <p className="text-sm text-gray-400 mb-6">
-                    Trauma often occurs across multiple developmental periods. Select all age ranges when this occurred.
+                    Select all age periods that apply - you can choose multiple.
                   </p>
                   <div className="space-y-3">
                     {ageRanges.map(range => (
