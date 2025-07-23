@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>3D Scene Verification</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body { margin: 0; padding: 20px; font-family: Arial, sans-serif; }
+        #canvas-container { width: 800px; height: 600px; border: 2px solid #333; margin: 20px 0; }
+        .status { padding: 10px; margin: 5px 0; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>Brain Visualization 3D Scene Test</h1>
+    <div id="status"></div>
+    <div id="canvas-container"></div>
+    
+    <script>
+    // Test the same Three.js setup as in PersonalizedThreeBrain.jsx
+    const status = document.getElementById('status');
+    const container = document.getElementById('canvas-container');
+    
+    try {
+        // Create scene
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0a0a0a);
+        status.innerHTML += '<div class="status success">✅ Scene created</div>';
+        
+        // Create camera
+        const camera = new THREE.PerspectiveCamera(
+            75,
+            container.clientWidth / container.clientHeight,
+            0.1,
+            1000
+        );
+        camera.position.set(0, 0, 150);
+        status.innerHTML += '<div class="status success">✅ Camera created</div>';
+        
+        // Create renderer
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+        status.innerHTML += '<div class="status success">✅ Renderer created</div>';
+        
+        // Add lights
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(50, 50, 50);
+        scene.add(directionalLight);
+        status.innerHTML += '<div class="status success">✅ Lights added</div>';
+        
+        // Create brain sphere
+        const brainGeometry = new THREE.SphereGeometry(50, 32, 32);
+        const brainMaterial = new THREE.MeshPhongMaterial({ 
+            color: 0xffc0cb,
+            opacity: 0.7,
+            transparent: true
+        });
+        const brain = new THREE.Mesh(brainGeometry, brainMaterial);
+        scene.add(brain);
+        status.innerHTML += '<div class="status success">✅ Brain sphere created (pink)</div>';
+        
+        // Add blue marker
+        const markerGeometry = new THREE.SphereGeometry(4, 32, 32);
+        const markerMaterial = new THREE.MeshStandardMaterial({ color: 0x00ffff });
+        const marker = new THREE.Mesh(markerGeometry, markerMaterial);
+        marker.position.set(-10, 5, 2);
+        scene.add(marker);
+        status.innerHTML += '<div class="status success">✅ Blue marker sphere created</div>';
+        
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            brain.rotation.y += 0.005;
+            renderer.render(scene, camera);
+        }
+        animate();
+        status.innerHTML += '<div class="status success">✅ Animation started</div>';
+        
+        // Click handler
+        renderer.domElement.addEventListener('click', (event) => {
+            console.log('Brain clicked at:', event.clientX, event.clientY);
+            status.innerHTML += '<div class="status success">✅ Click detected at: ' + event.clientX + ', ' + event.clientY + '</div>';
+        });
+        
+    } catch (error) {
+        status.innerHTML += '<div class="status error">❌ Error: ' + error.message + '</div>';
+        console.error(error);
+    }
+    </script>
+    
+    <h2>What you should see:</h2>
+    <ul>
+        <li>Dark background (#0a0a0a)</li>
+        <li>Pink semi-transparent sphere (brain) - rotating</li>
+        <li>Small blue sphere (marker)</li>
+        <li>Click the canvas to test interaction</li>
+    </ul>
+</body>
+</html>
