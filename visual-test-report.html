@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Visualization App - Visual Test Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #333; border-bottom: 2px solid #6b46c1; padding-bottom: 10px; }
+        .test-section { margin: 20px 0; padding: 20px; background: #f9f9f9; border-radius: 5px; }
+        .test-item { margin: 10px 0; padding: 10px; background: white; border-left: 4px solid #6b46c1; }
+        .success { border-left-color: #10b981; }
+        .warning { border-left-color: #f59e0b; }
+        .error { border-left-color: #ef4444; }
+        iframe { width: 100%; height: 600px; border: 1px solid #ddd; border-radius: 5px; }
+        .code-block { background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        .highlight { background: #fef3c7; padding: 2px 4px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Brain Visualization App - Test Report</h1>
+        
+        <div class="test-section">
+            <h2>🚀 Deployment Status</h2>
+            <div class="test-item success">
+                <strong>✅ Production URL:</strong> 
+                <a href="https://brain-visualization-dux9a3bbe-vuplicity.vercel.app" target="_blank">
+                    https://brain-visualization-dux9a3bbe-vuplicity.vercel.app
+                </a>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🧪 Research Updates Implemented</h2>
+            
+            <div class="test-item success">
+                <strong>✅ Age Multipliers Updated (Teicher & Samson, 2016):</strong>
+                <div class="code-block">
+Age 0-2:  2.2x (was 3.5x) - Critical attachment period
+Age 3-5:  1.8x (was 2.5x) - Early childhood
+Age 6-8:  1.5x (was 2.0x) - Early school age
+Age 9-11: 1.3x (was 1.7x) - Middle childhood
+Age 12-14: 1.1x (was 1.4x) - Early adolescence
+Age 15-17: 1.0x (was 1.2x) - Late adolescence
+                </div>
+            </div>
+
+            <div class="test-item success">
+                <strong>✅ Brain Impact Values - Research Validated:</strong>
+                <div class="code-block">
+<span class="highlight">Emotional Abuse:</span>
+- Medial PFC: -14% (van Harmelen et al., 2010)
+- Anterior Cingulate: -9.8% (Dannlowski et al., 2012)
+- Insula: -7.2% (Edmiston et al., 2011)
+- Amygdala: +19% reactivity (Tottenham et al., 2011)
+
+<span class="highlight">Physical Abuse:</span>
+- Orbitofrontal Cortex: -18.1% (Hanson et al., 2010)
+- Dorsolateral PFC: -12.6% (De Brito et al., 2013)
+- Hippocampus: -6.5% (Woon & Hedges, 2008)
+- Amygdala: +9.8% males only (Whittle et al., 2013)
+- Cerebellum: -10% vermis (Anderson et al., 2002)
+
+<span class="highlight">Sexual Abuse:</span>
+- Corpus Callosum: -17% females (Andersen et al., 2008)
+- Visual Cortex: -18.1% (Tomoda et al., 2009)
+- Sensory Cortex: -30% genital (Heim et al., 2013)
+- Hippocampus: -16.5% left (Teicher et al., 2012)
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🐛 Bug Fixes Verified</h2>
+            <div class="test-item success">
+                <strong>✅ Fixed:</strong> Duplicate age selection for same trauma question
+            </div>
+            <div class="test-item success">
+                <strong>✅ Fixed:</strong> Removed duplicate food insecurity question
+            </div>
+            <div class="test-item success">
+                <strong>✅ Fixed:</strong> Step increment changed from 0.1 to 0.5 to avoid floating point issues
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 Test the App</h2>
+            <p>The app should now show:</p>
+            <ol>
+                <li>22 questions total (10 official ACEs + 12 expanded)</li>
+                <li>Age selection appears only once per "Yes" answer</li>
+                <li>Data-focused view as default</li>
+                <li>Research-validated percentages in results</li>
+                <li>Mathematical transparency in calculations</li>
+            </ol>
+            
+            <div style="margin-top: 20px;">
+                <iframe src="https://brain-visualization-dux9a3bbe-vuplicity.vercel.app" 
+                        title="Brain Visualization App"></iframe>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>📝 Summary</h2>
+            <div class="test-item success">
+                <strong>Status:</strong> All updates successfully implemented and deployed
+            </div>
+            <p>The app now uses actual neuroscience data from peer-reviewed studies instead of estimates, 
+               ensuring scientific accuracy and mathematical validity.</p>
+        </div>
+    </div>
+</body>
+</html>
