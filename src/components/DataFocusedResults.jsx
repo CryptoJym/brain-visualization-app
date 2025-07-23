@@ -20,35 +20,116 @@ const DataFocusedResults = ({ assessmentResults }) => {
   
   const numericalImpacts = getNumericalImpacts();
   
-  // Calculate documented interaction effects
+  // Calculate interaction effects from converging evidence
   const getInteractionEffects = () => {
     const effects = [];
+    const impacts = assessmentResults.brainImpacts;
     
-    // From Herringa et al. 2013 - PFC-Amygdala decoupling
-    const pfc = assessmentResults.brainImpacts['Prefrontal Cortex'];
-    const amyg = assessmentResults.brainImpacts['Amygdala'];
+    // Directly studied interactions
+    const pfc = impacts['Prefrontal Cortex'];
+    const amyg = impacts['Amygdala'];
     if (pfc && amyg && pfc.totalImpact < 0 && amyg.totalImpact > 0) {
       effects.push({
         interaction: 'Prefrontal-Amygdala Decoupling',
         measurement: `${Math.abs(pfc.totalImpact)}% PFC reduction + ${amyg.totalImpact}% amygdala increase`,
         result: 'Reduced inhibitory control pathway',
-        reference: 'Herringa et al., 2013'
+        reference: 'Herringa et al., 2013',
+        confidence: 'Direct'
       });
     }
     
-    // From McEwen 2007 - Hippocampal-HPA interaction
-    const hipp = assessmentResults.brainImpacts['Hippocampus'];
-    const hpa = assessmentResults.brainImpacts['HPA Axis'];
+    // Hippocampal-HPA axis (well-established)
+    const hipp = impacts['Hippocampus'];
     if (hipp && hipp.totalImpact < 0) {
       effects.push({
         interaction: 'Hippocampal-Glucocorticoid Feedback',
         measurement: `${Math.abs(hipp.totalImpact)}% hippocampal reduction`,
         result: 'Impaired negative feedback on cortisol',
-        reference: 'McEwen, 2007; Sapolsky et al., 1986'
+        reference: 'McEwen, 2007; Sapolsky et al., 1986',
+        confidence: 'Direct'
       });
     }
     
-    return effects;
+    // Latent synergies from converging evidence
+    
+    // Corpus Callosum + Prefrontal = Interhemispheric executive dysfunction
+    const cc = impacts['Corpus Callosum'];
+    if (cc && pfc && cc.totalImpact < 0 && pfc.totalImpact < 0) {
+      effects.push({
+        interaction: 'Interhemispheric Executive Disruption',
+        measurement: `${Math.abs(cc.totalImpact)}% CC reduction + ${Math.abs(pfc.totalImpact)}% PFC reduction`,
+        result: 'Bilateral coordination deficits in executive control',
+        reference: 'Teicher et al., 2004 (CC); Casey et al., 2000 (PFC lateralization)',
+        confidence: 'Convergent'
+      });
+    }
+    
+    // Visual/Sensory Cortex + Amygdala = Enhanced threat detection in sensory processing
+    const visual = impacts['Visual Cortex'];
+    const sensory = impacts['Sensory Cortex'];
+    if ((visual || sensory) && amyg && amyg.totalImpact > 0) {
+      const sensoryCombined = (visual?.totalImpact || 0) + (sensory?.totalImpact || 0);
+      effects.push({
+        interaction: 'Sensory-Threat Hypercoupling',
+        measurement: `${Math.abs(sensoryCombined)}% sensory changes + ${amyg.totalImpact}% amygdala increase`,
+        result: 'Sensory processing biased toward threat detection',
+        reference: 'Pollak & Tolley-Schell, 2003 (attention); McCrory et al., 2011 (faces)',
+        confidence: 'Convergent'
+      });
+    }
+    
+    // Hippocampus + Amygdala = Context-fear generalization
+    if (hipp && amyg && hipp.totalImpact < 0 && amyg.totalImpact > 0) {
+      effects.push({
+        interaction: 'Fear Generalization Circuit',
+        measurement: `${Math.abs(hipp.totalImpact)}% hippocampal reduction + ${amyg.totalImpact}% amygdala increase`,
+        result: 'Impaired contextual discrimination of threats',
+        reference: 'Maren et al., 2013 (circuit); Kheirbek et al., 2012 (pattern separation)',
+        confidence: 'Convergent'
+      });
+    }
+    
+    // Insula + ACC = Interoceptive-emotional dysregulation
+    const insula = impacts['Insula'];
+    const acc = impacts['Anterior Cingulate Cortex'] || impacts['Anterior Cingulate'];
+    if (insula && acc) {
+      effects.push({
+        interaction: 'Interoceptive-Emotional Network',
+        measurement: `${Math.abs(insula.totalImpact)}% insula + ${Math.abs(acc.totalImpact)}% ACC changes`,
+        result: 'Disrupted body-emotion integration',
+        reference: 'Craig, 2009 (interoception); Medford & Critchley, 2010 (integration)',
+        confidence: 'Convergent'
+      });
+    }
+    
+    // Cerebellum + Prefrontal = Cognitive-motor integration deficits
+    const cereb = impacts['Cerebellum'];
+    if (cereb && pfc && cereb.totalImpact < 0 && pfc.totalImpact < 0) {
+      effects.push({
+        interaction: 'Cerebellar-Executive Network',
+        measurement: `${Math.abs(cereb.totalImpact)}% cerebellar + ${Math.abs(pfc.totalImpact)}% PFC reduction`,
+        result: 'Impaired cognitive timing and sequencing',
+        reference: 'Schmahmann, 2019 (cerebellar cognitive); Ramnani, 2006 (loops)',
+        confidence: 'Convergent'
+      });
+    }
+    
+    // Multiple hyperactive regions = Network hypersynchrony
+    const hyperactiveRegions = Object.entries(impacts)
+      .filter(([_, data]) => data.totalImpact > 20);
+    if (hyperactiveRegions.length >= 3) {
+      effects.push({
+        interaction: 'Hypervigilance Network Synchrony',
+        measurement: `${hyperactiveRegions.length} regions with >20% hyperactivity`,
+        result: 'Excessive cross-network synchronization',
+        reference: 'Menon, 2011 (network dynamics); Sylvester et al., 2012 (hypervigilance)',
+        confidence: 'Emergent'
+      });
+    }
+    
+    // Sort by confidence level
+    const confidenceOrder = { 'Direct': 0, 'Convergent': 1, 'Emergent': 2 };
+    return effects.sort((a, b) => confidenceOrder[a.confidence] - confidenceOrder[b.confidence]);
   };
   
   // Calculate compound effects mathematically
@@ -264,23 +345,38 @@ const DataFocusedResults = ({ assessmentResults }) => {
         {activeView === 'interactions' && (
           <div className="space-y-6">
             <div className="bg-gray-900 rounded-lg p-6">
-              <h2 className="text-xl mb-4">Documented Neural Interactions</h2>
+              <h2 className="text-xl mb-4">Neural Interaction Effects</h2>
+              <div className="mb-4 text-sm text-gray-400">
+                <span className="inline-block px-2 py-1 bg-green-900/50 rounded mr-2">Direct</span>
+                = Explicitly studied interaction
+                <span className="inline-block px-2 py-1 bg-blue-900/50 rounded mx-2">Convergent</span>
+                = Multiple studies show components
+                <span className="inline-block px-2 py-1 bg-purple-900/50 rounded mx-2">Emergent</span>
+                = Pattern from data
+              </div>
               <div className="space-y-4">
                 {getInteractionEffects().map((effect, i) => (
-                  <div key={i} className="bg-gray-800 rounded p-4">
-                    <h3 className="font-medium mb-2">{effect.interaction}</h3>
+                  <div key={i} className="bg-gray-800 rounded p-4 relative">
+                    <div className={`absolute top-4 right-4 px-2 py-1 rounded text-xs ${
+                      effect.confidence === 'Direct' ? 'bg-green-900/50 text-green-400' :
+                      effect.confidence === 'Convergent' ? 'bg-blue-900/50 text-blue-400' :
+                      'bg-purple-900/50 text-purple-400'
+                    }`}>
+                      {effect.confidence}
+                    </div>
+                    <h3 className="font-medium mb-2 pr-20">{effect.interaction}</h3>
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
                         <div className="text-gray-400">Measurement:</div>
                         <div className="font-mono">{effect.measurement}</div>
                       </div>
                       <div>
-                        <div className="text-gray-400">Documented Effect:</div>
+                        <div className="text-gray-400">Neurological Effect:</div>
                         <div>{effect.result}</div>
                       </div>
                     </div>
                     <div className="text-xs text-gray-500 mt-2">
-                      Reference: {effect.reference}
+                      Evidence: {effect.reference}
                     </div>
                   </div>
                 ))}
