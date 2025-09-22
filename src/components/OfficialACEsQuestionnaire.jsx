@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getBrainRegionMetadata } from '../utils/brainRegionAtlas';
 
 const OfficialACEsQuestionnaire = ({ onComplete }) => {
   const [currentStep, setCurrentStep] = useState(-1); // Start at -1 for gender selection
@@ -388,6 +389,13 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
   };
 
   const calculateResults = () => {
+    const categoryLookup = questionCategories.reduce((map, category) => {
+      category.questions.forEach(q => {
+        map[q.id] = category.category;
+      });
+      return map;
+    }, {});
+
     const results = {
       responses,
       ageData,
@@ -397,7 +405,10 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
       expandedACEScore: 0,
       brainImpacts: {},
       overallSeverity: 0,
-      protectiveFactors: []
+      protectiveFactors: [],
+      resilienceScore: 0,
+      systemSummary: {},
+      timeline: []
     };
 
     // Calculate scores and impacts
@@ -468,29 +479,80 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
                 const frequencyModifier = frequencies.find(f => f.value === durationData[q.id])?.modifier || 0;
                 
                 const impact = baseImpact * maxAgeMultiplier * (1 + frequencyModifier * 0.3);
+                const ageSelections = Array.isArray(ageData[q.id])
+                  ? [...ageData[q.id]]
+                  : ageData[q.id]
+                  ? [ageData[q.id]]
+                  : [];
+                const frequency = durationData[q.id] || 'unspecified';
+                const categoryName = categoryLookup[q.id] || 'Neurological Cascade';
+                const metadata = getBrainRegionMetadata(region.name);
+                const severityLabel = Math.abs(impact) > 45 ? 'severe' : Math.abs(impact) > 25 ? 'moderate' : Math.abs(impact) > 10 ? 'notable' : 'subtle';
+                const changeType = impact >= 0 ? 'functional-hyperactivation' : 'structural-reduction';
                 
                 if (!results.brainImpacts[region.name]) {
                   results.brainImpacts[region.name] = {
                     totalImpact: 0,
-                    sources: []
+                    hotspots: [],
+                    sources: [],
+                    positiveImpact: 0,
+                    negativeImpact: 0,
+                    maxImpact: -Infinity,
+                    minImpact: Infinity,
+                    categoryCounts: {},
+                    mitigation: 0
                   };
                 }
                 
-                results.brainImpacts[region.name].totalImpact += impact;
-                results.brainImpacts[region.name].sources.push({
-                  trauma: q.question.substring(0, 50) + '...',
+                const entry = results.brainImpacts[region.name];
+                entry.totalImpact += impact;
+                entry.categoryCounts[categoryName] = (entry.categoryCounts[categoryName] || 0) + 1;
+                if (impact >= 0) {
+                  entry.positiveImpact = (entry.positiveImpact || 0) + impact;
+                } else {
+                  entry.negativeImpact = (entry.negativeImpact || 0) + impact;
+                }
+                entry.maxImpact = Math.max(entry.maxImpact ?? -Infinity, impact);
+                entry.minImpact = Math.min(entry.minImpact ?? Infinity, impact);
+
+                const hotspot = {
+                  id: `${q.id}-${entry.hotspots.length}`,
+                  questionId: q.id,
+                  title: q.question,
+                  summary: q.question.length > 120 ? `${q.question.substring(0, 117)}…` : q.question,
+                  category: categoryName,
+                  system: metadata.system,
+                  region: region.name,
+                  ages: ageSelections,
+                  frequency,
+                  changeType,
+                  research: region.research,
+                  rawImpact: impact,
                   impact,
-                  research: region.research
-                });
+                  magnitude: Math.abs(impact),
+                  severity: severityLabel,
+                  genderModifier: gender,
+                  ageMultiplier: maxAgeMultiplier,
+                  frequencyModifier,
+                  questionType: q.isProtective ? 'protective' : q.officialACE ? 'ace' : 'expanded'
+                };
+
+                entry.hotspots.push(hotspot);
+                entry.sources = entry.hotspots;
               }
             });
           }
         } else {
           // Protective factor
-          results.protectiveFactors.push({
+          const protectiveEntry = {
             factor: q.id,
-            mitigation: q.brainImpact.mitigation
-          });
+            mitigation: q.brainImpact.mitigation,
+            category: categoryLookup[q.id] || 'Protective Environment',
+            description: q.question,
+            research: q.brainImpact.research || q.brainImpact.references || null
+          };
+          results.protectiveFactors.push(protectiveEntry);
+          results.resilienceScore += Math.abs(q.brainImpact.mitigation || 0);
         }
       }
     });
@@ -527,10 +589,77 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
     // Apply protective factors
     const totalMitigation = results.protectiveFactors.reduce((sum, pf) => sum + pf.mitigation, 0);
     const mitigationFactor = 1 + (totalMitigation / 100);
-    
+
     results.overallSeverity *= mitigationFactor;
-    Object.keys(results.brainImpacts).forEach(region => {
-      results.brainImpacts[region].totalImpact *= mitigationFactor;
+    results.totalMitigation = totalMitigation;
+    results.mitigationFactor = mitigationFactor;
+
+    Object.entries(results.brainImpacts).forEach(([regionName, entry]) => {
+      entry.totalImpact *= mitigationFactor;
+      if (typeof entry.positiveImpact === 'number') {
+        entry.positiveImpact *= mitigationFactor;
+      }
+      if (typeof entry.negativeImpact === 'number') {
+        entry.negativeImpact *= mitigationFactor;
+      }
+      entry.mitigation = totalMitigation;
+      if (entry.hotspots && entry.hotspots.length > 0) {
+        entry.hotspots = entry.hotspots.map(hotspot => {
+          const adjusted = (hotspot.rawImpact ?? hotspot.impact ?? 0) * mitigationFactor;
+          return {
+            ...hotspot,
+            impact: adjusted,
+            adjustedImpact: adjusted,
+            magnitude: Math.abs(adjusted)
+          };
+        });
+        entry.sources = entry.hotspots;
+      }
+    });
+
+    results.systemSummary = Object.entries(results.brainImpacts).reduce((summary, [regionName, entry]) => {
+      const metadata = getBrainRegionMetadata(regionName);
+      if (!summary[metadata.system]) {
+        summary[metadata.system] = {
+          system: metadata.system,
+          color: metadata.paletteColor,
+          totalImpact: 0,
+          regions: [],
+          mitigation: totalMitigation
+        };
+      }
+      summary[metadata.system].totalImpact += entry.totalImpact || 0;
+      summary[metadata.system].regions.push({
+        name: regionName,
+        impact: entry.totalImpact,
+        severity: entry.hotspots?.[0]?.severity || (Math.abs(entry.totalImpact) > 45 ? 'severe' : Math.abs(entry.totalImpact) > 25 ? 'moderate' : Math.abs(entry.totalImpact) > 10 ? 'notable' : 'subtle')
+      });
+      return summary;
+    }, {});
+
+    const ageOrder = ['0-2', '3-5', '6-8', '9-11', '12-14', '15-17', 'throughout'];
+    results.timeline = [];
+    Object.entries(results.brainImpacts).forEach(([regionName, entry]) => {
+      entry.hotspots?.forEach(hotspot => {
+        results.timeline.push({
+          ...hotspot,
+          region: regionName
+        });
+      });
+    });
+
+    const getAgeIndex = (hotspot) => {
+      if (!hotspot.ages || hotspot.ages.length === 0) return ageOrder.length + 1;
+      const indices = hotspot.ages
+        .map(age => ageOrder.indexOf(age))
+        .filter(index => index >= 0);
+      return indices.length > 0 ? Math.min(...indices) : ageOrder.length + 1;
+    };
+
+    results.timeline.sort((a, b) => {
+      const ageDiff = getAgeIndex(a) - getAgeIndex(b);
+      if (ageDiff !== 0) return ageDiff;
+      return Math.abs(b.impact) - Math.abs(a.impact);
     });
 
     console.log('Assessment Results:', results);

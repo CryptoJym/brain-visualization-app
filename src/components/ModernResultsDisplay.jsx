@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import * as THREE from 'three';
+import React, { useMemo, useState } from 'react';
+import InteractiveBrainVisualization from './visualization/InteractiveBrainVisualization';
+import { getBrainRegionMetadata } from '../utils/brainRegionAtlas';
 
 const ModernResultsDisplay = ({ assessmentResults }) => {
   const [activeTab, setActiveTab] = useState('overview');
-  const mountRef = useRef(null);
   
   // Modern color palette
   const colors = {
@@ -25,15 +25,33 @@ const ModernResultsDisplay = ({ assessmentResults }) => {
     return colors.danger;
   };
 
+  const describeImpact = (impact) => {
+    const abs = Math.abs(impact);
+    if (abs > 45) return 'Severe intensity';
+    if (abs > 25) return 'Significant intensity';
+    if (abs > 10) return 'Notable change';
+    return 'Subtle modulation';
+  };
+
   // Get impacted regions with simplified data
   const getImpactedRegions = () => {
-    return Object.entries(assessmentResults.brainImpacts)
-      .map(([region, data]) => ({
-        name: region,
-        impact: data.totalImpact,
-        sources: data.sources || []
-      }))
+    const impacts = Object.entries(assessmentResults.brainImpacts || {})
+      .map(([region, data]) => {
+        const metadata = getBrainRegionMetadata(region);
+        const hotspots = data.hotspots || data.sources || [];
+        return {
+          name: region,
+          impact: data.totalImpact,
+          hotspots,
+          sources: hotspots,
+          system: metadata.system,
+          paletteColor: metadata.paletteColor,
+          description: metadata.description
+        };
+      })
       .sort((a, b) => Math.abs(b.impact) - Math.abs(a.impact));
+
+    return impacts;
   };
 
   // Calculate summary statistics
@@ -41,107 +59,52 @@ const ModernResultsDisplay = ({ assessmentResults }) => {
     const regions = getImpactedRegions();
     const volumeReductions = regions.filter(r => r.impact < 0);
     const hyperactivations = regions.filter(r => r.impact > 0);
+    const magnitudes = regions.map(r => Math.abs(r.impact));
+
+    const maxImpact = magnitudes.length ? Math.max(...magnitudes) : 0;
+    const avgImpact = magnitudes.length
+      ? magnitudes.reduce((sum, value) => sum + value, 0) / magnitudes.length
+      : 0;
     
     return {
       totalRegions: regions.length,
       volumeReductions: volumeReductions.length,
       hyperactivations: hyperactivations.length,
-      maxImpact: Math.max(...regions.map(r => Math.abs(r.impact))),
-      avgImpact: regions.reduce((sum, r) => sum + Math.abs(r.impact), 0) / regions.length
+      maxImpact,
+      avgImpact
     };
   };
 
-  const stats = calculateStats();
-  const impactedRegions = getImpactedRegions();
+  const stats = useMemo(() => calculateStats(), [assessmentResults.brainImpacts]);
+  const impactedRegions = useMemo(() => getImpactedRegions(), [assessmentResults.brainImpacts]);
 
-  // 3D Brain Visualization
-  useEffect(() => {
-    if (activeTab !== 'visualization' || !mountRef.current) return;
+  const systemHighlights = useMemo(() => {
+    const summary = assessmentResults.systemSummary || {};
+    return Object.values(summary)
+      .map(system => ({
+        ...system,
+        magnitude: Math.abs(system.totalImpact || 0)
+      }))
+      .sort((a, b) => b.magnitude - a.magnitude)
+      .slice(0, 4);
+  }, [assessmentResults.systemSummary]);
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0a0a);
-    
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      mountRef.current.clientWidth / mountRef.current.clientHeight,
-      0.1,
-      1000
-    );
-    camera.position.z = 5;
-    
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
-    mountRef.current.appendChild(renderer.domElement);
-    
-    // Add ambient light
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(ambientLight);
-    
-    // Add point light
-    const pointLight = new THREE.PointLight(0xffffff, 1);
-    pointLight.position.set(5, 5, 5);
-    scene.add(pointLight);
+  const timelineBuckets = useMemo(() => {
+    const entries = assessmentResults.timeline || [];
+    const buckets = [
+      { label: '0-2 years', matcher: (ages = []) => ages.includes('0-2') },
+      { label: '3-5 years', matcher: (ages = []) => ages.includes('3-5') },
+      { label: '6-11 years', matcher: (ages = []) => ages.includes('6-8') || ages.includes('9-11') },
+      { label: '12-17 years', matcher: (ages = []) => ages.includes('12-14') || ages.includes('15-17') },
+      { label: 'Throughout childhood', matcher: (ages = []) => ages.includes('throughout') }
+    ];
 
-    // Create brain regions as spheres
-    const regions = [];
-    impactedRegions.forEach((region, index) => {
-      const magnitude = Math.abs(region.impact) / 50;
-      const geometry = new THREE.SphereGeometry(0.3 + magnitude, 32, 32);
-      
-      const material = new THREE.MeshPhongMaterial({
-        color: region.impact < 0 ? 0x3b82f6 : 0xef4444,
-        emissive: region.impact < 0 ? 0x1e40af : 0x991b1b,
-        emissiveIntensity: 0.3,
-        shininess: 100,
-        transparent: true,
-        opacity: 0.8
-      });
-      
-      const mesh = new THREE.Mesh(geometry, material);
-      const angle = (index / impactedRegions.length) * Math.PI * 2;
-      const radius = 2;
-      mesh.position.x = Math.cos(angle) * radius;
-      mesh.position.y = Math.sin(angle) * radius;
-      mesh.position.z = (Math.random() - 0.5) * 2;
-      
-      scene.add(mesh);
-      regions.push({ mesh, baseY: mesh.position.y });
-    });
+    return buckets.map(bucket => ({
+      label: bucket.label,
+      entries: entries.filter(item => bucket.matcher(item.ages || []))
+    }));
+  }, [assessmentResults.timeline]);
 
-    // Animation
-    const animate = () => {
-      requestAnimationFrame(animate);
-      
-      // Rotate scene
-      scene.rotation.y += 0.003;
-      
-      // Float effect for regions
-      regions.forEach((region, i) => {
-        region.mesh.position.y = region.baseY + Math.sin(Date.now() * 0.001 + i) * 0.1;
-        region.mesh.rotation.x += 0.01;
-        region.mesh.rotation.y += 0.01;
-      });
-      
-      renderer.render(scene, camera);
-    };
-    
-    animate();
-    
-    // Handle resize
-    const handleResize = () => {
-      camera.aspect = mountRef.current.clientWidth / mountRef.current.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
-    };
-    
-    window.addEventListener('resize', handleResize);
-    
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      mountRef.current?.removeChild(renderer.domElement);
-      renderer.dispose();
-    };
-  }, [activeTab]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
@@ -213,7 +176,10 @@ const ModernResultsDisplay = ({ assessmentResults }) => {
                     <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300">
                       <div className="flex items-center gap-4">
                         <div className={`w-3 h-3 rounded-full ${region.impact < 0 ? 'bg-blue-400' : 'bg-red-400'}`} />
-                        <span className="text-white">{region.name}</span>
+                        <div>
+                          <span className="text-white block">{region.name}</span>
+                          <span className="text-xs text-gray-400">{region.system}</span>
+                        </div>
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="text-right">
@@ -230,6 +196,35 @@ const ModernResultsDisplay = ({ assessmentResults }) => {
                 </div>
               </div>
             </div>
+
+            {systemHighlights.length > 0 && (
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-3xl blur-2xl" />
+                <div className="relative bg-black/40 backdrop-blur-sm rounded-3xl p-8 border border-white/10">
+                  <h2 className="text-2xl font-light text-white mb-6">System-Level Cascades</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {systemHighlights.map((system, index) => (
+                      <div key={system.system} className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-300">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="text-white text-lg font-light">{system.system}</div>
+                          <span className="text-sm px-3 py-1 rounded-full" style={{ backgroundColor: `${system.color}33`, color: system.color }}>
+                            {system.totalImpact > 0 ? '+' : ''}{system.totalImpact.toFixed(1)}%
+                          </span>
+                        </div>
+                        <p className="text-xs uppercase tracking-[0.2em] text-gray-400 mb-2">Regions</p>
+                        <div className="flex flex-wrap gap-2">
+                          {system.regions.slice(0, 4).map((region, idx) => (
+                            <span key={`${system.system}-${region.name}-${idx}`} className="text-xs px-2 py-1 rounded-lg bg-white/10 text-gray-200">
+                              {region.name}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -242,7 +237,10 @@ const ModernResultsDisplay = ({ assessmentResults }) => {
                   <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-blue-600/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-300" />
                   <div className="relative bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300">
                     <div className="flex justify-between items-start mb-4">
-                      <h3 className="text-xl font-light text-white">{region.name}</h3>
+                      <div>
+                        <h3 className="text-xl font-light text-white">{region.name}</h3>
+                        <p className="text-xs uppercase tracking-[0.25em] text-gray-400 mt-1">{region.system}</p>
+                      </div>
                       <div className={`px-3 py-1 rounded-full text-sm ${
                         region.impact < 0 ? 'bg-blue-500/20 text-blue-300' : 'bg-red-500/20 text-red-300'
                       }`}>
@@ -252,20 +250,32 @@ const ModernResultsDisplay = ({ assessmentResults }) => {
                     
                     <div className="space-y-3">
                       <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-purple-400" />
+                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: region.paletteColor }} />
                         <span className="text-gray-300 text-sm">
-                          {region.impact < 0 ? 'Structural volume reduction' : 'Functional hyperactivation'}
+                          {region.impact < 0 ? 'Structural volume reduction' : 'Functional hyperactivation'} — {describeImpact(region.impact)}
                         </span>
                       </div>
-                      
-                      {region.sources && region.sources.length > 0 && (
-                        <div className="mt-4 pt-4 border-t border-white/10">
-                          <p className="text-xs text-gray-400 mb-2">Contributing Factors</p>
-                          <div className="flex flex-wrap gap-2">
-                            {region.sources.slice(0, 3).map((source, j) => (
-                              <span key={j} className="text-xs px-2 py-1 rounded-lg bg-white/5 text-gray-300">
-                                {source.trauma}
-                              </span>
+                      <div className="flex items-center gap-2 text-xs text-gray-400">
+                        <div className="w-2 h-2 rounded-full bg-purple-400" />
+                        <span>Dominant cascades anchored in this system</span>
+                      </div>
+                      {region.hotspots && region.hotspots.length > 0 && (
+                        <div className="mt-5 pt-5 border-t border-white/10">
+                          <p className="text-xs uppercase tracking-[0.25em] text-gray-400 mb-3">Key Drivers</p>
+                          <div className="space-y-2">
+                            {region.hotspots.slice(0, 3).map((hotspot, j) => (
+                              <div key={`${hotspot.questionId}-${j}`} className="flex items-start justify-between gap-4">
+                                <div>
+                                  <p className="text-sm text-gray-200">{hotspot.summary || hotspot.title}</p>
+                                  <p className="text-xs text-gray-500">
+                                    {hotspot.ages && hotspot.ages.length > 0 ? `Ages: ${hotspot.ages.join(', ')}` : 'Across multiple ages'}
+                                    {hotspot.frequency && hotspot.frequency !== 'unspecified' ? ` • Frequency: ${hotspot.frequency.replace('_', ' ')}` : ''}
+                                  </p>
+                                </div>
+                                <span className={`text-sm ${hotspot.impact >= 0 ? 'text-orange-300' : 'text-blue-300'}`}>
+                                  {hotspot.impact >= 0 ? '+' : ''}{hotspot.impact.toFixed(1)}%
+                                </span>
+                              </div>
                             ))}
                           </div>
                         </div>
@@ -366,45 +376,40 @@ const ModernResultsDisplay = ({ assessmentResults }) => {
                   
                   {/* Timeline events */}
                   <div className="space-y-8">
-                    {['0-2 years', '3-5 years', '6-11 years', '12-17 years'].map((period, i) => {
-                      const traumas = Object.entries(assessmentResults.ageData)
-                        .filter(([_, ages]) => {
-                          const ageArray = Array.isArray(ages) ? ages : [ages];
-                          return ageArray.some(age => {
-                            if (period === '0-2 years') return age === '0-2';
-                            if (period === '3-5 years') return age === '3-5';
-                            if (period === '6-11 years') return age === '6-8' || age === '9-11';
-                            if (period === '12-17 years') return age === '12-14' || age === '15-17';
-                            return false;
-                          });
-                        });
-                      
-                      return (
-                        <div key={i} className="relative flex items-start gap-6">
-                          <div className="relative z-10 w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
-                            <span className="text-white text-sm font-medium">{i + 1}</span>
-                          </div>
-                          
-                          <div className="flex-1">
-                            <h3 className="text-xl font-light text-white mb-2">{period}</h3>
-                            {traumas.length > 0 ? (
-                              <div className="space-y-2">
-                                {traumas.map(([traumaId], j) => (
-                                  <div key={j} className="flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-red-400" />
-                                    <span className="text-gray-300 text-sm">
-                                      {traumaId.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                                    </span>
-                                  </div>
-                                ))}
-                              </div>
-                            ) : (
-                              <p className="text-gray-500 text-sm">No trauma reported</p>
-                            )}
-                          </div>
+                    {timelineBuckets.map((bucket, i) => (
+                      <div key={bucket.label} className="relative flex items-start gap-6">
+                        <div className="relative z-10 w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
+                          <span className="text-white text-sm font-medium">{i + 1}</span>
                         </div>
-                      );
-                    })}
+                        
+                        <div className="flex-1">
+                          <h3 className="text-xl font-light text-white mb-2">{bucket.label}</h3>
+                          {bucket.entries.length > 0 ? (
+                            <div className="space-y-3">
+                              {bucket.entries.map((entry, j) => (
+                                <div key={`${bucket.label}-${j}`} className="flex items-start justify-between gap-4 bg-white/5 border border-white/10 rounded-2xl p-4">
+                                  <div>
+                                    <p className="text-sm text-gray-200">{entry.summary || entry.title}</p>
+                                    <p className="text-xs text-gray-400 flex flex-wrap gap-2">
+                                      <span>{entry.region}</span>
+                                      {entry.frequency && entry.frequency !== 'unspecified' && (
+                                        <span>Frequency: {entry.frequency.replace('_', ' ')}</span>
+                                      )}
+                                      <span>Severity: {entry.severity || describeImpact(entry.impact)}</span>
+                                    </p>
+                                  </div>
+                                  <span className={`text-sm ${entry.impact >= 0 ? 'text-orange-300' : 'text-blue-300'}`}>
+                                    {entry.impact >= 0 ? '+' : ''}{entry.impact.toFixed(1)}%
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="text-gray-500 text-sm">No trauma reported</p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -419,17 +424,7 @@ const ModernResultsDisplay = ({ assessmentResults }) => {
               <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-blue-600/10 rounded-3xl blur-2xl" />
               <div className="relative bg-black/40 backdrop-blur-sm rounded-3xl p-8 border border-white/10">
                 <h2 className="text-2xl font-light text-white mb-6">3D Neural Network Visualization</h2>
-                <div ref={mountRef} className="w-full h-[600px] rounded-2xl overflow-hidden bg-black/50" />
-                <div className="mt-6 flex items-center justify-center gap-8">
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-blue-500" />
-                    <span className="text-gray-300 text-sm">Volume Reduction</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-red-500" />
-                    <span className="text-gray-300 text-sm">Hyperactivity</span>
-                  </div>
-                </div>
+                <InteractiveBrainVisualization assessmentResults={assessmentResults} />
               </div>
             </div>
           </div>
