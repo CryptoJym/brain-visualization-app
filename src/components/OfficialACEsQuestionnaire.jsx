@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { getBrainRegionMetadata } from '../utils/brainRegionAtlas';
+import { demoUserResults } from '../utils/demoData';
 
 const OfficialACEsQuestionnaire = ({ onComplete }) => {
   const [currentStep, setCurrentStep] = useState(-1); // Start at -1 for gender selection
@@ -666,6 +667,20 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
     onComplete(results);
   };
 
+  // Handle loading demo data and skipping to results
+  const handleLoadDemo = () => {
+    // Set all state from demo data
+    setResponses(demoUserResults.responses);
+    setAgeData(demoUserResults.ageData);
+    setDurationData(demoUserResults.durationData);
+    setGender(demoUserResults.gender);
+
+    // Give React a moment to update state, then calculate results
+    setTimeout(() => {
+      calculateResults();
+    }, 100);
+  };
+
   const currentCategory = questionCategories.find(cat => 
     cat.questions.some(q => q.id === currentQuestion?.id)
   );
@@ -758,6 +773,25 @@ const OfficialACEsQuestionnaire = ({ onComplete }) => {
                     <span className="text-2xl">♂</span>
                     <span>Male</span>
                   </span>
+                </button>
+              </div>
+
+              {/* Demo Button */}
+              <div className="mt-8 pt-6 border-t border-white/10">
+                <p className="text-sm text-gray-400 mb-4 text-center">
+                  For testing and demonstration purposes:
+                </p>
+                <button
+                  onClick={handleLoadDemo}
+                  className="w-full p-4 bg-gradient-to-r from-emerald-600/10 to-teal-600/10 hover:from-emerald-600/20 hover:to-teal-600/20 border border-emerald-500/30 hover:border-emerald-400/50 rounded-2xl text-white transition-all duration-300 text-base"
+                >
+                  <span className="flex items-center justify-center gap-2">
+                    <span className="text-xl">🧪</span>
+                    <span>Load Demo (ACE Score 10)</span>
+                  </span>
+                  <p className="text-xs text-gray-400 mt-2">
+                    Skip directly to brain visualization with high-severity demo data
+                  </p>
                 </button>
               </div>
             </>
