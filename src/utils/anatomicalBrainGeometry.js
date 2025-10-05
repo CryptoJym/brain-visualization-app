@@ -68,30 +68,18 @@ const createCorticalHemisphere = (side) => {
   position.needsUpdate = true;
   cortexGeometry.computeVertexNormals();
 
+  // Use wireframe for minimal visual clutter
   const cortexMaterial = new THREE.MeshStandardMaterial({
     color: 0xc4b5d4,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.15,
     emissive: 0x6b5d7a,
-    emissiveIntensity: 0.15,
-    transparent: true, // Semi-transparent to see subcortical structures
-    opacity: 0.35, // Very transparent
-    roughness: 0.8,
-    metalness: 0.05,
-    side: THREE.DoubleSide // Render both sides
+    emissiveIntensity: 0.1
   });
 
   const cortexMesh = new THREE.Mesh(cortexGeometry, cortexMaterial);
   hemisphere.add(cortexMesh);
-
-  // Add sulci (grooves) as darker lines
-  const sulciGeometry = createSulciPattern(side);
-  const sulciMaterial = new THREE.LineBasicMaterial({
-    color: 0x4a3f5e,
-    transparent: true,
-    opacity: 0.6,
-    linewidth: 1
-  });
-  const sulci = new THREE.LineSegments(sulciGeometry, sulciMaterial);
-  hemisphere.add(sulci);
 
   return hemisphere;
 };

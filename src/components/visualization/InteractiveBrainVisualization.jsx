@@ -4,8 +4,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { enumerateRegionNodes, brainSystemsPalette } from '../../utils/brainRegionAtlas';
 import createAnatomicalBrain, { createLimbicStructures } from '../../utils/anatomicalBrainGeometry';
 
-// Visible region markers
-const severityScale = (magnitude) => 0.15 + magnitude / 250;
+// Visible region markers - significantly larger for clarity
+const severityScale = (magnitude) => 0.25 + magnitude / 150;
 
 const magnitudeLabel = (impact) => {
   const abs = Math.abs(impact);
