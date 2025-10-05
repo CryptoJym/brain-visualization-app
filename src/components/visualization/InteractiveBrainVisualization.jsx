@@ -2,26 +2,9 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { enumerateRegionNodes, brainSystemsPalette } from '../../utils/brainRegionAtlas';
+import createAnatomicalBrain, { createLimbicStructures } from '../../utils/anatomicalBrainGeometry';
 
 const severityScale = (magnitude) => 0.18 + magnitude / 160;
-
-const createBrainGeometry = () => {
-  const geometry = new THREE.IcosahedronGeometry(1.8, 6);
-  const position = geometry.attributes.position;
-  const vector = new THREE.Vector3();
-
-  for (let i = 0; i < position.count; i += 1) {
-    vector.fromBufferAttribute(position, i);
-    const noise = Math.sin(vector.x * 4) * Math.cos(vector.y * 3) * 0.08;
-    const radial = 1 + noise;
-    vector.multiplyScalar(radial);
-    position.setXYZ(i, vector.x, vector.y, vector.z);
-  }
-
-  position.needsUpdate = true;
-  geometry.computeVertexNormals();
-  return geometry;
-};
 
 const magnitudeLabel = (impact) => {
   const abs = Math.abs(impact);
@@ -115,36 +98,33 @@ const InteractiveBrainVisualization = ({ assessmentResults }) => {
     controls.minDistance = 2.6;
     controls.maxDistance = 8;
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.35);
-    const rimLight = new THREE.PointLight(0x8b5cf6, 0.9, 45);
-    rimLight.position.set(-6, 4, 7);
-    const fillLight = new THREE.PointLight(0x0ea5e9, 0.8, 45);
-    fillLight.position.set(6, -4, -6);
-    const dorsalLight = new THREE.PointLight(0xf43f5e, 0.6, 35);
-    dorsalLight.position.set(0, 8, 4);
-    scene.add(ambientLight, rimLight, fillLight, dorsalLight);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.45);
+    const rimLight = new THREE.PointLight(0xa78bfa, 1.2, 50);
+    rimLight.position.set(-7, 5, 8);
+    const fillLight = new THREE.PointLight(0x60a5fa, 1.0, 50);
+    fillLight.position.set(7, -3, -7);
+    const dorsalLight = new THREE.PointLight(0xf472b6, 0.8, 40);
+    dorsalLight.position.set(0, 9, 5);
+    const anteriorLight = new THREE.PointLight(0x34d399, 0.7, 35);
+    anteriorLight.position.set(0, 0, 10);
+    scene.add(ambientLight, rimLight, fillLight, dorsalLight, anteriorLight);
 
-    const brainGeometry = createBrainGeometry();
-    const brainMaterial = new THREE.MeshStandardMaterial({
-      color: 0x312e81,
-      emissive: 0x4338ca,
-      emissiveIntensity: 0.32,
-      transparent: true,
-      opacity: 0.28,
-      roughness: 0.45,
-      metalness: 0.12
-    });
-    const brainMesh = new THREE.Mesh(brainGeometry, brainMaterial);
-    scene.add(brainMesh);
+    // Create anatomically accurate brain model
+    const anatomicalBrain = createAnatomicalBrain();
+    scene.add(anatomicalBrain);
 
-    const corticalWireframe = new THREE.LineSegments(
-      new THREE.EdgesGeometry(brainGeometry.clone()),
-      new THREE.LineBasicMaterial({ color: 0x7c3aed, transparent: true, opacity: 0.08 })
-    );
-    scene.add(corticalWireframe);
+    // Add limbic structures (amygdala, hippocampus)
+    const limbicStructures = createLimbicStructures();
+    scene.add(limbicStructures);
+
+    // Store reference for rotation animation
+    const brainMesh = anatomicalBrain;
     const regionGroup = new THREE.Group();
     const connectorGroup = new THREE.Group();
     const regionMeshes = [];
+
+    // Create neural pathway disruptions between regions
+    const pathwayGroup = new THREE.Group();
 
     filteredNodes.forEach((node, index) => {
       const radius = severityScale(node.magnitude);
@@ -152,12 +132,12 @@ const InteractiveBrainVisualization = ({ assessmentResults }) => {
       const baseColor = new THREE.Color(node.paletteColor || brainSystemsPalette.default);
       const material = new THREE.MeshStandardMaterial({
         color: node.polarity === 'hyperactivation' ? baseColor : new THREE.Color('#60a5fa'),
-        emissive: node.polarity === 'hyperactivation' ? baseColor.clone().multiplyScalar(0.7) : new THREE.Color('#1e3a8a'),
-        emissiveIntensity: 0.55,
+        emissive: node.polarity === 'hyperactivation' ? baseColor.clone().multiplyScalar(0.8) : new THREE.Color('#1e3a8a'),
+        emissiveIntensity: 0.7,
         transparent: true,
-        opacity: 0.92,
-        roughness: 0.35,
-        metalness: 0.12
+        opacity: 0.95,
+        roughness: 0.25,
+        metalness: 0.2
       });
       const sphere = new THREE.Mesh(sphereGeometry, material);
       sphere.position.set(node.position[0], node.position[1], node.position[2]);
@@ -165,30 +145,55 @@ const InteractiveBrainVisualization = ({ assessmentResults }) => {
       regionGroup.add(sphere);
       regionMeshes.push(sphere);
 
-      const haloGeometry = new THREE.SphereGeometry(radius * 1.45, 32, 32);
+      // Enhanced halo for affected regions
+      const haloGeometry = new THREE.SphereGeometry(radius * 1.55, 32, 32);
       const haloMaterial = new THREE.MeshBasicMaterial({
         color: node.polarity === 'hyperactivation' ? baseColor : new THREE.Color('#38bdf8'),
         transparent: true,
-        opacity: 0.2,
+        opacity: 0.25,
         side: THREE.BackSide
       });
       const halo = new THREE.Mesh(haloGeometry, haloMaterial);
       halo.position.copy(sphere.position);
       regionGroup.add(halo);
 
-      const connectorPoints = [
-        new THREE.Vector3(node.position[0], node.position[1], node.position[2]),
-        new THREE.Vector3(node.position[0] * 0.35, node.position[1] * 0.35, node.position[2] * 0.35)
-      ];
-      const connectorGeometry = new THREE.BufferGeometry().setFromPoints(connectorPoints);
-      const connectorMaterial = new THREE.LineBasicMaterial({
-        color: node.polarity === 'hyperactivation' ? 0xf97316 : 0x38bdf8,
-        transparent: true,
-        opacity: 0.35
+      // Neural pathway connections between related regions
+      filteredNodes.forEach((targetNode, targetIndex) => {
+        if (targetIndex <= index) return; // Avoid duplicate connections
+
+        // Connect if regions share system or are functionally related
+        const shouldConnect =
+          node.system === targetNode.system ||
+          (node.name.includes('Prefrontal') && targetNode.name.includes('Amygdala')) ||
+          (node.name.includes('Hippocampus') && targetNode.name.includes('Prefrontal')) ||
+          (node.name.includes('Amygdala') && targetNode.name.includes('Hippocampus'));
+
+        if (shouldConnect) {
+          // Create curved neural pathway
+          const start = new THREE.Vector3(...node.position);
+          const end = new THREE.Vector3(...targetNode.position);
+          const midpoint = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
+          midpoint.add(new THREE.Vector3(0, 0.3, 0)); // Arc upward
+
+          const curve = new THREE.QuadraticBezierCurve3(start, midpoint, end);
+          const pathPoints = curve.getPoints(50);
+          const pathGeometry = new THREE.BufferGeometry().setFromPoints(pathPoints);
+
+          // Disrupted pathway indication
+          const pathwayIntensity = (node.magnitude + targetNode.magnitude) / 200;
+          const pathwayMaterial = new THREE.LineBasicMaterial({
+            color: new THREE.Color().setHSL(0.05, 0.8, 0.5 - pathwayIntensity * 0.3),
+            transparent: true,
+            opacity: 0.3 + pathwayIntensity * 0.4,
+            linewidth: 2
+          });
+          const pathway = new THREE.Line(pathGeometry, pathwayMaterial);
+          pathwayGroup.add(pathway);
+        }
       });
-      const connector = new THREE.Line(connectorGeometry, connectorMaterial);
-      connectorGroup.add(connector);
     });
+
+    scene.add(pathwayGroup);
 
     scene.add(regionGroup);
     scene.add(connectorGroup);
@@ -239,14 +244,22 @@ const InteractiveBrainVisualization = ({ assessmentResults }) => {
       animationId = requestAnimationFrame(animate);
       const elapsed = clock.getElapsedTime();
 
-      brainMesh.rotation.y += 0.0025;
-      corticalWireframe.rotation.y += 0.0025;
+      // Slow anatomical brain rotation
+      brainMesh.rotation.y += 0.002;
+      limbicStructures.rotation.y += 0.002;
 
+      // Pulsating neural pathway activity
+      pathwayGroup.children.forEach((pathway, index) => {
+        const pulse = (Math.sin(elapsed * 1.5 + index * 0.3) + 1) / 2;
+        pathway.material.opacity = pathway.material.userData?.baseOpacity || 0.4 * (0.5 + pulse * 0.5);
+      });
+
+      // Affected region pulsation based on severity
       regionMeshes.forEach((mesh, index) => {
         const pulse = (Math.sin(elapsed * 2.1 + index) + 1) / 2;
-        const scale = 1 + pulse * 0.08 * (mesh.userData.magnitude / 40);
+        const scale = 1 + pulse * 0.12 * (mesh.userData.magnitude / 40);
         mesh.scale.set(scale, scale, scale);
-        mesh.material.emissiveIntensity = 0.35 + pulse * 0.55;
+        mesh.material.emissiveIntensity = 0.4 + pulse * 0.6;
       });
 
       if (resilienceAura) {
@@ -278,6 +291,7 @@ const InteractiveBrainVisualization = ({ assessmentResults }) => {
       window.removeEventListener('resize', handleResize);
       controls.dispose();
 
+      // Dispose region markers
       regionGroup.children.forEach(child => {
         if (child.geometry) child.geometry.dispose();
         if (Array.isArray(child.material)) {
@@ -287,15 +301,38 @@ const InteractiveBrainVisualization = ({ assessmentResults }) => {
         }
       });
 
+      // Dispose pathway connections
+      pathwayGroup.children.forEach(pathway => {
+        if (pathway.geometry) pathway.geometry.dispose();
+        if (pathway.material) pathway.material.dispose();
+      });
+
       connectorGroup.children.forEach(line => {
         if (line.geometry) line.geometry.dispose();
         if (line.material) line.material.dispose();
       });
 
-      brainGeometry.dispose();
-      brainMaterial.dispose();
-      corticalWireframe.geometry.dispose();
-      corticalWireframe.material.dispose();
+      // Dispose anatomical brain
+      brainMesh.traverse((child) => {
+        if (child.isMesh) {
+          if (child.geometry) child.geometry.dispose();
+          if (child.material) {
+            if (Array.isArray(child.material)) {
+              child.material.forEach(mat => mat.dispose());
+            } else {
+              child.material.dispose();
+            }
+          }
+        }
+      });
+
+      // Dispose limbic structures
+      limbicStructures.traverse((child) => {
+        if (child.isMesh) {
+          if (child.geometry) child.geometry.dispose();
+          if (child.material) child.material.dispose();
+        }
+      });
       if (resilienceAura) {
         resilienceAura.geometry.dispose();
         resilienceAura.material.dispose();
