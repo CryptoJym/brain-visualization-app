@@ -4,7 +4,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { enumerateRegionNodes, brainSystemsPalette } from '../../utils/brainRegionAtlas';
 import createAnatomicalBrain, { createLimbicStructures } from '../../utils/anatomicalBrainGeometry';
 
-const severityScale = (magnitude) => 0.18 + magnitude / 160;
+// Smaller markers so brain structure is visible
+const severityScale = (magnitude) => 0.08 + magnitude / 400;
 
 const magnitudeLabel = (impact) => {
   const abs = Math.abs(impact);
@@ -98,16 +99,17 @@ const InteractiveBrainVisualization = ({ assessmentResults }) => {
     controls.minDistance = 2.6;
     controls.maxDistance = 8;
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.45);
-    const rimLight = new THREE.PointLight(0xa78bfa, 1.2, 50);
+    // Much brighter lighting to see the brain structure
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    keyLight.position.set(5, 8, 10);
+    const rimLight = new THREE.PointLight(0xa78bfa, 0.8, 50);
     rimLight.position.set(-7, 5, 8);
-    const fillLight = new THREE.PointLight(0x60a5fa, 1.0, 50);
+    const fillLight = new THREE.PointLight(0x60a5fa, 0.6, 50);
     fillLight.position.set(7, -3, -7);
-    const dorsalLight = new THREE.PointLight(0xf472b6, 0.8, 40);
-    dorsalLight.position.set(0, 9, 5);
-    const anteriorLight = new THREE.PointLight(0x34d399, 0.7, 35);
-    anteriorLight.position.set(0, 0, 10);
-    scene.add(ambientLight, rimLight, fillLight, dorsalLight, anteriorLight);
+    const backLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    backLight.position.set(0, 0, -10);
+    scene.add(ambientLight, keyLight, rimLight, fillLight, backLight);
 
     // Create anatomically accurate brain model
     const anatomicalBrain = createAnatomicalBrain();
@@ -116,6 +118,27 @@ const InteractiveBrainVisualization = ({ assessmentResults }) => {
     // Add limbic structures (amygdala, hippocampus)
     const limbicStructures = createLimbicStructures();
     scene.add(limbicStructures);
+
+    // Add subtle wireframe overlay to show structure
+    const wireframeGroup = new THREE.Group();
+    anatomicalBrain.traverse((child) => {
+      if (child.isMesh && child.geometry) {
+        const wireframe = new THREE.LineSegments(
+          new THREE.EdgesGeometry(child.geometry, 15), // Only show major edges
+          new THREE.LineBasicMaterial({
+            color: 0x4a3f5e,
+            transparent: true,
+            opacity: 0.2,
+            linewidth: 1
+          })
+        );
+        wireframe.position.copy(child.position);
+        wireframe.rotation.copy(child.rotation);
+        wireframe.scale.copy(child.scale);
+        wireframeGroup.add(wireframe);
+      }
+    });
+    scene.add(wireframeGroup);
 
     // Store reference for rotation animation
     const brainMesh = anatomicalBrain;
@@ -131,13 +154,13 @@ const InteractiveBrainVisualization = ({ assessmentResults }) => {
       const sphereGeometry = new THREE.SphereGeometry(radius, 48, 48);
       const baseColor = new THREE.Color(node.paletteColor || brainSystemsPalette.default);
       const material = new THREE.MeshStandardMaterial({
-        color: node.polarity === 'hyperactivation' ? baseColor : new THREE.Color('#60a5fa'),
-        emissive: node.polarity === 'hyperactivation' ? baseColor.clone().multiplyScalar(0.8) : new THREE.Color('#1e3a8a'),
-        emissiveIntensity: 0.7,
+        color: node.polarity === 'hyperactivation' ? baseColor : new THREE.Color('#3b82f6'),
+        emissive: node.polarity === 'hyperactivation' ? baseColor.clone().multiplyScalar(0.6) : new THREE.Color('#1e40af'),
+        emissiveIntensity: 0.5,
         transparent: true,
-        opacity: 0.95,
-        roughness: 0.25,
-        metalness: 0.2
+        opacity: 0.9,
+        roughness: 0.3,
+        metalness: 0.3
       });
       const sphere = new THREE.Mesh(sphereGeometry, material);
       sphere.position.set(node.position[0], node.position[1], node.position[2]);
@@ -145,12 +168,12 @@ const InteractiveBrainVisualization = ({ assessmentResults }) => {
       regionGroup.add(sphere);
       regionMeshes.push(sphere);
 
-      // Enhanced halo for affected regions
-      const haloGeometry = new THREE.SphereGeometry(radius * 1.55, 32, 32);
+      // Subtle halo for affected regions
+      const haloGeometry = new THREE.SphereGeometry(radius * 1.3, 24, 24);
       const haloMaterial = new THREE.MeshBasicMaterial({
-        color: node.polarity === 'hyperactivation' ? baseColor : new THREE.Color('#38bdf8'),
+        color: node.polarity === 'hyperactivation' ? baseColor : new THREE.Color('#60a5fa'),
         transparent: true,
-        opacity: 0.25,
+        opacity: 0.15,
         side: THREE.BackSide
       });
       const halo = new THREE.Mesh(haloGeometry, haloMaterial);
@@ -254,12 +277,12 @@ const InteractiveBrainVisualization = ({ assessmentResults }) => {
         pathway.material.opacity = pathway.material.userData?.baseOpacity || 0.4 * (0.5 + pulse * 0.5);
       });
 
-      // Affected region pulsation based on severity
+      // Subtle affected region pulsation
       regionMeshes.forEach((mesh, index) => {
-        const pulse = (Math.sin(elapsed * 2.1 + index) + 1) / 2;
-        const scale = 1 + pulse * 0.12 * (mesh.userData.magnitude / 40);
+        const pulse = (Math.sin(elapsed * 1.5 + index * 0.5) + 1) / 2;
+        const scale = 1 + pulse * 0.06 * (mesh.userData.magnitude / 50);
         mesh.scale.set(scale, scale, scale);
-        mesh.material.emissiveIntensity = 0.4 + pulse * 0.6;
+        mesh.material.emissiveIntensity = 0.3 + pulse * 0.3;
       });
 
       if (resilienceAura) {

@@ -69,13 +69,13 @@ const createCorticalHemisphere = (side) => {
   cortexGeometry.computeVertexNormals();
 
   const cortexMaterial = new THREE.MeshStandardMaterial({
-    color: 0x8b7d9a,
-    emissive: 0x3d2f4a,
-    emissiveIntensity: 0.15,
-    transparent: true,
-    opacity: 0.85,
-    roughness: 0.65,
-    metalness: 0.05
+    color: 0xc4b5d4, // Lighter, more visible brain tissue color
+    emissive: 0x6b5d7a,
+    emissiveIntensity: 0.25,
+    transparent: false, // Solid brain for better visibility
+    opacity: 1.0,
+    roughness: 0.7,
+    metalness: 0.1
   });
 
   const cortexMesh = new THREE.Mesh(cortexGeometry, cortexMaterial);
@@ -159,13 +159,13 @@ const createThalamus = () => {
 
   const geometry = new THREE.SphereGeometry(0.25, 32, 32);
   const material = new THREE.MeshStandardMaterial({
-    color: 0x9b8ba6,
-    emissive: 0x5d4d68,
-    emissiveIntensity: 0.3,
-    transparent: true,
-    opacity: 0.9,
-    roughness: 0.5,
-    metalness: 0.15
+    color: 0xb5a5c0, // Lighter thalamus
+    emissive: 0x7d6d88,
+    emissiveIntensity: 0.2,
+    transparent: false,
+    opacity: 1.0,
+    roughness: 0.6,
+    metalness: 0.1
   });
 
   // Left and right thalamic nuclei
@@ -184,13 +184,13 @@ const createThalamus = () => {
 const createBrainstem = () => {
   const geometry = new THREE.CylinderGeometry(0.22, 0.28, 1.2, 32);
   const material = new THREE.MeshStandardMaterial({
-    color: 0xa89bb0,
-    emissive: 0x6b5d76,
-    emissiveIntensity: 0.25,
-    transparent: true,
-    opacity: 0.88,
-    roughness: 0.55,
-    metalness: 0.1
+    color: 0xbbafc4, // Lighter brainstem
+    emissive: 0x8b7d96,
+    emissiveIntensity: 0.2,
+    transparent: false,
+    opacity: 1.0,
+    roughness: 0.65,
+    metalness: 0.08
   });
 
   const brainstem = new THREE.Mesh(geometry, material);
@@ -226,13 +226,13 @@ const createCerebellum = () => {
   geometry.computeVertexNormals();
 
   const material = new THREE.MeshStandardMaterial({
-    color: 0x9d8faa,
-    emissive: 0x5f5268,
-    emissiveIntensity: 0.2,
-    transparent: true,
-    opacity: 0.87,
-    roughness: 0.6,
-    metalness: 0.08
+    color: 0xb5a7be, // Lighter cerebellum
+    emissive: 0x7d6f88,
+    emissiveIntensity: 0.18,
+    transparent: false,
+    opacity: 1.0,
+    roughness: 0.68,
+    metalness: 0.06
   });
 
   const cerebellum = new THREE.Mesh(geometry, material);
