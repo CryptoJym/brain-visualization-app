@@ -19,48 +19,87 @@
 
 ## Required Resources for 95% Comprehension
 
-### 1. Anatomically Accurate 3D Brain Model (CRITICAL)
+### 1. Anatomically Accurate 3D Brain Model (CRITICAL) ✅ RESEARCHED
+
 **Current Problem**: Geometric primitives don't look like a real brain
 
-**What's Needed**:
-- Open-source brain mesh file (GLB, OBJ, or STL format)
-- Should include separate meshes for:
-  - Cortex surface (with realistic gyri/sulci)
-  - Subcortical structures (thalamus, basal ganglia)
-  - Cerebellum
-  - Brainstem
-  - Limbic structures (amygdala, hippocampus)
+**✅ SOLUTION FOUND**: See `BRAIN_MESH_RESOURCES.md` for complete details
 
-**Potential Sources**:
-- NIH 3D Print Exchange (https://3dprint.nih.gov/)
-- Allen Brain Atlas (https://alleninstitute.org/)
-- BrainBrowser project (https://brainbrowser.cbrain.mcgill.ca/)
-- SketchFab Creative Commons medical models
-- Open Anatomy Project
-- FreeSurfer average brain templates
+**RECOMMENDED**: **Sketchfab "Brain with labeled parts"**
+- URL: https://sketchfab.com/3d-models/brain-with-labeled-parts-28c8971e11334e8b97a2a0d6235992e8
+- Format: GLB (direct Three.js compatibility)
+- License: CC Attribution (free with credit)
+- Quality: 79.7k triangles, includes labeled regions
+- Downloads: 154+ (proven reliable)
 
-**Loading Method**: THREE.GLTFLoader or THREE.OBJLoader
+**Alternative Sources Researched**:
+1. **EBRAINS BigBrain** - Highest scientific accuracy (20 micrometer resolution)
+2. **NIH 3D Print Exchange** - Medical-grade MRI-based models (STL format)
+3. **Allen Brain Atlas** - Mouse CCFv3 meshes (PLY format)
+4. **Meshy AI** - Multiple formats (STL, FBX, GLB, OBJ)
+5. **BrainNet Viewer** - ICBM152 templates
+
+**Implementation**: See `QUICK_START_IMPLEMENTATION.md` for step-by-step guide
+
+**Loading Method**:
+```javascript
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+// See implementation guide for complete code
+```
 
 ---
 
-### 2. Brain Region Coordinate Atlas
+### 2. Brain Region Coordinate Atlas ✅ RESEARCHED
+
 **Current Problem**: Region positions are estimated/guessed
 
-**What's Needed**:
-- MNI152 template coordinates OR Talairach coordinates
-- JSON/CSV mapping region names to 3D coordinates
-- Exists in neuroimaging software (FSL, SPM, FreeSurfer)
+**✅ SOLUTION FOUND**: See `BRAIN_MESH_RESOURCES.md` for complete details
 
-**Example Format**:
+**RECOMMENDED**: **Harvard-Oxford Atlas via Nilearn**
+- Coordinate System: MNI152 (standard in neuroimaging)
+- Coverage: 48 cortical + 21 subcortical regions
+- Access: Python library (nilearn)
+- Format: Can export to JSON
+
+**Python Script Created**: `scripts/extract_brain_coordinates.py`
+```bash
+# Extract trauma-relevant coordinates
+python scripts/extract_brain_coordinates.py \
+  --atlas trauma-relevant \
+  --output public/data/brain_coordinates.json \
+  --pretty
+```
+
+**Output Format**:
 ```json
 {
-  "Amygdala_L": {"x": -25, "y": -5, "z": -20, "size": 1500},
-  "Hippocampus_L": {"x": -28, "y": -21, "z": -18, "size": 4000},
-  "Prefrontal_Cortex_L": {"x": -10, "y": 45, "z": 25, "size": 15000}
+  "atlas_name": "Harvard-Oxford (Trauma-Relevant Subset)",
+  "coordinate_system": "MNI152",
+  "units": "mm",
+  "regions": [
+    {
+      "name": "Left Amygdala",
+      "mni_coords": [-23.0, -5.0, -18.0],
+      "structure_type": "subcortical",
+      "hemisphere": "left",
+      "aces_impact_type": "emotional_regulation",
+      "severity_multiplier": 1.5
+    }
+  ]
 }
 ```
 
-**Coordinate System**: MNI152 (Montreal Neurological Institute) is standard in neuroimaging
+**Alternative Atlases Researched**:
+1. **AAL (Automated Anatomical Labeling)** - 116-120 regions, widely used
+2. **MNI152 Templates** - Available from McGill, GitHub, Nilearn
+3. **Talairach** - Classic stereotactic system (older, less common now)
+
+**Tools Available**:
+- `mni-to-atlas` (Python) - Convert coordinates to region names
+- `nilearn` (Python) - Comprehensive neuroimaging library
+- `brainglobe-atlasapi` (Python) - Unified interface to multiple atlases
+
+**Implementation**: See `QUICK_START_IMPLEMENTATION.md` for usage
 
 ---
 
