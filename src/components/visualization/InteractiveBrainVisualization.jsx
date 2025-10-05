@@ -4,8 +4,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { enumerateRegionNodes, brainSystemsPalette } from '../../utils/brainRegionAtlas';
 import createAnatomicalBrain, { createLimbicStructures } from '../../utils/anatomicalBrainGeometry';
 
-// Smaller markers so brain structure is visible
-const severityScale = (magnitude) => 0.08 + magnitude / 400;
+// Visible region markers
+const severityScale = (magnitude) => 0.15 + magnitude / 250;
 
 const magnitudeLabel = (impact) => {
   const abs = Math.abs(impact);
@@ -21,6 +21,7 @@ const InteractiveBrainVisualization = ({ assessmentResults }) => {
   const [showFunctional, setShowFunctional] = useState(true);
   const [systemFilter, setSystemFilter] = useState('all');
   const [minimumMagnitude, setMinimumMagnitude] = useState(5);
+  const [showCortex, setShowCortex] = useState(true);
 
   const regionNodes = useMemo(
     () => enumerateRegionNodes(assessmentResults?.brainImpacts || {}),
@@ -113,6 +114,7 @@ const InteractiveBrainVisualization = ({ assessmentResults }) => {
 
     // Create anatomically accurate brain model
     const anatomicalBrain = createAnatomicalBrain();
+    anatomicalBrain.visible = showCortex;
     scene.add(anatomicalBrain);
 
     // Add limbic structures (amygdala, hippocampus)
@@ -121,6 +123,7 @@ const InteractiveBrainVisualization = ({ assessmentResults }) => {
 
     // Add subtle wireframe overlay to show structure
     const wireframeGroup = new THREE.Group();
+    wireframeGroup.visible = showCortex;
     anatomicalBrain.traverse((child) => {
       if (child.isMesh && child.geometry) {
         const wireframe = new THREE.LineSegments(
@@ -151,16 +154,21 @@ const InteractiveBrainVisualization = ({ assessmentResults }) => {
 
     filteredNodes.forEach((node, index) => {
       const radius = severityScale(node.magnitude);
-      const sphereGeometry = new THREE.SphereGeometry(radius, 48, 48);
-      const baseColor = new THREE.Color(node.paletteColor || brainSystemsPalette.default);
+      const sphereGeometry = new THREE.SphereGeometry(radius, 32, 32);
+
+      // Clear color coding: Red/Orange for hyperactivation, Blue for hypoactivity
+      const isHyperactivation = node.polarity === 'hyperactivation';
+      const primaryColor = isHyperactivation ? new THREE.Color(0xff4444) : new THREE.Color(0x4488ff);
+      const emissiveColor = isHyperactivation ? new THREE.Color(0xff6600) : new THREE.Color(0x2266cc);
+
       const material = new THREE.MeshStandardMaterial({
-        color: node.polarity === 'hyperactivation' ? baseColor : new THREE.Color('#3b82f6'),
-        emissive: node.polarity === 'hyperactivation' ? baseColor.clone().multiplyScalar(0.6) : new THREE.Color('#1e40af'),
-        emissiveIntensity: 0.5,
+        color: primaryColor,
+        emissive: emissiveColor,
+        emissiveIntensity: 0.7,
         transparent: true,
-        opacity: 0.9,
-        roughness: 0.3,
-        metalness: 0.3
+        opacity: 0.85,
+        roughness: 0.2,
+        metalness: 0.4
       });
       const sphere = new THREE.Mesh(sphereGeometry, material);
       sphere.position.set(node.position[0], node.position[1], node.position[2]);
@@ -168,12 +176,12 @@ const InteractiveBrainVisualization = ({ assessmentResults }) => {
       regionGroup.add(sphere);
       regionMeshes.push(sphere);
 
-      // Subtle halo for affected regions
-      const haloGeometry = new THREE.SphereGeometry(radius * 1.3, 24, 24);
+      // Prominent halo for affected regions
+      const haloGeometry = new THREE.SphereGeometry(radius * 1.4, 24, 24);
       const haloMaterial = new THREE.MeshBasicMaterial({
-        color: node.polarity === 'hyperactivation' ? baseColor : new THREE.Color('#60a5fa'),
+        color: primaryColor,
         transparent: true,
-        opacity: 0.15,
+        opacity: 0.25,
         side: THREE.BackSide
       });
       const halo = new THREE.Mesh(haloGeometry, haloMaterial);
@@ -192,25 +200,37 @@ const InteractiveBrainVisualization = ({ assessmentResults }) => {
           (node.name.includes('Amygdala') && targetNode.name.includes('Hippocampus'));
 
         if (shouldConnect) {
-          // Create curved neural pathway
+          // Create thick curved neural pathway
           const start = new THREE.Vector3(...node.position);
           const end = new THREE.Vector3(...targetNode.position);
           const midpoint = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
           midpoint.add(new THREE.Vector3(0, 0.3, 0)); // Arc upward
 
           const curve = new THREE.QuadraticBezierCurve3(start, midpoint, end);
-          const pathPoints = curve.getPoints(50);
-          const pathGeometry = new THREE.BufferGeometry().setFromPoints(pathPoints);
 
-          // Disrupted pathway indication
+          // Create thick tube for pathway
           const pathwayIntensity = (node.magnitude + targetNode.magnitude) / 200;
-          const pathwayMaterial = new THREE.LineBasicMaterial({
-            color: new THREE.Color().setHSL(0.05, 0.8, 0.5 - pathwayIntensity * 0.3),
+          const tubeGeometry = new THREE.TubeGeometry(curve, 64, 0.015, 8, false);
+
+          // Color based on disruption severity
+          const pathwayColor = new THREE.Color().setHSL(
+            0.05, // Red/orange hue
+            0.9,
+            0.5 - pathwayIntensity * 0.2
+          );
+
+          const pathwayMaterial = new THREE.MeshStandardMaterial({
+            color: pathwayColor,
+            emissive: pathwayColor,
+            emissiveIntensity: 0.6 + pathwayIntensity * 0.4,
             transparent: true,
-            opacity: 0.3 + pathwayIntensity * 0.4,
-            linewidth: 2
+            opacity: 0.6 + pathwayIntensity * 0.3,
+            roughness: 0.4,
+            metalness: 0.2
           });
-          const pathway = new THREE.Line(pathGeometry, pathwayMaterial);
+
+          const pathway = new THREE.Mesh(tubeGeometry, pathwayMaterial);
+          pathway.userData = { baseOpacity: pathwayMaterial.opacity };
           pathwayGroup.add(pathway);
         }
       });
@@ -273,16 +293,18 @@ const InteractiveBrainVisualization = ({ assessmentResults }) => {
 
       // Pulsating neural pathway activity
       pathwayGroup.children.forEach((pathway, index) => {
-        const pulse = (Math.sin(elapsed * 1.5 + index * 0.3) + 1) / 2;
-        pathway.material.opacity = pathway.material.userData?.baseOpacity || 0.4 * (0.5 + pulse * 0.5);
+        const pulse = (Math.sin(elapsed * 2 + index * 0.5) + 1) / 2;
+        const baseOpacity = pathway.userData?.baseOpacity || 0.6;
+        pathway.material.opacity = baseOpacity * (0.7 + pulse * 0.3);
+        pathway.material.emissiveIntensity = 0.6 + pulse * 0.4;
       });
 
-      // Subtle affected region pulsation
+      // Region marker pulsation
       regionMeshes.forEach((mesh, index) => {
-        const pulse = (Math.sin(elapsed * 1.5 + index * 0.5) + 1) / 2;
-        const scale = 1 + pulse * 0.06 * (mesh.userData.magnitude / 50);
+        const pulse = (Math.sin(elapsed * 1.8 + index * 0.5) + 1) / 2;
+        const scale = 1 + pulse * 0.08 * (mesh.userData.magnitude / 50);
         mesh.scale.set(scale, scale, scale);
-        mesh.material.emissiveIntensity = 0.3 + pulse * 0.3;
+        mesh.material.emissiveIntensity = 0.5 + pulse * 0.4;
       });
 
       if (resilienceAura) {
@@ -366,7 +388,7 @@ const InteractiveBrainVisualization = ({ assessmentResults }) => {
       }
       renderer.dispose();
     };
-  }, [filteredNodes, assessmentResults?.protectiveFactors?.length]);
+  }, [filteredNodes, assessmentResults?.protectiveFactors?.length, showCortex]);
   return (
     <div className="relative">
       <div className="flex flex-wrap items-end gap-4 mb-6">
@@ -388,6 +410,18 @@ const InteractiveBrainVisualization = ({ assessmentResults }) => {
               onChange={(event) => setShowFunctional(event.target.checked)}
             />
             Hyperactivations ({summaryTotals.functional})
+          </label>
+        </div>
+
+        <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl px-4 py-3 backdrop-blur">
+          <label className="flex items-center gap-2 text-sm text-gray-200">
+            <input
+              type="checkbox"
+              className="accent-purple-400"
+              checked={showCortex}
+              onChange={(event) => setShowCortex(event.target.checked)}
+            />
+            Show cortex
           </label>
         </div>
 
@@ -471,12 +505,16 @@ const InteractiveBrainVisualization = ({ assessmentResults }) => {
 
       <div className="mt-6 flex flex-wrap gap-6 text-sm text-gray-300">
         <div className="flex items-center gap-3">
-          <span className="inline-flex h-3 w-3 rounded-full bg-blue-400" />
-          <span>Blue nodes = structural volume reductions</span>
+          <span className="inline-flex h-3 w-3 rounded-full bg-blue-500" />
+          <span>Blue markers = structural volume reductions (hypoactivity)</span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="inline-flex h-3 w-3 rounded-full bg-orange-400" />
-          <span>Orange nodes = limbic or stress hyperactivations</span>
+          <span className="inline-flex h-3 w-3 rounded-full bg-red-500" />
+          <span>Red/orange markers = hyperactivations</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="inline-flex h-2 w-6 rounded-full bg-orange-400" />
+          <span>Glowing pathways = disrupted neural connections</span>
         </div>
         <div className="flex items-center gap-3">
           <span className="inline-flex h-3 w-3 rounded-full border border-emerald-300" />

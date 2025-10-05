@@ -69,13 +69,14 @@ const createCorticalHemisphere = (side) => {
   cortexGeometry.computeVertexNormals();
 
   const cortexMaterial = new THREE.MeshStandardMaterial({
-    color: 0xc4b5d4, // Lighter, more visible brain tissue color
+    color: 0xc4b5d4,
     emissive: 0x6b5d7a,
-    emissiveIntensity: 0.25,
-    transparent: false, // Solid brain for better visibility
-    opacity: 1.0,
-    roughness: 0.7,
-    metalness: 0.1
+    emissiveIntensity: 0.15,
+    transparent: true, // Semi-transparent to see subcortical structures
+    opacity: 0.35, // Very transparent
+    roughness: 0.8,
+    metalness: 0.05,
+    side: THREE.DoubleSide // Render both sides
   });
 
   const cortexMesh = new THREE.Mesh(cortexGeometry, cortexMaterial);
