@@ -1,80 +1,114 @@
+import { getRegionCoordinates, mniToThreeJS } from './brainCoordinates';
+
+// Load MNI coordinates
+const mniCoords = getRegionCoordinates();
+
 const BASE_BRAIN_ATLAS = {
   'Prefrontal Cortex': {
-    position: [0.0, 0.9, 0.35],
+    position: mniCoords.left_caudate?.three_coords
+      ? [mniCoords.left_caudate.three_coords.x, mniCoords.left_caudate.three_coords.y, mniCoords.left_caudate.three_coords.z]
+      : [0.0, 0.9, 0.35], // Fallback
     hemisphere: 'bilateral',
     system: 'Executive Control',
     type: 'cortical',
-    description: 'Regulates planning, impulse control, and executive function.'
+    description: 'Regulates planning, impulse control, and executive function.',
+    mniRegions: ['left_caudate', 'right_caudate'] // Maps to caudate (executive function)
   },
   'Medial Prefrontal Cortex': {
-    position: [0.1, 0.75, 0.25],
+    position: mniCoords.left_caudate?.three_coords
+      ? [mniCoords.left_caudate.three_coords.x * 0.5, mniCoords.left_caudate.three_coords.y, mniCoords.left_caudate.three_coords.z * 1.2]
+      : [0.1, 0.75, 0.25],
     hemisphere: 'bilateral',
     system: 'Executive Control',
     type: 'cortical',
     description: 'Integration of emotion and self-referential processing.'
   },
   'Orbitofrontal Cortex': {
-    position: [0.15, 0.55, 0.6],
+    position: mniCoords.left_caudate?.three_coords
+      ? [mniCoords.left_caudate.three_coords.x, mniCoords.left_caudate.three_coords.y * 0.6, mniCoords.left_caudate.three_coords.z * 1.5]
+      : [0.15, 0.55, 0.6],
     hemisphere: 'bilateral',
     system: 'Executive Control',
     type: 'cortical',
     description: 'Reward valuation and adaptive decision making.'
   },
   'Dorsolateral Prefrontal Cortex': {
-    position: [-0.15, 0.85, 0.3],
+    position: mniCoords.left_caudate?.three_coords
+      ? [mniCoords.left_caudate.three_coords.x * 1.2, mniCoords.left_caudate.three_coords.y * 1.1, mniCoords.left_caudate.three_coords.z]
+      : [-0.15, 0.85, 0.3],
     hemisphere: 'bilateral',
     system: 'Executive Control',
     type: 'cortical',
     description: 'Working memory and top-down attentional control.'
   },
   'Anterior Cingulate': {
-    position: [0.0, 0.45, 0.2],
+    position: mniCoords.left_accumbens?.three_coords
+      ? [mniCoords.left_accumbens.three_coords.x * 0.3, mniCoords.left_accumbens.three_coords.y * 0.8, mniCoords.left_accumbens.three_coords.z * 1.5]
+      : [0.0, 0.45, 0.2],
     hemisphere: 'bilateral',
     system: 'Salience Network',
     type: 'cortical',
     description: 'Conflict monitoring, error detection, and affect regulation.'
   },
   'Anterior Cingulate Cortex': {
-    position: [0.0, 0.45, 0.2],
+    position: mniCoords.left_accumbens?.three_coords
+      ? [mniCoords.left_accumbens.three_coords.x * 0.3, mniCoords.left_accumbens.three_coords.y * 0.8, mniCoords.left_accumbens.three_coords.z * 1.5]
+      : [0.0, 0.45, 0.2],
     hemisphere: 'bilateral',
     system: 'Salience Network',
     type: 'cortical',
     description: 'Conflict monitoring, error detection, and affect regulation.'
   },
   Insula: {
-    position: [0.0, 0.15, 0.35],
+    position: mniCoords.left_putamen?.three_coords
+      ? [mniCoords.left_putamen.three_coords.x * 0.8, mniCoords.left_putamen.three_coords.y * 2, mniCoords.left_putamen.three_coords.z]
+      : [0.0, 0.15, 0.35],
     hemisphere: 'bilateral',
     system: 'Interoceptive Network',
     type: 'cortical',
     description: 'Interoception, empathic resonance, and visceral awareness.'
   },
   Amygdala: {
-    position: [-0.35, -0.1, 0.25],
+    position: mniCoords.left_amygdala?.three_coords
+      ? [mniCoords.left_amygdala.three_coords.x, mniCoords.left_amygdala.three_coords.y, mniCoords.left_amygdala.three_coords.z]
+      : [-0.35, -0.1, 0.25],
     hemisphere: 'bilateral',
     system: 'Limbic System',
     type: 'subcortical',
-    description: 'Salience detection, threat appraisal, and fear conditioning.'
+    description: 'Salience detection, threat appraisal, and fear conditioning.',
+    mniRegions: ['left_amygdala', 'right_amygdala']
   },
   Hippocampus: {
-    position: [-0.45, -0.05, -0.15],
+    position: mniCoords.left_hippocampus?.three_coords
+      ? [mniCoords.left_hippocampus.three_coords.x, mniCoords.left_hippocampus.three_coords.y, mniCoords.left_hippocampus.three_coords.z]
+      : [-0.45, -0.05, -0.15],
     hemisphere: 'bilateral',
     system: 'Memory Network',
     type: 'subcortical',
-    description: 'Memory consolidation and contextual processing of stress.'
+    description: 'Memory consolidation and contextual processing of stress.',
+    mniRegions: ['left_hippocampus', 'right_hippocampus']
   },
   Thalamus: {
-    position: [0.0, -0.05, 0.0],
+    position: mniCoords.left_thalamus?.three_coords
+      ? [(mniCoords.left_thalamus.three_coords.x + (mniCoords.right_thalamus?.three_coords.x || 0)) / 2,
+         mniCoords.left_thalamus.three_coords.y,
+         mniCoords.left_thalamus.three_coords.z]
+      : [0.0, -0.05, 0.0],
     hemisphere: 'midline',
     system: 'Sensory Relay',
     type: 'subcortical',
-    description: 'Sensory relay hub coordinating cortical communication.'
+    description: 'Sensory relay hub coordinating cortical communication.',
+    mniRegions: ['left_thalamus', 'right_thalamus']
   },
   'Brain Stem': {
-    position: [0.0, -0.9, -0.1],
+    position: mniCoords['brain-stem']?.three_coords
+      ? [mniCoords['brain-stem'].three_coords.x, mniCoords['brain-stem'].three_coords.y, mniCoords['brain-stem'].three_coords.z]
+      : [0.0, -0.9, -0.1],
     hemisphere: 'midline',
     system: 'Autonomic Regulation',
     type: 'subcortical',
-    description: 'Autonomic and survival reflex integration.'
+    description: 'Autonomic and survival reflex integration.',
+    mniRegions: ['brain-stem']
   },
   Cerebellum: {
     position: [0.0, -0.75, -0.4],

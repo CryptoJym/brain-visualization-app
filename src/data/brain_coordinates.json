@@ -1,0 +1,203 @@
+{
+  "atlas_name": "Harvard-Oxford (Trauma-Relevant Subset)",
+  "coordinate_system": "MNI152",
+  "units": "mm",
+  "purpose": "ACEs/trauma brain visualization",
+  "regions": [
+    {
+      "name": "Left Thalamus",
+      "structure_type": "subcortical",
+      "hemisphere": "left",
+      "mni_coords": [
+        -9.68,
+        -19.08,
+        6.13
+      ],
+      "volume_mm3": 10568,
+      "aces_impact_type": "sensory_processing",
+      "severity_multiplier": 1.2
+    },
+    {
+      "name": "Left Caudate",
+      "structure_type": "subcortical",
+      "hemisphere": "left",
+      "mni_coords": [
+        -12.69,
+        9.78,
+        9.42
+      ],
+      "volume_mm3": 3896,
+      "aces_impact_type": "executive_function",
+      "severity_multiplier": 1.1
+    },
+    {
+      "name": "Left Putamen",
+      "structure_type": "subcortical",
+      "hemisphere": "left",
+      "mni_coords": [
+        -24.89,
+        0.76,
+        0.25
+      ],
+      "volume_mm3": 6392,
+      "aces_impact_type": "motor_control",
+      "severity_multiplier": 1.0
+    },
+    {
+      "name": "Left Pallidum",
+      "structure_type": "subcortical",
+      "hemisphere": "left",
+      "mni_coords": [
+        -19.27,
+        -4.7,
+        -1.27
+      ],
+      "volume_mm3": 2136,
+      "aces_impact_type": "motor_control",
+      "severity_multiplier": 1.0
+    },
+    {
+      "name": "Brain-Stem",
+      "structure_type": "subcortical",
+      "hemisphere": "central",
+      "mni_coords": [
+        0.58,
+        -30.99,
+        -34.26
+      ],
+      "volume_mm3": 39120,
+      "aces_impact_type": "autonomic",
+      "severity_multiplier": 1.3
+    },
+    {
+      "name": "Left Hippocampus",
+      "structure_type": "subcortical",
+      "hemisphere": "left",
+      "mni_coords": [
+        -24.85,
+        -22.22,
+        -14.34
+      ],
+      "volume_mm3": 5528,
+      "aces_impact_type": "memory",
+      "severity_multiplier": 1.4
+    },
+    {
+      "name": "Left Amygdala",
+      "structure_type": "subcortical",
+      "hemisphere": "left",
+      "mni_coords": [
+        -22.58,
+        -4.86,
+        -18.14
+      ],
+      "volume_mm3": 2448,
+      "aces_impact_type": "emotional_regulation",
+      "severity_multiplier": 1.5
+    },
+    {
+      "name": "Left Accumbens",
+      "structure_type": "subcortical",
+      "hemisphere": "left",
+      "mni_coords": [
+        -9.51,
+        11.44,
+        -7.26
+      ],
+      "volume_mm3": 712,
+      "aces_impact_type": "reward",
+      "severity_multiplier": 1.2
+    },
+    {
+      "name": "Right Thalamus",
+      "structure_type": "subcortical",
+      "hemisphere": "right",
+      "mni_coords": [
+        10.89,
+        -18.33,
+        6.58
+      ],
+      "volume_mm3": 10264,
+      "aces_impact_type": "sensory_processing",
+      "severity_multiplier": 1.2
+    },
+    {
+      "name": "Right Caudate",
+      "structure_type": "subcortical",
+      "hemisphere": "right",
+      "mni_coords": [
+        13.28,
+        10.32,
+        10.44
+      ],
+      "volume_mm3": 4088,
+      "aces_impact_type": "executive_function",
+      "severity_multiplier": 1.1
+    },
+    {
+      "name": "Right Putamen",
+      "structure_type": "subcortical",
+      "hemisphere": "right",
+      "mni_coords": [
+        25.49,
+        1.94,
+        0.25
+      ],
+      "volume_mm3": 6368,
+      "aces_impact_type": "motor_control",
+      "severity_multiplier": 1.0
+    },
+    {
+      "name": "Right Pallidum",
+      "structure_type": "subcortical",
+      "hemisphere": "right",
+      "mni_coords": [
+        19.98,
+        -3.85,
+        -1.13
+      ],
+      "volume_mm3": 2080,
+      "aces_impact_type": "motor_control",
+      "severity_multiplier": 1.0
+    },
+    {
+      "name": "Right Hippocampus",
+      "structure_type": "subcortical",
+      "hemisphere": "right",
+      "mni_coords": [
+        26.37,
+        -20.59,
+        -14.67
+      ],
+      "volume_mm3": 5600,
+      "aces_impact_type": "memory",
+      "severity_multiplier": 1.4
+    },
+    {
+      "name": "Right Amygdala",
+      "structure_type": "subcortical",
+      "hemisphere": "right",
+      "mni_coords": [
+        22.99,
+        -3.7,
+        -18.08
+      ],
+      "volume_mm3": 2928,
+      "aces_impact_type": "emotional_regulation",
+      "severity_multiplier": 1.5
+    },
+    {
+      "name": "Right Accumbens",
+      "structure_type": "subcortical",
+      "hemisphere": "right",
+      "mni_coords": [
+        9.48,
+        12.1,
+        -6.64
+      ],
+      "volume_mm3": 672,
+      "aces_impact_type": "reward",
+      "severity_multiplier": 1.2
+    }
+  ]
+}

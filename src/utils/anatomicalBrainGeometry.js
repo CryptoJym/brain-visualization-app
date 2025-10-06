@@ -1,10 +1,82 @@
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 /**
- * Creates an anatomically accurate brain geometry with proper cortical structure
- * Based on MRI data and neuroanatomical references
+ * Loads anatomically accurate brain mesh from GLB file
+ * Falls back to geometric primitives if model not found
+ *
+ * @param {THREE.LoadingManager} loadingManager - Optional loading manager for progress tracking
+ * @returns {Promise<THREE.Group>} - Brain mesh group
  */
-export const createAnatomicalBrain = () => {
+export const createAnatomicalBrain = async (loadingManager = null) => {
+  // Try to load GLB model first
+  try {
+    return await loadBrainMeshGLB(loadingManager);
+  } catch (error) {
+    console.warn('GLB brain model not found, using geometric fallback:', error.message);
+    // Fallback to geometric primitives
+    return createGeometricBrain();
+  }
+};
+
+/**
+ * Loads brain mesh from GLB file (Sketchfab "Brain with labeled parts")
+ * @param {THREE.LoadingManager} loadingManager - Optional loading manager for progress tracking
+ * @returns {Promise<THREE.Group>} - Loaded brain mesh
+ */
+const loadBrainMeshGLB = (loadingManager = null) => {
+  return new Promise((resolve, reject) => {
+    const loader = loadingManager ? new GLTFLoader(loadingManager) : new GLTFLoader();
+
+    loader.load(
+      '/models/brain-labeled.glb',
+      (gltf) => {
+        const brainGroup = new THREE.Group();
+        const brainMesh = gltf.scene;
+
+        // Scale to match current scene units (brain ~2 units wide)
+        brainMesh.scale.set(0.012, 0.012, 0.012);
+
+        // Apply semi-transparent material for cortex visibility
+        brainMesh.traverse((child) => {
+          if (child.isMesh) {
+            // Store original material
+            child.userData.originalMaterial = child.material.clone();
+
+            // Apply semi-transparent material to see internal structures
+            child.material = new THREE.MeshStandardMaterial({
+              color: child.material.color || 0xc4b5d4,
+              transparent: true,
+              opacity: 0.35,
+              roughness: 0.8,
+              metalness: 0.05,
+              side: THREE.DoubleSide
+            });
+          }
+        });
+
+        brainGroup.add(brainMesh);
+        console.log('✅ Anatomically accurate brain mesh loaded from GLB');
+        resolve(brainGroup);
+      },
+      (progress) => {
+        const percent = Math.round((progress.loaded / progress.total) * 100);
+        console.log(`Loading brain mesh: ${percent}%`);
+      },
+      (error) => {
+        reject(new Error(`Failed to load GLB: ${error.message}`));
+      }
+    );
+  });
+};
+
+/**
+ * Creates geometric brain primitives (fallback when GLB not available)
+ * Based on MRI data and neuroanatomical references
+ *
+ * @returns {THREE.Group} - Brain geometry group
+ */
+const createGeometricBrain = () => {
   const brainGroup = new THREE.Group();
 
   // Cortical hemispheres with realistic gyri and sulci
@@ -23,6 +95,7 @@ export const createAnatomicalBrain = () => {
   brainGroup.add(corpusCallosum);
   brainGroup.add(thalamus, brainstem, cerebellum);
 
+  console.log('✅ Geometric brain primitives created (fallback mode)');
   return brainGroup;
 };
 

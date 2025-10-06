@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import InteractiveBrainVisualization from './visualization/InteractiveBrainVisualization';
+import AIGeneratedBrainVisualization from './visualization/AIGeneratedBrainVisualization';
 import { getBrainRegionMetadata } from '../utils/brainRegionAtlas';
 
 const ModernResultsDisplay = ({ assessmentResults }) => {
@@ -423,8 +423,7 @@ const ModernResultsDisplay = ({ assessmentResults }) => {
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-blue-600/10 rounded-3xl blur-2xl" />
               <div className="relative bg-black/40 backdrop-blur-sm rounded-3xl p-8 border border-white/10">
-                <h2 className="text-2xl font-light text-white mb-6">3D Neural Network Visualization</h2>
-                <InteractiveBrainVisualization assessmentResults={assessmentResults} />
+                <AIGeneratedBrainVisualization assessmentResults={assessmentResults} />
               </div>
             </div>
           </div>

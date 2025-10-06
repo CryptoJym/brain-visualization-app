@@ -5,6 +5,30 @@
   box-sizing: border-box;
 }
 
+/* Modern button reset - removes 90s aesthetic */
+button {
+  border: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* Modern select reset */
+select {
+  border: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   background-color: #000;
@@ -1140,4 +1164,233 @@ button:focus-visible {
 
 .gap-8 {
   gap: 2rem;
+}
+
+/* ========================================
+   Brain Visualization Styles
+   Browser Compatibility & Responsive Design
+   ======================================== */
+
+/* Desktop (default) - optimized for 1920x1080+ */
+.visualization-container {
+  width: 100%;
+  height: 100vh;
+  min-height: 560px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Safari-specific fixes */
+@supports (-webkit-touch-callout: none) {
+  .brain-legend {
+    /* Safari sometimes has issues with backdrop-filter, add fallback */
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .brain-tooltip {
+    /* Fix Safari rendering artifacts with 3D transforms */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
+  .orientation-indicator {
+    /* Improve text rendering on Safari */
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Firefox-specific fixes */
+@-moz-document url-prefix() {
+  .orientation-indicator {
+    /* Adjust font weight for Firefox rendering engine */
+    font-weight: 600;
+  }
+
+  .brain-legend {
+    /* Firefox handles backdrop-filter differently */
+    backdrop-filter: blur(8px);
+  }
+}
+
+/* Tablet (1024px and below) */
+@media (max-width: 1024px) {
+  .visualization-container {
+    height: 70vh;
+    min-height: 480px;
+  }
+
+  .brain-legend {
+    font-size: 0.9em;
+    max-width: 220px;
+    padding: 0.75rem;
+  }
+
+  .brain-tooltip {
+    max-width: 250px;
+    font-size: 0.9em;
+  }
+
+  .orientation-indicator {
+    font-size: 12px;
+    width: 24px;
+    height: 24px;
+    padding: 5px;
+  }
+}
+
+/* Mobile (768px and below) */
+@media (max-width: 768px) {
+  .visualization-container {
+    height: 60vh;
+    min-height: 400px;
+  }
+
+  .brain-legend {
+    bottom: 12px;
+    left: 12px;
+    max-width: 180px;
+    font-size: 0.8em;
+    padding: 0.65rem;
+  }
+
+  .brain-tooltip {
+    max-width: 200px;
+    font-size: 0.85em;
+    padding: 0.5rem;
+  }
+
+  .orientation-indicator {
+    font-size: 11px;
+    width: 20px;
+    height: 20px;
+    padding: 4px;
+    border-width: 1.5px;
+  }
+
+  /* Hide complexity controls on mobile to save space */
+  .filter-controls {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  /* Make reset button smaller on mobile */
+  .reset-view-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* Small Mobile (480px and below) */
+@media (max-width: 480px) {
+  .visualization-container {
+    height: 50vh;
+    min-height: 350px;
+  }
+
+  .brain-legend {
+    max-width: 150px;
+    font-size: 0.7em;
+    padding: 0.5rem;
+    bottom: 8px;
+    left: 8px;
+  }
+
+  .brain-tooltip {
+    max-width: 180px;
+    font-size: 0.8em;
+    padding: 0.4rem;
+  }
+
+  .orientation-indicator {
+    font-size: 10px;
+    width: 18px;
+    height: 18px;
+    padding: 3px;
+  }
+
+  /* Simplify legend on very small screens */
+  .brain-legend .orientation-hints {
+    display: none; /* Hide orientation hints on tiny screens */
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Increase tap targets for touch */
+  .brain-legend label {
+    padding: 0.75rem;
+    min-height: 44px; /* iOS minimum touch target */
+  }
+
+  .reset-view-btn {
+    min-height: 44px;
+    padding: 0.75rem 1rem;
+  }
+
+  /* Remove hover effects on touch devices */
+  .brain-tooltip {
+    pointer-events: auto;
+  }
+}
+
+/* High DPI displays (Retina, 4K, etc.) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .orientation-indicator {
+    /* Sharper text on high-DPI displays */
+    -webkit-font-smoothing: subpixel-antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .brain-legend {
+    /* Crisper borders on Retina */
+    border-width: 0.5px;
+  }
+}
+
+/* Landscape mobile orientation */
+@media (max-width: 768px) and (orientation: landscape) {
+  .visualization-container {
+    height: 80vh;
+  }
+
+  .brain-legend {
+    right: 12px;
+    left: auto;
+    bottom: 12px;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .brain-legend,
+  .brain-tooltip,
+  .orientation-indicator {
+    transition: none;
+    animation: none;
+  }
+
+  /* Disable damping for users who prefer reduced motion */
+  canvas {
+    will-change: auto;
+  }
+}
+
+/* Dark mode adjustments (if system preference changes) */
+@media (prefers-color-scheme: dark) {
+  .brain-legend {
+    background-color: rgba(0, 0, 0, 0.85);
+  }
+
+  .brain-tooltip {
+    background-color: rgba(0, 0, 0, 0.9);
+  }
+}
+
+/* Print styles (hide 3D visualization) */
+@media print {
+  .visualization-container {
+    display: none;
+  }
 }
