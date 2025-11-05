@@ -138,7 +138,7 @@ export default function NiiVueBrain() {
       />
 
       {/* Header */}
-      <div className="absolute top-4 left-4 bg-black/90 backdrop-blur-xl rounded-lg p-4 text-white border border-gray-800 max-w-md">
+      <div className="absolute top-4 left-4 bg-black/90 backdrop-blur-xl rounded-lg p-4 text-white border border-white/10 max-w-md">
         <h1 className="text-2xl font-light mb-2">Trauma & The Brain</h1>
         <p className="text-sm text-gray-400">
           Interactive visualization showing how trauma affects key brain regions
@@ -146,7 +146,7 @@ export default function NiiVueBrain() {
       </div>
 
       {/* Trauma Region Legend */}
-      <div className="absolute top-4 right-4 bg-black/90 backdrop-blur-xl rounded-lg p-4 text-white border border-gray-800 max-w-sm">
+      <div className="absolute top-4 right-4 bg-black/90 backdrop-blur-xl rounded-lg p-4 text-white border border-white/10 max-w-sm">
         <h3 className="text-lg font-medium mb-3">Key Regions Affected by Trauma</h3>
         
         <div className="space-y-3">
@@ -205,7 +205,7 @@ export default function NiiVueBrain() {
       </div>
 
       {/* Controls */}
-      <div className="absolute bottom-4 left-4 bg-black/90 backdrop-blur-xl rounded-lg p-4 text-white border border-gray-800">
+      <div className="absolute bottom-4 left-4 bg-black/90 backdrop-blur-xl rounded-lg p-4 text-white border border-white/10">
         <h3 className="text-sm font-medium mb-2">Controls</h3>
         
         <div className="space-y-2">
@@ -232,7 +232,7 @@ export default function NiiVueBrain() {
 
       {/* Selected Region Details */}
       {selectedRegion && (
-        <div className="absolute bottom-4 right-4 bg-black/90 backdrop-blur-xl rounded-lg p-4 text-white border border-gray-800 max-w-md">
+        <div className="absolute bottom-4 right-4 bg-black/90 backdrop-blur-xl rounded-lg p-4 text-white border border-white/10 max-w-md">
           <h3 className="text-lg font-medium mb-2 capitalize">{selectedRegion}</h3>
           
           {selectedRegion === 'amygdala' && (

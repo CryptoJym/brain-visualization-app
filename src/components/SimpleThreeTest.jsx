@@ -173,7 +173,7 @@ export default function SimpleThreeTest() {
   }, []);
   
   return (
-    <div className="w-full h-screen relative bg-gradient-to-b from-gray-900 to-black">
+    <div className="w-full h-screen relative bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <div ref={mountRef} className="w-full h-full" />
       
       {/* Header */}
@@ -184,7 +184,7 @@ export default function SimpleThreeTest() {
       
       {/* Region Info Panel */}
       <div className="absolute top-24 right-6 max-w-md">
-        <div className="bg-black/80 backdrop-blur-xl rounded-xl p-6 border border-white/10">
+        <div className="bg-black/80 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300">
           {selectedRegion ? (
             <div className="space-y-4">
               <div className="flex items-center justify-between">

@@ -100,7 +100,7 @@ export default function SavedAssessments({ onSelectAssessment }) {
               return (
                 <div
                   key={idx}
-                  className="bg-white/5 backdrop-blur-xl rounded-xl p-6 border border-white/10 hover:bg-white/10 transition-all duration-300 cursor-pointer"
+                  className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300 hover:bg-white/10 transition-all duration-300 cursor-pointer"
                   onClick={() => {
                     // Parse the assessment data if it's stored as JSON
                     try {

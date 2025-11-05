@@ -543,7 +543,7 @@ const DetailedBrainImpactResults = ({ assessmentResults }) => {
           </div>
 
           {/* Key metrics */}
-          <div className="absolute top-8 right-8 bg-black/80 backdrop-blur-xl rounded-xl p-6 border border-white/10">
+          <div className="absolute top-8 right-8 bg-black/80 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300">
             <div className="space-y-4">
               <div>
                 <div className="text-gray-400 text-sm">Traditional ACE Score</div>
@@ -596,7 +596,7 @@ const DetailedBrainImpactResults = ({ assessmentResults }) => {
                 return (
                   <div
                     key={region}
-                    className="bg-white/5 backdrop-blur rounded-xl p-6 border border-white/10 hover:border-white/20 transition-all"
+                    className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300 hover:border-white/20 transition-all"
                   >
                     <div className="flex justify-between items-start mb-4">
                       <h3 className="text-xl font-light text-white">{region}</h3>
@@ -649,7 +649,7 @@ const DetailedBrainImpactResults = ({ assessmentResults }) => {
           </h1>
           
           <div className="max-w-4xl mx-auto space-y-6">
-            <div className="bg-white/5 backdrop-blur rounded-xl p-6 border border-white/10">
+            <div className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300">
               <h2 className="text-2xl font-light text-white mb-4">Key Research Findings</h2>
               
               <div className="space-y-4">
@@ -670,7 +670,7 @@ const DetailedBrainImpactResults = ({ assessmentResults }) => {
               </div>
             </div>
 
-            <div className="bg-white/5 backdrop-blur rounded-xl p-6 border border-white/10">
+            <div className="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300">
               <h2 className="text-2xl font-light text-white mb-4">Understanding Your Results</h2>
               
               <div className="space-y-4 text-gray-300">

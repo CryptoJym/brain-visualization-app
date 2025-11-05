@@ -73,7 +73,7 @@ const NeurologicalDataDisplay = ({ assessmentResults }) => {
               </thead>
               <tbody>
                 {numericalImpacts.map(([region, data]) => (
-                  <tr key={region} className="border-b border-gray-800">
+                  <tr key={region} className="border-b border-white/10">
                     <td className="py-3">{region}</td>
                     <td className="py-3 text-right font-mono">
                       {data.totalImpact > 0 ? '+' : ''}{data.totalImpact.toFixed(2)}%

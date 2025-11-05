@@ -236,29 +236,31 @@ const NeurologicalNarrativeResults = ({ assessmentResults }) => {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
-      <div className="p-6 border-b border-gray-800">
-        <h1 className="text-3xl font-light">Neurological Impact Analysis</h1>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+      <div className="relative overflow-hidden p-8 border-b border-white/10">
+        <h1 className="text-4xl font-extralight text-white tracking-wide">Neurological Impact Analysis</h1>
         <p className="text-gray-400 mt-2">
           Qualitative assessment of structural and functional brain alterations
         </p>
       </div>
       
       {/* Navigation */}
-      <div className="flex border-b border-gray-800">
+      <div className="sticky top-0 z-20 backdrop-blur-lg bg-black/30 border-b border-white/10">
+        <div class="flex overflow-x-auto">
         {['narrative', 'cascades', 'prognosis'].map(view => (
           <button
             key={view}
             onClick={() => setActiveView(view)}
-            className={`px-6 py-3 capitalize ${
-              activeView === view 
-                ? 'text-white border-b-2 border-purple-500' 
-                : 'text-gray-400 hover:text-white'
+            className={`px-6 py-4 capitalize whitespace-nowrap transition-all duration-300 ${
+              activeView === view
+                ? 'text-white border-b-2 border-purple-400 bg-white/5'
+                : 'text-gray-400 hover:text-white hover:bg-white/5'
             }`}
           >
             {view === 'narrative' ? 'Regional Alterations' : view}
           </button>
         ))}
+        </div>
       </div>
       
       <div className="p-6 max-w-5xl mx-auto">
@@ -273,7 +275,7 @@ const NeurologicalNarrativeResults = ({ assessmentResults }) => {
             </div>
             
             {generateRegionalNarrative().map((narrative, i) => (
-              <div key={i} className="bg-gray-900/50 rounded-lg p-6 border border-gray-800">
+              <div key={i} className="bg-black/40 backdrop-blur-sm rounded-lg p-6 border border-white/10">
                 <div className="flex items-start justify-between mb-3">
                   <h3 className="text-xl font-medium text-purple-400">
                     {narrative.system}
@@ -345,7 +347,7 @@ const NeurologicalNarrativeResults = ({ assessmentResults }) => {
             ))}
             
             {generateCascadeNarrative().length === 0 && (
-              <div className="bg-gray-900/50 rounded-lg p-6 border border-gray-800">
+              <div className="bg-black/40 backdrop-blur-sm rounded-lg p-6 border border-white/10">
                 <p className="text-gray-400 text-center">
                   No significant cascade effects detected based on the current impact profile.
                 </p>
@@ -373,7 +375,7 @@ const NeurologicalNarrativeResults = ({ assessmentResults }) => {
               </p>
             </div>
             
-            <div className="bg-gray-900/50 rounded-lg p-6 border border-gray-800">
+            <div className="bg-black/40 backdrop-blur-sm rounded-lg p-6 border border-white/10">
               <h4 className="text-lg font-medium mb-3 text-gray-300">
                 Clinical Considerations
               </h4>

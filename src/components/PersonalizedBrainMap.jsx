@@ -72,7 +72,7 @@ export default function PersonalizedBrainMap({ surveyResults }) {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Header */}
-      <div className="bg-gray-900 border-b border-gray-800 p-4">
+      <div className="bg-gray-900 border-b border-white/10 p-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-light">Your Personalized Brain Impact Map</h1>
@@ -113,7 +113,7 @@ export default function PersonalizedBrainMap({ surveyResults }) {
 
         {/* Details Panel */}
         {showDetails && (
-          <div className="w-96 bg-gray-900 border-l border-gray-800 overflow-y-auto">
+          <div className="w-96 bg-gray-900 border-l border-white/10 overflow-y-auto">
             <div className="p-6">
               {/* View Mode Toggle */}
               <div className="flex gap-2 mb-6">

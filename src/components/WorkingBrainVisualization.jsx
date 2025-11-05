@@ -362,7 +362,7 @@ export default function WorkingBrainVisualization() {
   }, [selectedCategory, showLabels]);
 
   return (
-    <div className="w-full h-full relative bg-gradient-to-b from-gray-900 to-black">
+    <div className="w-full h-full relative bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <div ref={mountRef} className="w-full h-full" />
       
       {/* Top Controls */}

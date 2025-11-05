@@ -580,30 +580,32 @@ const ComprehensiveResultsDisplay = ({ assessmentResults }) => {
   const psychProfile = generatePsychologicalProfile();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-950 to-black text-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
       {/* Header */}
-      <div className="p-8 border-b border-gray-800">
-        <h1 className="text-4xl font-light mb-2">Comprehensive Brain Impact Analysis</h1>
+      <div className="relative overflow-hidden p-8 border-b border-white/10">
+        <h1 className="text-4xl font-extralight text-white tracking-wide mb-2">Comprehensive Brain Impact Analysis</h1>
         <p className="text-gray-400">
           Based on {assessmentResults.aceScore} ACEs with {Object.keys(assessmentResults.brainImpacts).length} brain regions affected
         </p>
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex border-b border-gray-800">
+      <div className="sticky top-0 z-20 backdrop-blur-lg bg-black/30 border-b border-white/10">
+        <div className="flex overflow-x-auto">
         {['overview', 'regions', 'cascade', 'psychology', 'visualization'].map(tab => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-6 py-4 capitalize transition-all ${
-              activeTab === tab 
-                ? 'bg-purple-600/20 border-b-2 border-purple-500 text-white' 
-                : 'text-gray-400 hover:text-white'
+            className={`px-6 py-4 capitalize whitespace-nowrap transition-all duration-300 ${
+              activeTab === tab
+                ? 'text-white border-b-2 border-purple-400 bg-white/5'
+                : 'text-gray-400 hover:text-white hover:bg-white/5'
             }`}
           >
             {tab}
           </button>
         ))}
+        </div>
       </div>
 
       {/* Content */}
@@ -612,7 +614,7 @@ const ComprehensiveResultsDisplay = ({ assessmentResults }) => {
         {activeTab === 'overview' && (
           <div className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800">
+              <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300">
                 <h3 className="text-sm text-gray-400 mb-2">ACE Score</h3>
                 <div className="text-5xl font-light text-purple-400">
                   {assessmentResults.aceScore}
@@ -624,7 +626,7 @@ const ComprehensiveResultsDisplay = ({ assessmentResults }) => {
                 </p>
               </div>
               
-              <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800">
+              <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300">
                 <h3 className="text-sm text-gray-400 mb-2">Brain Regions Affected</h3>
                 <div className="text-5xl font-light text-orange-400">
                   {Object.keys(assessmentResults.brainImpacts).length}
@@ -634,7 +636,7 @@ const ComprehensiveResultsDisplay = ({ assessmentResults }) => {
                 </p>
               </div>
               
-              <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800">
+              <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300">
                 <h3 className="text-sm text-gray-400 mb-2">Severity Index</h3>
                 <div className="text-5xl font-light text-red-400">
                   {assessmentResults.overallSeverity.toFixed(1)}
@@ -646,7 +648,7 @@ const ComprehensiveResultsDisplay = ({ assessmentResults }) => {
               </div>
             </div>
 
-            <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800">
+            <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300">
               <h3 className="text-xl font-light mb-4">Most Affected Systems</h3>
               <div className="space-y-4">
                 {Object.entries(assessmentResults.brainImpacts)
@@ -686,10 +688,10 @@ const ComprehensiveResultsDisplay = ({ assessmentResults }) => {
                 const magnitude = Math.abs(impact);
                 
                 return (
-                  <div key={region} className="bg-gray-900/50 rounded-xl p-6 border border-gray-800">
+                  <div key={region} className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300">
                     <div className="flex justify-between items-start mb-4">
                       <h3 className="text-2xl font-light">{region}</h3>
-                      <div className={`text-3xl font-light ${isReduced ? 'text-blue-400' : 'text-red-400'}`}>
+                      <div className={`text-3xl font-extralight ${isReduced ? 'text-blue-400' : 'text-red-400'}`}>
                         {isReduced ? '' : '+'}{impact.toFixed(1)}%
                       </div>
                     </div>
@@ -766,7 +768,7 @@ const ComprehensiveResultsDisplay = ({ assessmentResults }) => {
         {/* Cascade Effects Tab */}
         {activeTab === 'cascade' && (
           <div className="space-y-6">
-            <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800">
+            <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300">
               <h3 className="text-xl font-light mb-4">Neural Cascade Effects</h3>
               <p className="text-gray-400 mb-6">
                 When one brain region is impacted, it creates a domino effect affecting connected regions. 
@@ -801,7 +803,7 @@ const ComprehensiveResultsDisplay = ({ assessmentResults }) => {
             </div>
 
             {/* Network Effects Visualization */}
-            <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800">
+            <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300">
               <h3 className="text-xl font-light mb-4">Network-Wide Effects</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -832,7 +834,7 @@ const ComprehensiveResultsDisplay = ({ assessmentResults }) => {
         {/* Psychology Tab */}
         {activeTab === 'psychology' && (
           <div className="space-y-6">
-            <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800">
+            <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300">
               <h3 className="text-xl font-light mb-6">Psychological Profile</h3>
               
               {/* Emotional Impact */}
@@ -899,7 +901,7 @@ const ComprehensiveResultsDisplay = ({ assessmentResults }) => {
             </div>
 
             {/* Detailed Symptom Clusters */}
-            <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800">
+            <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300">
               <h3 className="text-xl font-light mb-4">Symptom Clusters</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -932,12 +934,12 @@ const ComprehensiveResultsDisplay = ({ assessmentResults }) => {
         {/* 3D Visualization Tab */}
         {activeTab === 'visualization' && (
           <div className="space-y-6">
-            <div className="bg-gray-900/50 rounded-xl overflow-hidden border border-gray-800">
+            <div className="bg-black/40 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10">
               <div ref={mountRef} className="w-full h-[600px]" />
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800">
+              <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300">
                 <h3 className="text-lg font-light mb-4">Visualization Key</h3>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
@@ -959,7 +961,7 @@ const ComprehensiveResultsDisplay = ({ assessmentResults }) => {
                 </div>
               </div>
               
-              <div className="bg-gray-900/50 rounded-xl p-6 border border-gray-800">
+              <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300">
                 <h3 className="text-lg font-light mb-4">Interaction Guide</h3>
                 <ul className="space-y-2 text-sm text-gray-300">
                   <li>• Brain auto-rotates for full viewing</li>

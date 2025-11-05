@@ -412,13 +412,13 @@ export default function AnatomicallyAccurateBrain() {
       )}
       
       {/* Header */}
-      <div className="absolute top-4 left-4 bg-black/90 backdrop-blur-xl rounded-lg p-4 text-white border border-gray-800">
+      <div className="absolute top-4 left-4 bg-black/90 backdrop-blur-xl rounded-lg p-4 text-white border border-white/10">
         <h1 className="text-2xl font-light mb-1">Anatomically Accurate Brain</h1>
         <p className="text-sm text-gray-400">EEG 10-20 System Visualization</p>
       </div>
       
       {/* Controls */}
-      <div className="absolute top-4 right-4 bg-black/90 backdrop-blur-xl rounded-lg p-4 text-white border border-gray-800 space-y-3">
+      <div className="absolute top-4 right-4 bg-black/90 backdrop-blur-xl rounded-lg p-4 text-white border border-white/10 space-y-3">
         <div>
           <label className="text-sm text-gray-400">Brain Opacity</label>
           <input
@@ -460,7 +460,7 @@ export default function AnatomicallyAccurateBrain() {
       
       {/* Selected electrode info */}
       {selectedElectrode && (
-        <div className="absolute bottom-4 left-4 bg-black/90 backdrop-blur-xl rounded-lg p-4 text-white border border-gray-800">
+        <div className="absolute bottom-4 left-4 bg-black/90 backdrop-blur-xl rounded-lg p-4 text-white border border-white/10">
           <h3 className="text-lg font-medium mb-2">Selected Electrode</h3>
           <div className="space-y-1">
             <p className="text-2xl text-blue-400">{selectedElectrode.name}</p>
@@ -471,7 +471,7 @@ export default function AnatomicallyAccurateBrain() {
       )}
       
       {/* Legend */}
-      <div className="absolute bottom-4 right-4 bg-black/90 backdrop-blur-xl rounded-lg p-4 text-white border border-gray-800">
+      <div className="absolute bottom-4 right-4 bg-black/90 backdrop-blur-xl rounded-lg p-4 text-white border border-white/10">
         <h3 className="text-sm font-medium mb-2">Electrode Regions</h3>
         <div className="space-y-1 text-xs">
           <div className="flex items-center space-x-2">

@@ -424,7 +424,7 @@ export default function SimplifiedBrain() {
   }
 
   return (
-    <div className="relative w-full h-screen bg-gradient-to-b from-gray-900 to-black">
+    <div className="relative w-full h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <div ref={mountRef} className="w-full h-full" />
       
       {isLoading && (

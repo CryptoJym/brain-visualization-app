@@ -127,9 +127,9 @@ export default function ConversationalAssessment({ user, onComplete }) {
   return (
     <div className="min-h-screen bg-black text-white flex">
       {/* Chat Interface - Left Side */}
-      <div className={`${showBrainViz ? 'w-1/2' : 'w-full'} flex flex-col border-r border-gray-800`}>
+      <div className={`${showBrainViz ? 'w-1/2' : 'w-full'} flex flex-col border-r border-white/10`}>
         {/* Header */}
-        <div className="bg-gray-900 p-6 border-b border-gray-800">
+        <div className="bg-gray-900 p-6 border-b border-white/10">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-light mb-1">Your Brain Map Journey</h1>
@@ -148,7 +148,7 @@ export default function ConversationalAssessment({ user, onComplete }) {
 
         {/* Progress Indicator */}
         {conversationSummary && (
-          <div className="bg-gray-900/50 px-6 py-3 border-b border-gray-800">
+          <div className="bg-black/40 backdrop-blur-sm px-6 py-3 border-b border-white/10">
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-400">
                 Experiences identified: {conversationSummary.traumaTypesIdentified}
@@ -215,7 +215,7 @@ export default function ConversationalAssessment({ user, onComplete }) {
         </div>
 
         {/* Input Area */}
-        <div className="bg-gray-900 p-4 border-t border-gray-800">
+        <div className="bg-gray-900 p-4 border-t border-white/10">
           <div className="flex items-end space-x-4">
             <textarea
               value={inputValue}

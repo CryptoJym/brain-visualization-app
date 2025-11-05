@@ -317,7 +317,7 @@ const EmotionWheel = ({ currentEmotion = 'neutral', history = [] }) => {
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="bg-gray-900 rounded-xl p-6 border border-gray-800"
+      className="bg-gray-900 rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300"
     >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3">

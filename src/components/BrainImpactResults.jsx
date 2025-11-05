@@ -212,7 +212,7 @@ const BrainImpactResults = ({ assessmentResults }) => {
         </div>
 
         {/* Key Metrics */}
-        <div className="absolute top-8 right-8 bg-black/80 backdrop-blur-xl rounded-xl p-6 border border-white/10 pointer-events-auto">
+        <div className="absolute top-8 right-8 bg-black/80 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300 pointer-events-auto">
           <div className="space-y-4">
             <div>
               <div className="text-gray-400 text-sm">ACE Score</div>

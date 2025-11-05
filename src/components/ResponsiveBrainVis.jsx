@@ -520,7 +520,7 @@ export default function ResponsiveBrainVis({ brainImpacts = {} }) {
   };
   
   return (
-    <div className="w-full h-screen relative bg-gradient-to-b from-gray-900 to-black overflow-hidden">
+    <div className="w-full h-screen relative bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-hidden">
       {/* 3D Visualization Container */}
       <div ref={mountRef} className="w-full h-full" />
       

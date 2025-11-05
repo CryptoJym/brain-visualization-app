@@ -88,7 +88,7 @@ export default function IntegratedBrainSurvey({ surveyResults }) {
   return (
     <div className="h-screen bg-black text-white flex flex-col">
       {/* Header */}
-      <div className="bg-gray-900 border-b border-gray-800 p-4">
+      <div className="bg-gray-900 border-b border-white/10 p-4">
         <h1 className="text-2xl font-light mb-2">Your Personalized Brain Impact Map</h1>
         <p className="text-gray-400 text-sm mb-4">
           Based on your survey responses, showing regions affected by trauma
@@ -151,7 +151,7 @@ export default function IntegratedBrainSurvey({ surveyResults }) {
 
         {/* Overlay with impact analysis */}
         {showOverlay && (
-          <div className="absolute top-0 right-0 w-96 h-full bg-gray-900/95 border-l border-gray-800 overflow-y-auto">
+          <div className="absolute top-0 right-0 w-96 h-full bg-gray-900/95 border-l border-white/10 overflow-y-auto">
             <div className="p-4">
               <h2 className="text-lg font-medium mb-4">
                 {viewMode === 'impact' ? 'Impact Analysis' : 'Developmental Timeline'}
@@ -268,7 +268,7 @@ export default function IntegratedBrainSurvey({ surveyResults }) {
       </div>
 
       {/* Bottom info bar */}
-      <div className="bg-gray-900 border-t border-gray-800 p-4">
+      <div className="bg-gray-900 border-t border-white/10 p-4">
         <div className="flex items-center justify-between">
           <div className="text-sm">
             <span className="text-gray-400">Total regions affected: </span>

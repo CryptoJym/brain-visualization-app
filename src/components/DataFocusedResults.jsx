@@ -217,29 +217,31 @@ const DataFocusedResults = ({ assessmentResults }) => {
   }, [activeView]);
   
   return (
-    <div className="min-h-screen bg-black text-white">
-      <div className="p-6 border-b border-gray-800">
-        <h1 className="text-3xl font-light">Neurological Impact Assessment</h1>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+      <div className="relative overflow-hidden p-8 border-b border-white/10">
+        <h1 className="text-4xl font-extralight text-white tracking-wide">Neurological Impact Assessment</h1>
         <p className="text-gray-400 mt-2">
           Quantitative measurements based on published neuroimaging studies
         </p>
       </div>
       
       {/* Navigation */}
-      <div className="flex border-b border-gray-800">
+      <div className="sticky top-0 z-20 backdrop-blur-lg bg-black/30 border-b border-white/10">
+        <div className="flex overflow-x-auto">
         {['measurements', 'calculations', 'interactions', 'spatial'].map(view => (
           <button
             key={view}
             onClick={() => setActiveView(view)}
-            className={`px-6 py-3 capitalize ${
-              activeView === view 
-                ? 'text-white border-b-2 border-white' 
-                : 'text-gray-400 hover:text-white'
+            className={`px-6 py-4 capitalize whitespace-nowrap transition-all duration-300 ${
+              activeView === view
+                ? 'text-white border-b-2 border-purple-400 bg-white/5'
+                : 'text-gray-400 hover:text-white hover:bg-white/5'
             }`}
           >
             {view}
           </button>
         ))}
+        </div>
       </div>
       
       <div className="p-6">
@@ -259,7 +261,7 @@ const DataFocusedResults = ({ assessmentResults }) => {
                 </thead>
                 <tbody>
                   {numericalImpacts.map((impact, i) => (
-                    <tr key={i} className="border-b border-gray-800">
+                    <tr key={i} className="border-b border-white/10">
                       <td className="py-3">{impact.region}</td>
                       <td className="py-3 text-right font-mono">
                         {impact.totalImpact > 0 ? '+' : ''}{impact.totalImpact.toFixed(1)}

@@ -60,7 +60,7 @@ export default function DemoBrainHighlighting() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Header */}
-      <div className="bg-gray-900 border-b border-gray-800 p-6">
+      <div className="bg-gray-900 border-b border-white/10 p-6">
         <h1 className="text-3xl font-light mb-2">Brain Trauma Visualization Demo</h1>
         <p className="text-gray-400">
           This demonstrates how the survey automatically highlights affected brain regions
@@ -226,7 +226,7 @@ export default function DemoBrainHighlighting() {
         </div>
 
         {/* Details panel */}
-        <div className="w-96 bg-gray-900 border-l border-gray-800 p-6 overflow-y-auto h-[calc(100vh-100px)]">
+        <div className="w-96 bg-gray-900 border-l border-white/10 p-6 overflow-y-auto h-[calc(100vh-100px)]">
           <h2 className="text-xl font-medium mb-4">Region Analysis</h2>
           
           {selectedRegion ? (
@@ -280,7 +280,7 @@ export default function DemoBrainHighlighting() {
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-gray-800">
+              <div className="pt-4 border-t border-white/10">
                 <h4 className="font-medium mb-2">Clinical Implications</h4>
                 <ul className="text-sm text-gray-300 space-y-1">
                   <li>• May benefit from targeted therapy</li>
@@ -296,7 +296,7 @@ export default function DemoBrainHighlighting() {
           )}
 
           {/* Summary stats */}
-          <div className="mt-8 pt-8 border-t border-gray-800">
+          <div className="mt-8 pt-8 border-t border-white/10">
             <h3 className="font-medium mb-4">Overall Summary</h3>
             <div className="space-y-3">
               <div className="flex justify-between text-sm">

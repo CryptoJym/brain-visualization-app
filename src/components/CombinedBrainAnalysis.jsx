@@ -77,7 +77,7 @@ export default function CombinedBrainAnalysis({ surveyResults }) {
   return (
     <div className="h-screen bg-black text-white flex">
       {/* Left sidebar - Controls */}
-      <div className="w-80 bg-gray-900 border-r border-gray-800 p-4 overflow-y-auto">
+      <div className="w-80 bg-gray-900 border-r border-white/10 p-4 overflow-y-auto">
         <h1 className="text-2xl font-light mb-6">Brain Analysis Dashboard</h1>
         
         {/* View mode selector */}
@@ -270,7 +270,7 @@ export default function CombinedBrainAnalysis({ surveyResults }) {
                         </div>
                         
                         {data.eegMarkers.length > 0 && (
-                          <div className="border-t border-gray-800 pt-3">
+                          <div className="border-t border-white/10 pt-3">
                             <p className="text-xs text-gray-400 mb-2">EEG Markers:</p>
                             <div className="space-y-1">
                               {data.eegMarkers.map((marker, idx) => (

@@ -24,7 +24,7 @@ export default function RealBrainViewer() {
   return (
     <div className="h-screen bg-black text-white flex flex-col">
       {/* Header */}
-      <div className="bg-gray-900 border-b border-gray-800 p-4">
+      <div className="bg-gray-900 border-b border-white/10 p-4">
         <h1 className="text-2xl font-light mb-2">Real Brain Anatomy Viewer</h1>
         <p className="text-gray-400 text-sm mb-4">
           These are actual medical/research brain visualization tools showing real anatomy
@@ -49,7 +49,7 @@ export default function RealBrainViewer() {
       </div>
 
       {/* Viewer info */}
-      <div className="bg-gray-900/50 px-4 py-3 border-b border-gray-800">
+      <div className="bg-black/40 backdrop-blur-sm px-4 py-3 border-b border-white/10">
         <p className="text-sm text-gray-300">
           {viewers[activeViewer].description}
         </p>
@@ -67,7 +67,7 @@ export default function RealBrainViewer() {
       </div>
 
       {/* Instructions */}
-      <div className="bg-gray-900 border-t border-gray-800 p-4">
+      <div className="bg-gray-900 border-t border-white/10 p-4">
         <h3 className="text-sm font-medium mb-2">Key Brain Regions for Trauma:</h3>
         <div className="grid grid-cols-3 gap-4 text-sm">
           <div>
