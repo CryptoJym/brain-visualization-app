@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import * as nanoBanana from '../../services/nanoBananaImageGen';
 import * as openRouter from '../../services/openRouterImageGen';
+import ApiKeyAlert from '../ApiKeyAlert';
 
 // Determine which service to use based on environment configuration
 const NANOBANANA_AVAILABLE = !!import.meta.env.VITE_NANOBANANA_API_URL;
@@ -117,6 +118,9 @@ const AIGeneratedBrainVisualization = ({ assessmentResults }) => {
           </p>
         )}
       </div>
+
+      {/* API Key Configuration Alert */}
+      <ApiKeyAlert featureName="AI Brain Visualizations" />
 
       {/* Generate Button */}
       {Object.keys(generatedImages).length === 0 && !isGenerating && (

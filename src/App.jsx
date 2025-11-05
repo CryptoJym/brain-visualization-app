@@ -1,14 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import OfficialACEsQuestionnaire from './components/OfficialACEsQuestionnaire';
 import ComprehensiveResultsDisplay from './components/ComprehensiveResultsDisplay';
 import DataFocusedResults from './components/DataFocusedResults';
 import NeurologicalNarrativeResults from './components/NeurologicalNarrativeResults';
 import ModernResultsDisplay from './components/ModernResultsDisplay';
+import { logConfigurationStatus } from './utils/apiKeyValidator';
 
 const App = () => {
   const [assessmentResults, setAssessmentResults] = useState(null);
   const [displayMode, setDisplayMode] = useState('modern'); // 'modern', 'narrative', 'data-focused', or 'comprehensive'
+
+  // Log API configuration status on startup
+  useEffect(() => {
+    logConfigurationStatus();
+  }, []);
 
   const MainApp = () => {
     if (assessmentResults) {
