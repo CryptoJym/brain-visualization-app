@@ -15,7 +15,7 @@ A web-based platform that visualizes how Adverse Childhood Experiences (ACEs) im
 
 ### AI-Generated Brain Visualizations
 - **Medical-Style Illustrations**: AI-generated side-by-side brain comparisons showing healthy vs. affected regions
-- **Anatomically Accurate**: Images generated using DALL-E 3 with anatomically correct medical illustration style
+- **Anatomically Accurate**: Images generated via NanoBanana API with anatomically correct medical illustration style
 - **Educational Focus**: Simple arrows and labels to help understand which brain regions are impacted
 
 ## 🛠 Technology Stack
@@ -27,7 +27,7 @@ A web-based platform that visualizes how Adverse Childhood Experiences (ACEs) im
 
 ### AI Integration
 - **Anthropic Claude**: Powers the neurological narrative generation
-- **OpenRouter / NanoBanana**: DALL-E 3 image generation for brain visualizations
+- **NanoBanana / OpenRouter**: AI image generation API for brain visualizations
 - **Mem0**: Optional AI memory system for personalized content
 
 ### Build & Deployment
@@ -61,7 +61,7 @@ VITE_ANTHROPIC_API_KEY=your_key_here
 # Optional - for personalized content
 VITE_MEM0_API_KEY=your_key_here
 
-# Image model (default: DALL-E 3)
+# Image model (NanoBanana uses this internally)
 VITE_IMAGE_MODEL=openai/dall-e-3
 ```
 
@@ -197,7 +197,7 @@ src/
 │   ├── NeurologicalNarrativeResults.jsx    # Narrative view
 │   ├── ApiKeyAlert.jsx                     # API configuration help
 │   └── visualization/
-│       └── AIGeneratedBrainVisualization.jsx # DALL-E brain images
+│       └── AIGeneratedBrainVisualization.jsx # AI brain images
 ├── services/
 │   ├── nanoBananaImageGen.js               # NanoBanana API client
 │   ├── openRouterImageGen.js               # OpenRouter API client
