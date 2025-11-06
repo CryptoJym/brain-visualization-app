@@ -130,18 +130,13 @@ export const generateComparisonImage = async (brainImpact, baselineImageUrl = nu
     description
   } = brainImpact;
 
-  const prompt = `Medical illustration showing side-by-side comparison of human brain regions.
+  const prompt = `Side-by-side brain comparison, anatomically accurate medical illustration.
 
-LEFT SIDE: Healthy ${regionName} with normal structure and function
-RIGHT SIDE: ${regionName} showing ${impactType === 'volume_reduction' ? 'structural volume reduction' : 'functional hyperactivation'} of ${Math.abs(impactPercentage)}%
+LEFT: Healthy ${regionName} - normal size and shape
+RIGHT: ${regionName} - ${impactType === 'volume_reduction' ? `smaller, reduced by ${Math.abs(impactPercentage)}%` : `larger, increased activity ${Math.abs(impactPercentage)}%`}
 
-Style: Clean medical textbook illustration, anatomically accurate, professional medical visualization.
-Label both sides clearly.
-Show cross-sectional view highlighting the ${regionName}.
-Include subtle annotations pointing to key differences.
-${description ? `Additional context: ${description}` : ''}
-
-High quality, detailed, scientific accuracy, educational purpose.`;
+Clean medical diagram style. Label both sides. Simple arrows pointing to the ${regionName}.
+Show brain cross-section. Clear, educational, anatomically correct.`;
 
   return generateBrainImage(prompt);
 };
@@ -180,34 +175,31 @@ export const generateAllRegionPrompts = (assessmentResults) => {
  * @returns {string} - Detailed description
  */
 const getRegionDescription = (regionName, impactType, impactPercentage) => {
-  const severityMap = {
-    severe: Math.abs(impactPercentage) > 45,
-    significant: Math.abs(impactPercentage) > 25,
-    moderate: Math.abs(impactPercentage) > 10,
-    subtle: true
-  };
-
-  const severity = Object.keys(severityMap).find(key => severityMap[key]);
+  const severity = Math.abs(impactPercentage) > 25 ? 'large' : Math.abs(impactPercentage) > 10 ? 'medium' : 'small';
 
   const descriptions = {
     'Prefrontal Cortex': {
-      volume_reduction: `Reduced gray matter density in executive control centers, affecting decision-making, impulse control, and emotional regulation. ${severity} structural changes visible in prefrontal regions.`,
-      hyperactivation: `Overactive prefrontal circuits showing compensatory activation patterns in response to chronic stress.`
+      volume_reduction: `Front part of brain is smaller. Controls planning and decisions.`,
+      hyperactivation: `Front part of brain is working overtime.`
     },
     'Amygdala': {
-      volume_reduction: `Amygdala showing altered structural integrity and reduced volume.`,
-      hyperactivation: `Enlarged and hyperactive amygdala exhibiting heightened threat response and emotional reactivity. ${severity} functional changes in fear processing centers.`
+      volume_reduction: `Emotion center is smaller.`,
+      hyperactivation: `Emotion center is larger and more active. Processes fear and threats.`
     },
     'Hippocampus': {
-      volume_reduction: `Hippocampal atrophy with ${severity} volume loss affecting memory consolidation and stress hormone regulation. Visible reduction in dentate gyrus and CA regions.`,
-      hyperactivation: `Hyperactive hippocampal circuits showing altered memory processing patterns.`
+      volume_reduction: `Memory center is smaller. ${severity} size reduction.`,
+      hyperactivation: `Memory center is more active than normal.`
     },
     'Anterior Cingulate Cortex': {
-      volume_reduction: `ACC showing reduced volume in conflict monitoring and emotional regulation areas.`,
-      hyperactivation: `Overactive ACC with heightened error detection and emotional conflict processing.`
+      volume_reduction: `Attention and emotion area is smaller.`,
+      hyperactivation: `Attention and emotion area is working harder.`
+    },
+    'Corpus Callosum': {
+      volume_reduction: `Connection between left and right brain is thinner.`,
+      hyperactivation: `Connection between brain halves is more active.`
     }
   };
 
   return descriptions[regionName]?.[impactType] ||
-    `${impactType === 'volume_reduction' ? 'Structural volume reduction' : 'Functional hyperactivation'} in ${regionName} with ${severity} impact (${Math.abs(impactPercentage)}% change).`;
+    `${regionName} is ${impactType === 'volume_reduction' ? 'smaller' : 'more active'} (${Math.abs(impactPercentage)}% change).`;
 };
