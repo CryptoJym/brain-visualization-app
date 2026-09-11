@@ -69,3 +69,4 @@ node_modules/
 # IDE artifacts
 .cursor/
 .taskmaster/
+.env*
