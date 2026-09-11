@@ -70,3 +70,9 @@ node_modules/
 .cursor/
 .taskmaster/
 .env*
+
+# Blender pipeline and local-only evidence
+.local-evidence/
+.wrangler/
+*.blend1
+!art/blender/*.py

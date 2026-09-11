@@ -1,0 +1,49 @@
+.cc-brain.cc-brain-v2{position:relative;display:flex;flex-direction:column;height:auto;min-height:0;overflow:hidden;border:1px solid #244357;border-radius:22px;background:radial-gradient(ellipse at 48% 35%,#15384e 0,#0a1b2b 48%,#07121f 82%);color:#d8eaf3}
+.cc-brain-v2 button,.cc-brain-v2 select{font:inherit;line-height:1.3;min-height:38px;border:1px solid transparent;border-radius:9px;padding:8px 11px;color:#b8d0df;background:transparent;cursor:pointer}
+.cc-brain-v2 button:hover,.cc-brain-v2 button[aria-pressed=true]{color:#e9fdff;background:#164558;border-color:#2c677b}
+.cc-brain-v2 button:focus-visible,.cc-brain-v2 select:focus-visible,.cc-brain-v2 canvas:focus-visible,.cc-brain-v2 summary:focus-visible{outline:2px solid #7de4ef;outline-offset:3px}
+.cc-brain-v2-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding:15px 18px 0;z-index:2}
+.cc-brain-version{font-size:10px;letter-spacing:.18em;font-weight:700;color:#83aec4}
+.cc-brain-modes{display:flex;gap:3px;padding:3px;background:#071522;border:1px solid #284050;border-radius:12px;font-size:12px}
+.cc-brain-v2 .cc-brain-stage{position:relative;width:100%;height:470px;isolation:isolate}
+.cc-brain-v2.compact .cc-brain-stage{height:440px}
+.cc-brain-v2 .cc-brain-canvas{position:absolute;inset:0;width:100%;height:100%;overflow:hidden}
+.cc-brain-v2 canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.cc-brain-v2 canvas:active{cursor:grabbing}
+.cc-brain-view-label{position:absolute;bottom:9px;left:12px;right:12px;text-align:center;pointer-events:none;font-size:9px;font-weight:600;letter-spacing:.15em;color:#90b6cc;text-shadow:0 1px 4px #00101a}
+.cc-brain-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;z-index:3;background:#0a1928e8;text-align:center;padding:25px;font-size:14px}
+.cc-brain-loading span{max-width:340px;color:#b8d0df;line-height:1.6}
+.cc-brain-loading button{border-color:#2c677b;background:#164558}
+.cc-brain-v2-controls{padding:9px 15px;display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;border-top:1px solid #244052;font-size:12px;background:#06142288}
+.cc-brain-v2-controls>div{display:flex;gap:2px}
+.cc-brain-region-selector{display:flex;align-items:center;gap:12px;padding:10px 18px;font-size:12px;border-top:1px solid #20384c;color:#a7c7dc}
+.cc-brain-region-selector select{flex:1;min-width:0;background:#0d2638;border-color:#335467;color:#e4f0f7}
+.cc-brain-region-selector option{background:#0d2638;color:#e4f0f7}
+.cc-brain-explanation{display:grid;gap:5px;padding:12px 18px;background:#06142299;border-top:1px solid #20384c;font-size:13px;line-height:1.5}
+.cc-brain-explanation small{color:#94afc2;font-size:11px}
+.cc-brain-model-note{padding:10px 18px 14px!important;margin:0!important;font-size:11px!important;line-height:1.55!important;color:#9fbacc!important}
+.cc-brain-credits{padding:0 18px 14px;font-size:11px;color:#9fbacc;line-height:1.6}
+.cc-brain-credits summary{cursor:pointer;color:#bee1ef}.cc-brain-credits p{font-size:11px;line-height:1.6}.cc-brain-credits a{color:#8adaec}
+.cc-hero-brain:has(.cc-brain-v2) .cc-floating{display:none}
+.cc-hero-brain:has(.cc-brain-v2){min-width:0;align-self:center}
+@media(max-width:700px){
+ .cc-brain-v2-header{padding:12px 10px 0;justify-content:center}
+ .cc-brain-version{width:100%;text-align:center;font-size:9px}
+ .cc-brain-v2 .cc-brain-stage,.cc-brain-v2.compact .cc-brain-stage{height:350px}
+ .cc-brain-v2-controls{justify-content:center;padding:8px 5px}
+ .cc-brain-region-selector{padding:10px;gap:7px;flex-direction:column;align-items:stretch}
+ .cc-brain-v2 button{min-height:42px;padding:8px 10px}
+ .cc-brain-v2 .cc-brain-view-label{font-size:8px;letter-spacing:.08em}
+}
+@media(prefers-reduced-motion:reduce){.cc-brain-v2 *{transition:none!important;animation:none!important}}
+@media print{
+ .cc-brain-v2-header,.cc-brain-v2-controls,.cc-brain-region-selector,.cc-brain-credits{display:none!important}
+ .cc-brain.cc-brain-v2{break-inside:avoid;background:#fff!important;border:1px solid #b9c6cf}
+ .cc-brain-v2 .cc-brain-stage{height:340px!important}
+ .cc-brain-model-note,.cc-brain-view-label{color:#304859!important}
+}
+/* Override the old fixed-height hero and compact viewer, loaded later by main. */
+.cc-hero .cc-hero-brain:has(.cc-brain-v2){height:auto;min-height:0}
+.cc-brain.cc-brain-v2.compact{height:auto;min-height:0}
+.cc-brain.cc-brain-v2 .cc-brain-stage{flex:none}
+.cc-brain.cc-brain-v2 .cc-brain-v2-header,.cc-brain.cc-brain-v2 .cc-brain-v2-controls{flex:none}

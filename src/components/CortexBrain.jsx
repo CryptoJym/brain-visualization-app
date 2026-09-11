@@ -1,49 +1,200 @@
-import React,{useEffect,useMemo,useRef,useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
-import {REGIONS,SYSTEMS} from '../data/cortexCompass';
+import {REGIONS, SYSTEMS} from '../data/cortexCompass';
+import './CortexBrain.css';
 
-const colorFor=(region)=>SYSTEMS[region.system]?.color||'#38bdf8';
-
-export default function CortexBrain({profile,onSelect,compact=false}){
- const mount=useRef(null); const api=useRef({}); const [selected,setSelected]=useState(null); const [deep,setDeep]=useState(true);
- const impact=useMemo(()=>Object.fromEntries((profile?.regions||[]).map(r=>[r.id,r.score||0])),[profile]);
- useEffect(()=>{
-  if(!mount.current) return; const host=mount.current; host.innerHTML='';
-  const w=host.clientWidth||700,h=host.clientHeight||520; const scene=new THREE.Scene(); scene.background=null;
-  const camera=new THREE.PerspectiveCamera(36,w/h,.1,100); camera.position.set(10,5.5,10);
-  let renderer; try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});}catch(e){host.dataset.fallback='true';return;}
-  renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.setSize(w,h); renderer.outputColorSpace=THREE.SRGBColorSpace; host.appendChild(renderer.domElement);
-  const controls=new OrbitControls(camera,renderer.domElement); controls.enableDamping=true; controls.enablePan=false; controls.minDistance=7; controls.maxDistance=18; controls.target.set(0,.1,0);
-  scene.add(new THREE.HemisphereLight(0xc8f7ff,0x081327,2.0)); const key=new THREE.DirectionalLight(0xffffff,3); key.position.set(4,8,7); scene.add(key);
-  const rim=new THREE.PointLight(0x2dd4bf,35,25); rim.position.set(-6,1,-5); scene.add(rim);
-  const brain=new THREE.Group(); brain.rotation.set(-.04,.15,0); scene.add(brain);
-  const hemiGeo=new THREE.SphereGeometry(3.25,64,48); hemiGeo.scale(.82,1,1.08);
-  const shellMat=new THREE.MeshPhysicalMaterial({color:0xbdd7e7,roughness:.34,metalness:.05,transparent:true,opacity:.16,transmission:.18,thickness:.6,side:THREE.DoubleSide});
-  const left=new THREE.Mesh(hemiGeo,shellMat); left.position.x=-1.15; brain.add(left); const right=left.clone(); right.material=shellMat.clone(); right.position.x=1.15; brain.add(right);
-  const foldMat=new THREE.MeshBasicMaterial({color:0x7dd3fc,transparent:true,opacity:.12,wireframe:true}); const foldsL=new THREE.Mesh(hemiGeo.clone(),foldMat); foldsL.scale.set(1.01,1.01,1.01); foldsL.position.x=-1.15; brain.add(foldsL); const foldsR=foldsL.clone(); foldsR.position.x=1.15; brain.add(foldsR);
-  const cerebGeo=new THREE.SphereGeometry(1.55,40,30); cerebGeo.scale(1.35,.75,.9); const cereb=new THREE.Mesh(cerebGeo,new THREE.MeshPhysicalMaterial({color:0x9ca3af,transparent:true,opacity:.22,roughness:.5})); cereb.position.set(0,-2.2,-2.55); brain.add(cereb);
-  const stem=new THREE.Mesh(new THREE.CapsuleGeometry(.48,2.1,8,20),new THREE.MeshPhysicalMaterial({color:0x8ca4b7,transparent:true,opacity:.28,roughness:.45})); stem.position.set(0,-3.0,-1.15); stem.rotation.x=.22; brain.add(stem);
-  const fallbackShell=[left,right,foldsL,foldsR,cereb,stem];
-  const loader=new GLTFLoader(); loader.load('/models/brain-labeled.glb',gltf=>{const model=gltf.scene; const box=new THREE.Box3().setFromObject(model); const size=box.getSize(new THREE.Vector3()); const center=box.getCenter(new THREE.Vector3()); const fit=7/Math.max(size.x,size.y,size.z); model.position.sub(center); model.scale.setScalar(fit); model.rotation.set(0,Math.PI/2,0); model.traverse(o=>{if(o.isMesh){o.material=new THREE.MeshPhysicalMaterial({color:0x96bdd1,roughness:.42,metalness:.05,transparent:true,opacity:.23,transmission:.12,thickness:.25,side:THREE.DoubleSide});}}); brain.add(model); host.dataset.model='loaded'; fallbackShell.forEach(x=>x.visible=false);},undefined,()=>{host.dataset.model='failed';});
-  const clickable=[]; const nodes={};
-  REGIONS.forEach(region=>{ const score=impact[region.id]||0; const color=new THREE.Color(colorFor(region)); const geo=new THREE.SphereGeometry(.42,28,22); geo.scale(...region.scale); const mat=new THREE.MeshStandardMaterial({color,emissive:color,emissiveIntensity:.25+score/90,transparent:true,opacity:deep?.82:.62,roughness:.3}); const mesh=new THREE.Mesh(geo,mat); mesh.position.set(...region.pos); mesh.userData={region}; brain.add(mesh); clickable.push(mesh); nodes[region.id]=mesh;
-    if(score>8){const glow=new THREE.Mesh(geo.clone(),new THREE.MeshBasicMaterial({color,transparent:true,opacity:Math.min(.25,.06+score/500),side:THREE.BackSide})); glow.scale.setScalar(1.18); mesh.add(glow);}
+const MODEL_VERSION = 'cc-blender-2.0';
+const cache = new Map();
+const VIEWS = {perspective: [-7.2,3.2,7.2], left: [-10.5,1,0], right: [10.5,1,0], top: [0,11,.01], front: [0,1,10.5]};
+const SURFACE_IDS = new Set(['dlpfc', 'temporal']);
+function loadModel(mobile) {
+  const url = `/models/cortex-brain-v2${mobile ? '-mobile' : ''}.glb`;
+  if (!cache.has(url)) cache.set(url, new GLTFLoader().loadAsync(url).catch(error => {cache.delete(url); throw error;}));
+  return cache.get(url);
+}
+function withDeadline(promise, ms) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error('Model download timed out')), ms);
+    promise.then(value => {clearTimeout(timer); resolve(value);}, error => {clearTimeout(timer); reject(error);});
   });
-  const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();
-  const pick=e=>{const rect=renderer.domElement.getBoundingClientRect();pointer.x=((e.clientX-rect.left)/rect.width)*2-1;pointer.y=-((e.clientY-rect.top)/rect.height)*2+1;ray.setFromCamera(pointer,camera);const hit=ray.intersectObjects(clickable,false)[0]; clickable.forEach(x=>x.scale.setScalar(1)); if(hit){hit.object.scale.setScalar(1.22); renderer.domElement.style.cursor='pointer'; const r=hit.object.userData.region; setSelected(r.id); onSelect?.({...r,score:impact[r.id]||0});} else renderer.domElement.style.cursor='grab';};
-  renderer.domElement.addEventListener('pointerdown',pick);
-  const views={left:[-10,3,1],right:[10,3,1],top:[0,12,.01],front:[0,3,11]}; api.current.view=(name)=>{const v=views[name]||views.right;camera.position.set(...v);controls.target.set(0,0,0);controls.update();}; api.current.deep=(value)=>{REGIONS.forEach(r=>{const m=nodes[r.id];if(m)m.visible=value||['dlpfc','temporal','cerebellum'].includes(r.id);});};
-  let id; const animate=()=>{id=requestAnimationFrame(animate);controls.update();const t=performance.now()/1000;REGIONS.forEach((r,i)=>{const m=nodes[r.id];if(m&&impact[r.id]>15)m.material.emissiveIntensity=.45+impact[r.id]/100+Math.sin(t*1.5+i)*.08;});renderer.render(scene,camera);};animate();
-  const resize=()=>{const nw=host.clientWidth,nh=host.clientHeight;if(!nw||!nh)return;camera.aspect=nw/nh;camera.updateProjectionMatrix();renderer.setSize(nw,nh);}; window.addEventListener('resize',resize);
-  return()=>{cancelAnimationFrame(id);window.removeEventListener('resize',resize);renderer.domElement.removeEventListener('pointerdown',pick);controls.dispose();renderer.dispose();host.innerHTML='';};
- },[impact,onSelect,deep]);
- const selectedRegion=REGIONS.find(r=>r.id===selected);
- return <div className={`cc-brain ${compact?'compact':''}`}>
-   <div ref={mount} className="cc-brain-canvas" aria-label="Interactive educational 3D brain map" />
-   <div className="cc-brain-toolbar"><button onClick={()=>api.current.view?.('left')}>Left</button><button onClick={()=>api.current.view?.('right')}>Right</button><button onClick={()=>api.current.view?.('top')}>Top</button><button onClick={()=>api.current.view?.('front')}>Front</button><button className={deep?'active':''} onClick={()=>{setDeep(v=>!v);setTimeout(()=>api.current.deep?.(!deep),0)}}>Deep</button></div>
-   {!compact&&<div className="cc-brain-legend"><span><i className="low"/>Lower signal</span><span><i className="mid"/>Moderate</span><span><i className="high"/>Higher</span></div>}
-   {selectedRegion&&!compact&&<div className="cc-region-pop"><strong>{selectedRegion.name}</strong><span>{selectedRegion.function}</span><b>{Math.round(impact[selectedRegion.id]||0)} mapping signal</b></div>}
- </div>
+}
+export default function CortexBrain({profile, onSelect, compact=false}) {
+  const mount = useRef(null), engine = useRef(null), callback = useRef(onSelect), currentProfile = useRef(profile);
+  const [mode,setMode] = useState('surface'), [view,setView] = useState('perspective');
+  const [selected,setSelected] = useState(''), [status,setStatus] = useState('loading'), [attempt,setAttempt] = useState(0);
+  const [rotate,setRotate] = useState(false);
+  callback.current = onSelect; currentProfile.current = profile;
+  const region = REGIONS.find(r => r.id === selected);
+  const choose = id => {
+    setSelected(id);
+    const r=REGIONS.find(item => item.id===id);
+    if(!r) callback.current?.(null);
+    if (r) callback.current?.({...r, score:currentProfile.current?.regions?.find(item=>item.id===id)?.score||0});
+    if(r && SURFACE_IDS.has(id) && mode!=='surface') {setMode('surface');setView('perspective');}
+    if (r && !SURFACE_IDS.has(id) && mode==='surface') {setMode('cutaway'); setView('left');}
+  };
+  const chooseRef=useRef(choose); chooseRef.current=choose;
+  useEffect(() => {
+    const host=mount.current; if(!host) return;
+    let disposed=false, frame=0, model=null, down=null, visible=true;
+    const ownedMaterials=[];
+    setStatus('loading'); host.dataset.model='loading'; host.dataset.version=MODEL_VERSION;
+    const scene=new THREE.Scene();
+    const camera=new THREE.PerspectiveCamera(35,1,.1,100);
+    camera.position.set(...VIEWS.perspective);
+    let renderer;
+    try {renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});}
+    catch {setStatus('unavailable');host.dataset.model='unavailable';return;}
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.75));
+    renderer.outputColorSpace=THREE.SRGBColorSpace; renderer.toneMapping=THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure=1.15; renderer.localClippingEnabled=true;
+    renderer.domElement.setAttribute('aria-label','Rotate the 3D brain with pointer drag or arrow keys; plus and minus zoom. Region details are available below.');
+    renderer.domElement.setAttribute('tabindex','0'); host.appendChild(renderer.domElement);
+    const controls=new OrbitControls(camera,renderer.domElement);
+    controls.enableDamping=true; controls.enablePan=false; controls.dampingFactor=.08;
+    controls.minDistance=8; controls.maxDistance=22; controls.target.set(0,0,0); controls.autoRotateSpeed=.45;
+    scene.add(new THREE.HemisphereLight(0xcbeaff,0x162236,1.3));
+    const key=new THREE.DirectionalLight(0xfff4ed,2.7);key.position.set(-5,7,7);scene.add(key);
+    const rim=new THREE.DirectionalLight(0x74cdff,2.2);rim.position.set(5,3,-5);scene.add(rim);
+    const fill=new THREE.DirectionalLight(0xcbb9ed,.8);fill.position.set(-5,-1,-3);scene.add(fill);
+    const meshes=[], focusUniforms=[];
+    const clip=new THREE.Plane(new THREE.Vector3(1,0,0),-.28);
+    function addSurfaceFocus(material) {
+      const uniforms={uFocus:{value:new THREE.Vector3()},uFocusColor:{value:new THREE.Color('#49cbe9')},uFocusRadius:{value:new THREE.Vector3(1,1,1)},uFocusStrength:{value:0}};
+      focusUniforms.push(uniforms);
+      material.onBeforeCompile=shader=>{
+        Object.assign(shader.uniforms,uniforms);
+        shader.vertexShader=shader.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vTeachingPosition;');
+        shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvTeachingPosition = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+        shader.fragmentShader=shader.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vTeachingPosition;\nuniform vec3 uFocus;\nuniform vec3 uFocusRadius;\nuniform vec3 uFocusColor;\nuniform float uFocusStrength;');
+        shader.fragmentShader=shader.fragmentShader.replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\nvec3 focusDelta = (vec3(abs(vTeachingPosition.x),vTeachingPosition.yz)-uFocus)/uFocusRadius;\nfloat teachingFocus = exp(-dot(focusDelta,focusDelta)*2.0);\ntotalEmissiveRadiance += uFocusColor * uFocusStrength * teachingFocus;');
+      };
+      material.customProgramCacheKey=()=> 'cortex-teaching-focus-v2';
+    }
+    const resize=()=>{
+      const width=host.clientWidth,height=host.clientHeight;if(!width||!height)return;
+      camera.aspect=width/height;camera.updateProjectionMatrix();renderer.setSize(width,height);
+    };
+    const observer=new ResizeObserver(resize);observer.observe(host);resize();
+    const intersection=new IntersectionObserver(entries=>{visible=entries[0]?.isIntersecting!==false;});intersection.observe(host);
+    const fitView=name=>{
+      camera.up.set(0,1,0);camera.position.set(...(VIEWS[name]||VIEWS.perspective));
+      if(name==='top')camera.up.set(0,0,-1);
+      if(host.clientWidth<400) camera.position.multiplyScalar(1.13);
+      controls.target.set(0,0,0);controls.update();
+    };
+    let activeMode='surface';
+    const configure=(nextMode,id)=>{
+      activeMode=nextMode;host.dataset.mode=nextMode;host.dataset.selected=id||'';
+      for(const mesh of meshes){
+        const {kind,hemisphere,regionId}=mesh.userData;
+        const mat=mesh.material;const selected=regionId===id;
+        mesh.visible=true;mat.clippingPlanes=[];mesh.position.copy(mesh.userData.restPosition);
+        if(kind==='cortex'){
+          mesh.visible=!(nextMode==='cutaway'&&hemisphere==='L');
+          mesh.position.x+=(nextMode==='deep'?(hemisphere==='L'?-1.45:1.45):0);
+          mat.opacity=nextMode==='deep'?.13:1;mat.transparent=nextMode==='deep';
+          mat.depthWrite=nextMode!=='deep';mat.side=nextMode==='cutaway'?THREE.DoubleSide:THREE.FrontSide;mesh.renderOrder=nextMode==='deep'?3:0;
+          if(nextMode==='cutaway')mat.clippingPlanes=[clip];
+        }else if(kind==='deep'){
+          mesh.visible=nextMode!=='surface'&&!(nextMode==='cutaway'&&hemisphere==='L');
+          mat.opacity=id&&!selected&&regionId!=='callosum'?.5:1;mat.transparent=mat.opacity<1;mat.depthWrite=!mat.transparent;
+          mat.emissive.copy(mat.color);mat.emissiveIntensity=selected?.4:.025;
+        }else{
+          mat.opacity=nextMode==='deep'?.23:1;mat.transparent=nextMode==='deep';mat.depthWrite=!mat.transparent;
+          if(nextMode==='cutaway')mat.clippingPlanes=[clip];
+        }
+        mat.needsUpdate=true;
+      }
+      for(const u of focusUniforms){
+        u.uFocusStrength.value=SURFACE_IDS.has(id)?.65:0;
+        u.uFocus.value.set(...(id==='temporal'?[1.9,-.32,.25]:[1.5,1.55,1.5]));
+        u.uFocusRadius.value.set(...(id==='temporal'?[.85,.65,1.4]:[.9,.85,1.1]));
+        u.uFocusColor.value.set(id==='temporal'?'#f3a4d4':'#55d8ff');
+      }
+    };
+    engine.current={configure,view:fitView,rotate:value=>{controls.autoRotate=value;},zoom:factor=>{camera.position.multiplyScalar(factor);controls.update();}};
+    const mobile=compact||window.matchMedia('(max-width: 700px)').matches;
+    withDeadline(loadModel(mobile),20000).catch(error=>mobile?Promise.reject(error):withDeadline(loadModel(true),15000)).then(gltf=>{
+      if(disposed)return;
+      model=gltf.scene.clone(true);
+      model.traverse(obj=>{
+        if(!obj.isMesh)return;
+        const mat=obj.material.clone();obj.material=mat;ownedMaterials.push(mat);
+        mat.roughness=Math.max(mat.roughness||.4,.4);mat.metalness=.08;
+        if(mat.normalMap)mat.normalScale.set(.7,.7);
+        obj.userData={...obj.userData,restPosition:obj.position.clone()};
+        if(obj.userData.kind==='cortex')addSurfaceFocus(mat);
+        meshes.push(obj);
+      });
+      scene.add(model);configure('surface','');fitView('perspective');
+      host.dataset.model='loaded';host.dataset.meshes=String(meshes.length);
+      host.dataset.triangles=String(meshes.reduce((n,o)=>n+(o.geometry.index?.count||o.geometry.attributes.position.count)/3,0));
+      host.dataset.lod=mobile?'mobile':'desktop';setStatus('ready');
+    }).catch(()=>{if(!disposed){host.dataset.model='failed';setStatus('error');}});
+    const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();
+    const pointerDown=event=>{down={x:event.clientX,y:event.clientY};};
+    const pointerUp=event=>{
+      if(!down||Math.hypot(event.clientX-down.x,event.clientY-down.y)>6){down=null;return;}down=null;
+      const box=renderer.domElement.getBoundingClientRect();
+      pointer.set((event.clientX-box.left)/box.width*2-1,-(event.clientY-box.top)/box.height*2+1);ray.setFromCamera(pointer,camera);
+      const candidates=meshes.filter(o=>o.visible&&(activeMode==='surface'?o.userData.kind==='cortex':o.userData.kind==='deep'));
+      const hit=ray.intersectObjects(candidates,false)[0];if(!hit)return;
+      const p=hit.point;
+      const surfaceId=Math.abs(p.x)>1.2&&p.y<.35?'temporal':Math.abs(p.x)>1&&p.y>.7&&p.z>.8?'dlpfc':null;
+      const id=hit.object.userData.regionId||surfaceId;
+      if(REGIONS.some(r=>r.id===id))chooseRef.current(id);
+    };
+    const keyDown=event=>{
+      if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','-','='].includes(event.key))return;
+      event.preventDefault();const s=new THREE.Spherical().setFromVector3(camera.position);
+      if(event.key==='ArrowLeft')s.theta-=.12;if(event.key==='ArrowRight')s.theta+=.12;
+      if(event.key==='ArrowUp')s.phi-=.1;if(event.key==='ArrowDown')s.phi+=.1;
+      if(event.key==='+'||event.key==='=')s.radius*=.9;if(event.key==='-')s.radius*=1.1;
+      s.phi=THREE.MathUtils.clamp(s.phi,.05,Math.PI-.05);s.radius=THREE.MathUtils.clamp(s.radius,8,22);
+      camera.position.setFromSpherical(s);controls.update();
+    };
+    const lost=event=>{event.preventDefault();host.dataset.model='unavailable';setStatus('unavailable');};
+    const canvas=renderer.domElement;
+    canvas.addEventListener('pointerdown',pointerDown);canvas.addEventListener('pointerup',pointerUp);
+    canvas.addEventListener('keydown',keyDown);canvas.addEventListener('webglcontextlost',lost);
+    let last=0;
+    const draw=time=>{if(disposed)return;frame=requestAnimationFrame(draw);if(!visible||document.hidden||time-last<32)return;last=time;controls.update();renderer.render(scene,camera);};
+    frame=requestAnimationFrame(draw);
+    return()=>{
+      disposed=true;cancelAnimationFrame(frame);observer.disconnect();intersection.disconnect();
+      canvas.removeEventListener('pointerdown',pointerDown);canvas.removeEventListener('pointerup',pointerUp);
+      canvas.removeEventListener('keydown',keyDown);canvas.removeEventListener('webglcontextlost',lost);
+      controls.dispose();ownedMaterials.forEach(m=>m.dispose());
+      renderer.dispose();canvas.remove();engine.current=null;
+    };
+  },[attempt,compact]);
+  useEffect(()=>{engine.current?.configure(mode,selected);},[mode,selected,status]);
+  useEffect(()=>{engine.current?.view(view);},[view,status]);
+  useEffect(()=>{engine.current?.rotate(rotate&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches);},[rotate,status]);
+  const changeMode=next=>{setMode(next);setView(next==='cutaway'?'left':'perspective');};
+  return <section className={`cc-brain cc-brain-v2 ${compact?'compact':''}`} aria-label="Blender-built educational brain explorer">
+    <div className="cc-brain-v2-header cc-print-hide">
+      <span className="cc-brain-version">BLENDER / ANATOMY EXPLORER</span>
+      <div className="cc-brain-modes" aria-label="Brain layers">
+        {['surface','cutaway','deep'].map(value=><button key={value} aria-pressed={mode===value} onClick={()=>changeMode(value)}>{value==='deep'?'Deep structures':value[0].toUpperCase()+value.slice(1)}</button>)}
+      </div>
+    </div>
+    <div className="cc-brain-stage">
+      <div ref={mount} className="cc-brain-canvas" />
+      {status==='loading'&&<div className="cc-brain-loading" role="status">Loading the detailed brain model…</div>}
+      {(status==='error'||status==='unavailable')&&<div className="cc-brain-loading" role="status"><strong>3D view unavailable</strong><span>{status==='error'?'The model could not be downloaded.':'This browser cannot render WebGL right now.'} The region guide below still works.</span><button onClick={()=>setAttempt(n=>n+1)}>Retry 3D</button></div>}
+      <div className="cc-brain-view-label">{mode==='cutaway'?'MEDIAL CUTAWAY · RIGHT HEMISPHERE':mode==='deep'?'OPEN HEMISPHERES · SCHEMATIC STRUCTURES':'CORTICAL SURFACE · GENERIC TEACHING MODEL'}</div>
+    </div>
+    <div className="cc-brain-v2-controls cc-print-hide" aria-label="Camera controls">
+      <div>{['left','right','top','front'].map(value=><button key={value} aria-pressed={view===value} onClick={()=>setView(value)}>{value[0].toUpperCase()+value.slice(1)}</button>)}</div>
+      <div><button aria-label="Zoom in" onClick={()=>engine.current?.zoom(.9)}>＋</button><button aria-label="Zoom out" onClick={()=>engine.current?.zoom(1.1)}>−</button><button onClick={()=>{setMode('surface');setView('perspective');setSelected('');callback.current?.(null);setRotate(false);engine.current?.view('perspective');}}>Reset</button><button aria-pressed={rotate} onClick={()=>setRotate(v=>!v)}>Rotate</button></div>
+    </div>
+    <label className="cc-brain-region-selector cc-print-hide"><span>Explore a region</span><select value={selected} onChange={event=>choose(event.target.value)}><option value="">Choose a brain region…</option>{REGIONS.map(r=><option key={r.id} value={r.id}>{r.label}</option>)}</select></label>
+    {region&&<div className="cc-brain-explanation" aria-live="polite"><strong style={{color:SYSTEMS[region.system]?.color}}>{region.name}</strong><span>{region.function}</span><small>{SURFACE_IDS.has(region.id)?'Highlighted surface is an approximate teaching location, not a parcellated atlas region.':'Inner shape and placement are schematic, not a clinical segmentation.'}</small></div>}
+    <p className="cc-brain-model-note">Same anatomy for every person. Colors identify teaching systems—not injury, activation, or measured brain changes.</p>
+    {<details className="cc-brain-credits"><summary>Model provenance</summary><p>Surface adapted in Blender from “Brain - with labeled parts” by AbdulMuhaymin (CC BY 4.0). Labels removed, hemispheres separated, surface refined, textures preserved; new inner structures are illustrative. Not a medical atlas.</p><a href="https://sketchfab.com/3d-models/brain-with-labeled-parts-28c8971e11334e8b97a2a0d6235992e8" target="_blank" rel="noreferrer">Original model</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">License</a></details>}
+  </section>;
 }
