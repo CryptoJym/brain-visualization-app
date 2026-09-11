@@ -20,4 +20,3 @@ export const REGIONS = [
   {id:'temporal',label:'Temporal',name:'Temporal Social-Language Regions',system:'social',function:'Language, social cues and meaning',pos:[-3.45,-.45,-.25],scale:[1.3,.95,1.35]},
   {id:'cerebellum',label:'Cerebellum',name:'Cerebellar Vermis',system:'stress',function:'Timing, regulation and sensorimotor integration',pos:[0,-2.2,-2.7],scale:[1.7,.9,1.1]},
 ];
-
