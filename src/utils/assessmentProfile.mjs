@@ -1,0 +1,86 @@
+import {REGIONS} from '../data/brainSystems.mjs';
+import {ALL_QUESTIONS,SECTIONS,QUESTIONNAIRE_VERSION,FREQUENCIES,ANSWER_CHOICES} from '../data/assessmentQuestions.mjs';
+import {EVIDENCE_VERSION} from '../data/assessmentEvidence.mjs';
+import {safeTiming,timingLabel,KNOWLEDGE_SOURCES} from './assessmentTiming.mjs';
+export const SAVE_SCHEMA=4;
+export const STORAGE_KEY='cortex-compass-profile';
+const choices=new Set(ANSWER_CHOICES.map(([id])=>id));
+const frequencies=new Set(FREQUENCIES.map(([id])=>id));
+export function normalizeAnswers(raw={}) {
+  const result={};if(!raw||typeof raw!=='object'||Array.isArray(raw))return result;
+  for(const q of ALL_QUESTIONS){
+    const a=Object.hasOwn(raw,q.id)?raw[q.id]:null;
+    if(!a||!choices.has(a.value))continue;
+    result[q.id]={value:a.value};
+    if(a.value==='yes'&&q.kind!=='support'){
+      result[q.id].timing=safeTiming(a.timing,q.kind==='prenatal');
+      if(q.kind==='history'&&frequencies.has(a.frequency))result[q.id].frequency=a.frequency;
+    }
+  }
+  return result;
+}
+export function calculateProfile(raw={}) {
+  const answers=normalizeAnswers(raw),answered=Object.keys(answers).length;
+  const yes=ALL_QUESTIONS.filter(q=>answers[q.id]?.value==='yes');
+  const history=yes.filter(q=>q.kind==='history'),supports=yes.filter(q=>q.kind==='support');
+  const prenatal=yes.filter(q=>q.kind==='prenatal');
+  const topics=new Set(history.flatMap(q=>q.topics));
+  const evidenceIds=new Set(['mace','brfss',...yes.flatMap(q=>q.sources)]);
+  if(topics.size){evidenceIds.add('teicher');evidenceIds.add('puetz');}
+  const rows=[...history,...prenatal].map(q=>({
+    id:q.id,title:q.title,kind:q.kind,timing:answers[q.id].timing,
+    timingText:timingLabel(answers[q.id].timing,q.kind==='prenatal'),
+    frequency:answers[q.id].frequency||'unanswered',
+    source:KNOWLEDGE_SOURCES.find(s=>s.id===answers[q.id].timing.source)?.label||'Not recorded',
+    sources:q.sources,
+  }));
+  return {
+    version:QUESTIONNAIRE_VERSION,evidenceVersion:EVIDENCE_VERSION,answered,total:ALL_QUESTIONS.length,
+    substantive:Object.values(answers).filter(a=>a.value==='yes'||a.value==='no').length,
+    unsure:Object.values(answers).filter(a=>a.value==='unsure').length,
+    skipped:Object.values(answers).filter(a=>a.value==='skip').length,unanswered:ALL_QUESTIONS.length-answered,
+    historyCount:history.length,protective:supports.length,prenatalCount:prenatal.length,
+    themes:SECTIONS.filter(s=>history.some(q=>q.section===s.id)).map(s=>s.title),
+    supports:supports.map(q=>({id:q.id,title:q.title})),timeline:rows,
+    evidenceIds:[...evidenceIds],
+    regions:REGIONS.map(r=>({...r,active:topics.has(r.id),
+      reasons:history.filter(q=>q.topics.includes(r.id)).map(q=>q.title),
+      evidenceIds:topics.has(r.id)?(['amygdala','dlpfc'].includes(r.id)?['teicher','puetz']:['teicher']):[],
+    })),
+  };
+}
+export function migrateSavedRecord(record) {
+  if(!record||typeof record!=='object'||!record.answers||typeof record.answers!=='object'||Array.isArray(record.answers))throw new Error('Saved reflection is not readable. It has not been changed.');
+  if(record.schemaVersion===SAVE_SCHEMA){
+    if(record.questionnaireVersion!==QUESTIONNAIRE_VERSION)throw new Error('This reflection uses a different questionnaire version. It has not been changed.');
+    return {answers:normalizeAnswers(record.answers),legacyRecord:record.legacyRecord||null,migrated:false};
+  }
+  if(record.schemaVersion!==undefined)throw new Error('Unsupported saved version. It has not been changed.');
+  // Only unchanged support prompts transfer automatically. Never split the old
+  // household_instability answer into alcohol, drugs and incarceration guesses.
+  const supportIds=new Set(ALL_QUESTIONS.filter(q=>q.kind==='support').map(q=>q.id));
+  const answers=Object.fromEntries(Object.entries(normalizeAnswers(record.answers)).filter(([id])=>supportIds.has(id)));
+  return {answers,legacyRecord:record,migrated:true};
+}
+export function readSavedRecord(storage) {
+  const raw=storage.getItem(STORAGE_KEY);
+  if(!raw)return null;
+  if(raw.length>256000)throw new Error('Saved reflection is unexpectedly large. It has not been changed.');
+  try{return migrateSavedRecord(JSON.parse(raw));}
+  catch(error){if(error instanceof SyntaxError)throw new Error('Saved reflection contains invalid JSON. It has not been changed.');throw error;}
+}
+export function saveRecord(storage,raw,legacyRecord,consent) {
+  if(consent!==true)throw new Error('Choose explicit device-save consent first.');
+  const record={schemaVersion:SAVE_SCHEMA,questionnaireVersion:QUESTIONNAIRE_VERSION,evidenceVersion:EVIDENCE_VERSION,
+    savedAt:new Date().toISOString(),answers:normalizeAnswers(raw),legacyRecord:legacyRecord||null};
+  const text=JSON.stringify(record);
+  if(text.length>256000)throw new Error('Reflection is too large to save. Existing data was not changed.');
+  storage.setItem(STORAGE_KEY,text);
+  return record;
+}
+export const SAMPLE_ANSWERS={
+  emotional_neglect:{value:'yes',timing:{status:'known',periods:[{startMonth:36,endMonth:72},{startMonth:132,endMonth:156}],source:'memory'},frequency:'often'},
+  household_incarceration:{value:'yes',timing:{status:'known',periods:[{startMonth:84,endMonth:108}],source:'family'}},
+  household_drugs:{value:'no'},peer_emotional:{value:'yes',timing:{status:'known',periods:[{startMonth:120,endMonth:144}],source:'memory'}},
+  safe_adult:{value:'yes'},close_friend:{value:'yes'},competence:{value:'yes'},
+};

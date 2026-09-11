@@ -20,6 +20,21 @@ function withDeadline(promise, ms) {
     promise.then(value => {clearTimeout(timer); resolve(value);}, error => {clearTimeout(timer); reject(error);});
   });
 }
+// Crop transparent renderer padding, not brain content, for the print-only snapshot.
+function printSnapshot(canvas){
+  const copy=document.createElement('canvas');copy.width=canvas.width;copy.height=canvas.height;
+  const ctx=copy.getContext('2d',{willReadFrequently:true});ctx.drawImage(canvas,0,0);
+  const {data}=ctx.getImageData(0,0,copy.width,copy.height);
+  let left=copy.width,top=copy.height,right=-1,bottom=-1;
+  for(let y=0;y<copy.height;y++)for(let x=0;x<copy.width;x++){
+    if(data[(y*copy.width+x)*4+3]>8){left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=Math.max(bottom,y);}
+  }
+  if(right<left)return canvas.toDataURL('image/png');
+  const padding=Math.ceil(Math.max(right-left,bottom-top)*.08);
+  const result=document.createElement('canvas');result.width=right-left+1+padding*2;result.height=bottom-top+1+padding*2;
+  result.getContext('2d').drawImage(copy,left,top,right-left+1,bottom-top+1,padding,padding,right-left+1,bottom-top+1);
+  return result.toDataURL('image/png');
+}
 export default function CortexBrain({profile, onSelect, compact=false}) {
   const mount = useRef(null), engine = useRef(null), callback = useRef(onSelect), currentProfile = useRef(profile);
   const [mode,setMode] = useState('surface'), [view,setView] = useState('perspective');
@@ -77,6 +92,25 @@ export default function CortexBrain({profile, onSelect, compact=false}) {
       const width=host.clientWidth,height=host.clientHeight;if(!width||!height)return;
       camera.aspect=width/height;camera.updateProjectionMatrix();renderer.setSize(width,height);
     };
+    const printImage=document.createElement('img');
+    printImage.className='cc-brain-print-image';printImage.alt='Generic educational brain model rendered from the interactive 3D view';
+    host.parentElement.appendChild(printImage);
+    const beforePrint=()=>{
+      const previousRatio=renderer.getPixelRatio();renderer.setPixelRatio(2);resize();
+      const printCamera=camera.clone();
+      if(model){
+        const box=new THREE.Box3().setFromObject(model),sphere=box.getBoundingSphere(new THREE.Sphere());
+        const direction=camera.position.clone().sub(controls.target).normalize();
+        const vFov=THREE.MathUtils.degToRad(printCamera.fov),hFov=2*Math.atan(Math.tan(vFov/2)*printCamera.aspect);
+        const distance=sphere.radius/Math.sin(Math.min(vFov,hFov)/2)*1.02;
+        printCamera.position.copy(sphere.center).addScaledVector(direction,distance);printCamera.lookAt(sphere.center);
+      }
+      renderer.render(scene,printCamera);
+      try{printImage.src=printSnapshot(renderer.domElement);}catch{printImage.removeAttribute('src');}
+      renderer.setPixelRatio(previousRatio);resize();
+    };
+    const afterPrint=()=>requestAnimationFrame(()=>{if(!disposed){resize();renderer.render(scene,camera);}});
+    window.addEventListener('beforeprint',beforePrint);window.addEventListener('afterprint',afterPrint);
     const observer=new ResizeObserver(resize);observer.observe(host);resize();
     const intersection=new IntersectionObserver(entries=>{visible=entries[0]?.isIntersecting!==false;});intersection.observe(host);
     const fitView=name=>{
@@ -167,6 +201,7 @@ export default function CortexBrain({profile, onSelect, compact=false}) {
       disposed=true;cancelAnimationFrame(frame);observer.disconnect();intersection.disconnect();
       canvas.removeEventListener('pointerdown',pointerDown);canvas.removeEventListener('pointerup',pointerUp);
       canvas.removeEventListener('keydown',keyDown);canvas.removeEventListener('webglcontextlost',lost);
+      window.removeEventListener('beforeprint',beforePrint);window.removeEventListener('afterprint',afterPrint);printImage.remove();
       controls.dispose();ownedMaterials.forEach(m=>m.dispose());
       renderer.dispose();canvas.remove();engine.current=null;
     };
