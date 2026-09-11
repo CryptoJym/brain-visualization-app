@@ -1,0 +1,147 @@
+{
+  "version": "cc-blender-2.0",
+  "blender": "5.2.1 LTS",
+  "units": "teaching model units",
+  "axes": "+X right, +Y superior, +Z anterior",
+  "educationalOnly": true,
+  "source": {
+    "title": "Brain - with labeled parts",
+    "author": "AbdulMuhaymin",
+    "license": "CC-BY-4.0",
+    "url": "https://sketchfab.com/3d-models/brain-with-labeled-parts-28c8971e11334e8b97a2a0d6235992e8"
+  },
+  "changes": [
+    "removed label meshes",
+    "normalized anatomical geometry only",
+    "split cortex hemispheres",
+    "refined cortical mesh and retained normal maps",
+    "added schematic bilateral deep structures",
+    "added approximate cortical teaching colors"
+  ],
+  "meshes": [
+    {
+      "name": "Brainstem",
+      "kind": "support",
+      "regionId": null,
+      "triangles": 4836
+    },
+    {
+      "name": "Cerebellar_hemispheres",
+      "kind": "support",
+      "regionId": null,
+      "triangles": 15256
+    },
+    {
+      "name": "Cortex_L",
+      "kind": "cortex",
+      "regionId": null,
+      "triangles": 62782
+    },
+    {
+      "name": "Cortex_R",
+      "kind": "cortex",
+      "regionId": null,
+      "triangles": 62674
+    },
+    {
+      "name": "Amygdala_L",
+      "kind": "deep",
+      "regionId": "amygdala",
+      "triangles": 1840
+    },
+    {
+      "name": "Hippocampus_L",
+      "kind": "deep",
+      "regionId": "hippocampus",
+      "triangles": 1816
+    },
+    {
+      "name": "Thalamus_L",
+      "kind": "deep",
+      "regionId": "thalamus",
+      "triangles": 1840
+    },
+    {
+      "name": "Insula_L",
+      "kind": "deep",
+      "regionId": "insula",
+      "triangles": 1840
+    },
+    {
+      "name": "Anterior_cingulate_L",
+      "kind": "deep",
+      "regionId": "acc",
+      "triangles": 1816
+    },
+    {
+      "name": "Corpus_callosum_L",
+      "kind": "deep",
+      "regionId": "callosum",
+      "triangles": 1816
+    },
+    {
+      "name": "Amygdala_R",
+      "kind": "deep",
+      "regionId": "amygdala",
+      "triangles": 1840
+    },
+    {
+      "name": "Hippocampus_R",
+      "kind": "deep",
+      "regionId": "hippocampus",
+      "triangles": 1816
+    },
+    {
+      "name": "Thalamus_R",
+      "kind": "deep",
+      "regionId": "thalamus",
+      "triangles": 1840
+    },
+    {
+      "name": "Insula_R",
+      "kind": "deep",
+      "regionId": "insula",
+      "triangles": 1840
+    },
+    {
+      "name": "Anterior_cingulate_R",
+      "kind": "deep",
+      "regionId": "acc",
+      "triangles": 1816
+    },
+    {
+      "name": "Corpus_callosum_R",
+      "kind": "deep",
+      "regionId": "callosum",
+      "triangles": 1816
+    },
+    {
+      "name": "Hypothalamus",
+      "kind": "deep",
+      "regionId": "hypothalamus",
+      "triangles": 1840
+    },
+    {
+      "name": "Periaqueductal_gray",
+      "kind": "deep",
+      "regionId": "pag",
+      "triangles": 1816
+    },
+    {
+      "name": "Cerebellar_vermis",
+      "kind": "deep",
+      "regionId": "cerebellum",
+      "triangles": 1840
+    }
+  ],
+  "assets": {
+    "cortex-brain-v2.glb": {
+      "bytes": 9403380,
+      "sha256": "ea1dbf3179d967378c0edb3a11252d8d4fc616deaf040a6394f64a2e61ab3d4d"
+    },
+    "cortex-brain-v2-mobile.glb": {
+      "bytes": 6504420,
+      "sha256": "4b167897079434497902a53d132c03958502156cbabb66e393f70e97993ea6ce"
+    }
+  }
+}
