@@ -1,6 +1,6 @@
 # Cortex Compass — developmental context and Field Guide release
 
-Status: exact local build verified; native publication receipt pending below.
+Status: released and publicly verified. Native publication and live-acceptance receipt is below.
 
 ## What changed
 
@@ -23,3 +23,11 @@ Evidence lives under .local-evidence/development-v7 (not published). Current loc
 ## Release boundary and limitations
 
 Existing Cloudflare Worker cortex-compass / cortexcompass.utlyze.com only. Required native precondition and rollback: 00c629c5-60be-40da-adaa-0d1234309abe. Strict CSP, blob-texture allowance, HTML no-transform policy, accounts and routes remain unchanged. WebKit testing is emulation, not a physical iPhone or printer. This release is not clinical validation or an independent neuroanatomical review.
+
+## Published and publicly verified
+
+Worker version `8cc9f3fa-0986-497e-920f-1c6f2a15b1ec` is serving 100% of traffic; native deployment time 2026-09-12T18:28:24.564048Z. Application source commit `5844d7c6cfb8b8056327ee880b7acca245a3999b`, branch `astra/cortex-development-v7`, committed and pushed.
+
+Live acceptance: development 40/40, experience 46/46, reports 51/51, webkit 18/18, brand 43/43; all zero page/console errors. 11 public artifacts match the frozen deployment by SHA-256, including HTML, both app bundles, model files, favicon, manifest and sample PDFs. Self-only script CSP and HTML no-transform remain verified.
+
+Current samples: `/reports/Cortex-Compass-Superhero-Sample.pdf` (2 pages), `/reports/Cortex-Compass-Scientific-Sample.pdf` (28 pages). A4 and Letter copies carry this release. Report length varies with optional private appendices. Rollback remains `00c629c5-60be-40da-adaa-0d1234309abe`. Verification receipt: `.local-evidence/development-v7/release-verification.json`.
