@@ -24,3 +24,17 @@ This derivative is a generic educational illustration. New deep structures and
 cortical teaching color boundaries are approximate, not MRI segmentations or
 clinically reviewed atlas regions. See `docs/blender-upgrade/README.md` and the
 public model manifest for the build and modification record.
+
+## Cortex Compass v5 region-study derivative
+
+`art/blender/cortex-brain-v5.blend` and `public/models/cortex-brain-v5*.glb`
+derive from the v2 asset credited above. Cortical surfaces were split into
+geometrically defined teaching areas, materials recolored, and bilateral caudate,
+putamen and ventral-striatum guides added. Original normal maps are retained.
+The model is supplied with CC BY 4.0 attribution to AbdulMuhaymin. Neither the
+original artist nor the cited study authors are represented as endorsing this app.
+
+Geometric partitions are not registered atlas labels, and added inner shapes are
+schematic rather than MRI-derived segmentations. Study-region buttons are links
+to educational anatomy, not reconstructions of a study participant or respondent.
+The versioned manifest records source, builder, catalog and exported-asset hashes.

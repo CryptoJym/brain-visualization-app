@@ -1,3 +1,5 @@
+import {researchForQuestion,studyIdsForQuestions} from '../data/questionRegionLinks.mjs';
+import {REGION_STUDIES} from '../data/regionStudies.mjs';
 import {REGIONS} from '../data/brainSystems.mjs';
 import {ALL_QUESTIONS,SECTIONS,QUESTIONNAIRE_VERSION,FREQUENCIES,ANSWER_CHOICES} from '../data/assessmentQuestions.mjs';
 import {EVIDENCE_VERSION} from '../data/assessmentEvidence.mjs';
@@ -25,8 +27,9 @@ export function calculateProfile(raw={}) {
   const history=yes.filter(q=>q.kind==='history'),supports=yes.filter(q=>q.kind==='support');
   const prenatal=yes.filter(q=>q.kind==='prenatal');
   const topics=new Set(history.flatMap(q=>q.topics));
-  const evidenceIds=new Set(['mace','brfss',...yes.flatMap(q=>q.sources)]);
-  if(topics.size){evidenceIds.add('teicher');evidenceIds.add('puetz');}
+  const studyIds=studyIdsForQuestions(yes);
+  const evidenceIds=new Set(['mace','brfss',...yes.flatMap(q=>q.sources),...studyIds]);
+  const studyLinks=studyIds.map(id=>({id,questions:yes.filter(q=>researchForQuestion(q.id).studies.includes(id)).map(q=>({id:q.id,title:q.title,kind:q.kind,status:researchForQuestion(q.id).status,note:researchForQuestion(q.id).note}))}));
   const rows=[...history,...prenatal].map(q=>({
     id:q.id,title:q.title,kind:q.kind,timing:answers[q.id].timing,
     timingText:timingLabel(answers[q.id].timing,q.kind==='prenatal'),
@@ -42,10 +45,12 @@ export function calculateProfile(raw={}) {
     historyCount:history.length,protective:supports.length,prenatalCount:prenatal.length,
     themes:SECTIONS.filter(s=>history.some(q=>q.section===s.id)).map(s=>s.title),
     supports:supports.map(q=>({id:q.id,title:q.title})),timeline:rows,
-    evidenceIds:[...evidenceIds],
+    evidenceIds:[...evidenceIds],studyLinks,
+    researchCoverage:{endorsed:yes.length,withStudies:yes.filter(q=>researchForQuestion(q.id).studies.length).length,unmapped:yes.filter(q=>!researchForQuestion(q.id).studies.length).map(q=>({id:q.id,title:q.title,note:researchForQuestion(q.id).note}))},
     regions:REGIONS.map(r=>({...r,active:topics.has(r.id),
       reasons:history.filter(q=>q.topics.includes(r.id)).map(q=>q.title),
-      evidenceIds:topics.has(r.id)?(['amygdala','dlpfc'].includes(r.id)?['teicher','puetz']:['teicher']):[],
+      evidenceIds:[...new Set(history.flatMap(q=>researchForQuestion(q.id).guide).filter(id=>REGION_STUDIES[id].regions.some(item=>item.id===r.id)))],
+      studyFocus:history.flatMap(q=>researchForQuestion(q.id).guide).flatMap(id=>REGION_STUDIES[id].regions.filter(item=>item.id===r.id).map(item=>({...item,studyId:id}))),
     })),
   };
 }
@@ -53,7 +58,7 @@ export function migrateSavedRecord(record) {
   if(!record||typeof record!=='object'||!record.answers||typeof record.answers!=='object'||Array.isArray(record.answers))throw new Error('Saved reflection is not readable. It has not been changed.');
   if(record.schemaVersion===SAVE_SCHEMA){
     if(record.questionnaireVersion!==QUESTIONNAIRE_VERSION)throw new Error('This reflection uses a different questionnaire version. It has not been changed.');
-    return {answers:normalizeAnswers(record.answers),legacyRecord:record.legacyRecord||null,migrated:false};
+    return {answers:normalizeAnswers(record.answers),legacyRecord:record.legacyRecord||null,migrated:false,evidenceUpdated:record.evidenceVersion!==EVIDENCE_VERSION};
   }
   if(record.schemaVersion!==undefined)throw new Error('Unsupported saved version. It has not been changed.');
   // Only unchanged support prompts transfer automatically. Never split the old

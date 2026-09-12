@@ -1,4 +1,5 @@
-export const EVIDENCE_VERSION='cc-evidence-2026-09-11';
+import {REGION_STUDIES,RESEARCH_VERSION} from './regionStudies.mjs';
+export const EVIDENCE_VERSION=RESEARCH_VERSION;
 export const SOURCES={
   brfss:{label:'CDC BRFSS (2023), Module 24, pp. 105–108',type:'Survey instrument',url:'https://www.cdc.gov/brfss/questionnaires/pdf-ques/2023-BRFSS-Questionnaire-508.pdf#page=105',finding:'Household alcohol use, drug use and incarceration are separate questions (MACE.02–04).',limit:'The BRFSS module abbreviation is not Teicher’s MACE scale. Our rewritten questions are not the official instrument and do not produce its score.'},
   mace:{label:'Teicher & Parigger (2015)',type:'Instrument development study',doi:'10.1371/journal.pone.0117423',url:'https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117423',finding:'MACE records distinct maltreatment types and year-by-year exposure timing.',limit:'It does not validate our shorter prompts, custom age ranges, prenatal fields or an individual brain prediction.'},
@@ -10,13 +11,15 @@ export const SOURCES={
   prenatalDepression:{label:'Rifkin-Graboi et al. (2013)',type:'Prospective prenatal/neonatal imaging study',doi:'10.1016/j.biopsych.2013.06.019',url:'https://pubmed.ncbi.nlm.nih.gov/23968960/',finding:'Examined depression measured during pregnancy and neonatal amygdala microstructure.',limit:'A family recollection is not the study’s prenatal measurement. No individual brain estimate is made here.'},
   prenatalAlcohol:{label:'Lebel et al. (2012)',type:'Longitudinal imaging study',doi:'10.1523/JNEUROSCI.1161-12.2012',url:'https://pubmed.ncbi.nlm.nih.gov/23115162/',finding:'Examined brain-development trajectories in youth with heavy prenatal alcohol exposure.',limit:'Unknown exposure amounts cannot be substituted for this study’s exposure group. This question cannot diagnose a fetal alcohol spectrum disorder.'},
   protective:{label:'Bethell et al. (2019)',type:'Observational population survey',doi:'10.1001/jamapediatrics.2019.3007',url:'https://pubmed.ncbi.nlm.nih.gov/31498386/',finding:'Positive childhood experiences were associated with adult mental and relational health.',limit:'Protective experiences are shown separately. They do not cancel reported events or imply a percentage of repaired brain tissue.'},
+  ...REGION_STUDIES,
 };
 export const METHODS=[
+  'Volume, thickness, task activity, connectivity and diffusion are different measurements. A larger, smaller or more active region does not have one universal meaning. Study findings must be read with their sample and limitations.',
   'This is an adapted educational reflection, not a validated ACE, MACE or diagnostic test.',
   'Yes, No, Not sure, Prefer not to answer, and unanswered are distinct. Unknown responses are never counted as No.',
   'Quick age bands and custom ranges describe timing. Months are the storage unit; labels and range boundaries are interface choices, not universal sensitive periods.',
   'Pregnancy is separate from ages since birth. Prenatal information stays contextual and does not generate brain-region predictions.',
-  'Topics are prewritten reading links selected by explicitly endorsed domains, in fixed order. They are not injury scores or probabilities.',
+  'Study cards and reading topics are selected by explicitly endorsed domains in fixed order. Related-evidence matches and unmapped items are identified. They are not injury scores or probabilities.',
   'There are no age, frequency, sex or severity multipliers and no protective-buffering percentages. Support suggestions are general, not a treatment ranking.',
   'The same answers and rule version produce the same report. An older report may differ because the old unvalidated scoring formula has been retired.',
 ];

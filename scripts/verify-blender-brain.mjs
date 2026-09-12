@@ -20,8 +20,8 @@ try {
   await page.goto(origin,{waitUntil:'domcontentloaded',timeout:25000});
   await page.waitForSelector('[data-model="loaded"]',{timeout:35000});await wait(700);
   const state=()=>page.$eval('.cc-brain-canvas',e=>({...e.dataset}));
-  record('Blender v2 asset loaded',(await state()).version==='cc-blender-2.0');
-  record('19 named meshes',(await state()).meshes==='19');
+  record('Blender v2 asset loaded',(await state()).version==='cc-blender-5.0');
+  record('47 named region meshes',(await state()).meshes==='47');
   record('Refined mesh triangle budget',Number((await state()).triangles)>50000);
   record('Stage is not compressed by legacy CSS',await page.$eval('.cc-brain-stage',e=>e.clientHeight>=430));
   record('Desktop no horizontal overflow',await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
@@ -70,7 +70,7 @@ try {
   record('Mobile deep-region selection',await mobile.$eval('.cc-brain-canvas',e=>e.dataset.selected==='insula'&&e.dataset.mode==='cutaway'));
   await mobile.screenshot({path:`${out}/after-mobile.png`,fullPage:true});await mobile.close();
   const broken=await browser.newPage();await broken.setRequestInterception(true);
-  broken.on('request',request=>request.url().includes('cortex-brain-v2')&&request.url().endsWith('.glb')?request.abort('failed'):request.continue());
+  broken.on('request',request=>request.url().includes('cortex-brain-v5')&&request.url().endsWith('.glb')?request.abort('failed'):request.continue());
   await broken.goto(origin,{waitUntil:'domcontentloaded',timeout:25000});await broken.waitForSelector('[data-model="failed"]',{timeout:35000});
   record('Model failure explicitly shown',await broken.evaluate(()=>document.body.innerText.includes('3D view unavailable')));
   await broken.select('.cc-brain-region-selector select','thalamus');
