@@ -7,7 +7,7 @@ mkdirSync(out,{recursive:true});const checks=[],errors=[],failures=[];
 const check=(name,value)=>{assert.ok(value,name);checks.push(name);};
 const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 async function click(page,text,scope=''){
-  for(const b of await page.$$(`${scope} button`))if((await b.evaluate(e=>e.textContent.trim()))===text){await b.click();return;}
+  for(const b of await page.$$(`${scope} button`))if((await b.evaluate(e=>e.textContent.trim()))===text){const details=await b.evaluateHandle(e=>e.closest('.cc-calendar-optional:not([open])'));if(details.asElement()){await (await details.asElement().$('summary')).click();}await b.click();return;}
   throw new Error(`Missing button: ${scope} ${text}`);
 }
 async function setAges(page,scope,startYears,startMonths,endYears,endMonths){
@@ -21,7 +21,7 @@ try{
   const page=await browser.newPage();await page.setViewport({width:1440,height:1100,deviceScaleFactor:1});
   page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text().slice(0,400));});
   await page.goto(origin,{waitUntil:'domcontentloaded',timeout:25000});await page.waitForSelector('h1');
-  await click(page,'Begin my reflection →');
+  await click(page,'Begin my reflection →');await click(page,'Continue to experiences →');
   const q='[data-question="physical_assault"]';await click(page,'Yes',q);
   check('Clear birth-to-months preset',await page.$eval(q,e=>e.textContent.includes('Birth–18 months')));
   await click(page,'Birth–18 months',q);await click(page,'Custom range',q);
@@ -62,7 +62,7 @@ try{
   check('Device saving needs explicit consent',await page.$eval('.cc-save-panel .cc-primary',e=>e.disabled));
   await page.click('.cc-save-panel input[type=checkbox]');await click(page,'Save to this device');
   const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('cortex-compass-profile')));
-  check('Versioned device save',saved.schemaVersion===4&&saved.questionnaireVersion==='cc-reflection-4.0');
+  check('Versioned device save',saved.schemaVersion===5&&saved.questionnaireVersion==='cc-reflection-5.0');
   check('Months and separate intervals survive save',JSON.stringify(saved.answers.physical_assault.timing.periods)===JSON.stringify([{startMonth:6,endMonth:24},{startMonth:84,endMonth:120}]));
   check('Drug and incarceration answers survive independently',saved.answers.household_drugs.value==='no'&&saved.answers.household_incarceration.value==='yes');
   await page.reload({waitUntil:'domcontentloaded'});await click(page,'Open saved profile');
@@ -75,7 +75,7 @@ try{
   check('Print snapshot contains rendered brain pixels',await page.$eval('.cc-brain-print-image',e=>e.naturalWidth>50&&e.naturalHeight>50));
   await page.emulateMediaType('screen');
   const mobile=await browser.newPage();await mobile.setViewport({width:390,height:844,isMobile:true,hasTouch:true,deviceScaleFactor:1});
-  await mobile.goto(origin,{waitUntil:'domcontentloaded'});await click(mobile,'Begin my reflection →');await click(mobile,'Yes',q);await click(mobile,'Custom range',q);
+  await mobile.goto(origin,{waitUntil:'domcontentloaded'});await click(mobile,'Begin my reflection →');await click(mobile,'Continue to experiences →');await click(mobile,'Yes',q);await click(mobile,'Custom range',q);
   await setAges(mobile,q,2,4,5,6);await click(mobile,'Add this period',q);
   check('Mobile custom years/months',await mobile.$eval(`${q} .cc-recorded-periods`,e=>e.textContent.includes('2 years 4 months → 5 years 6 months')));
   check('Mobile has no horizontal overflow',await mobile.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));

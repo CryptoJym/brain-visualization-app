@@ -17,7 +17,7 @@ export const METHODS=[
   'Volume, thickness, task activity, connectivity and diffusion are different measurements. A larger, smaller or more active region does not have one universal meaning. Study findings must be read with their sample and limitations.',
   'This is an adapted educational reflection, not a validated ACE, MACE or diagnostic test.',
   'Yes, No, Not sure, Prefer not to answer, and unanswered are distinct. Unknown responses are never counted as No.',
-  'Quick age bands and custom ranges describe timing. Months are the storage unit; labels and range boundaries are interface choices, not universal sensitive periods.',
+  'Developmental context is recorded before optional calendar history. Pubertal stage is a reported proxy, not measured brain maturation. Ages never assign a stage or sensitive window; study age covariates remain accurately reported.',
   'Pregnancy is separate from ages since birth. Prenatal information stays contextual and does not generate brain-region predictions.',
   'Study cards and reading topics are selected by explicitly endorsed domains in fixed order. Related-evidence matches and unmapped items are identified. They are not injury scores or probabilities.',
   'There are no age, frequency, sex or severity multipliers and no protective-buffering percentages. Support suggestions are general, not a treatment ranking.',

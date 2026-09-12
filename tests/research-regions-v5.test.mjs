@@ -64,8 +64,8 @@ test('Recent research records retain null findings and measurement cautions',()=
   assert.match(REGION_STUDIES.development2025.limit,/not automatically injury/);assert.match(REGION_STUDIES.development2025.limit,/share participants/);
 });
 test('Evidence changes leave v4 answers and ages intact',()=>{
-  const before={schemaVersion:4,questionnaireVersion:QUESTIONNAIRE_VERSION,evidenceVersion:'cc-evidence-2026-09-11',answers:SAMPLE_ANSWERS};
-  const result=migrateSavedRecord(before);assert.deepEqual(result.answers,normalizeAnswers(SAMPLE_ANSWERS));assert.equal(result.evidenceUpdated,true);assert.equal(result.migrated,false);
+  const before={schemaVersion:4,questionnaireVersion:'cc-reflection-4.0',evidenceVersion:'cc-evidence-2026-09-11',answers:SAMPLE_ANSWERS};
+  const result=migrateSavedRecord(before);assert.deepEqual(result.answers,normalizeAnswers(SAMPLE_ANSWERS));assert.equal(result.evidenceUpdated,true);assert.equal(result.migrated,true);assert.equal(result.developmentMigration,true);assert.deepEqual(result.personContext,{});
 });
 test('Reports deduplicate source IDs and remain deterministic',()=>{
   const p=calculateProfile(SAMPLE_ANSWERS);assert.equal(p.evidenceVersion,RESEARCH_VERSION);

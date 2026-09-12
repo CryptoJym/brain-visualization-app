@@ -221,7 +221,7 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
   if(compact&&!loadRequested)return <section className="cc-brain cc-brain-v2 compact cc-brain-poster" aria-label="Educational brain preview"><div className="cc-brain-poster-image"><img src="/reports/brain-surface.jpg" width="1020" height="645" alt="Generic educational brain surface, not a personal scan"/><button className="cc-primary" onClick={()=>{setLoadRequested(true);setTouchActive(true);}}>Load interactive brain</button></div><p className="cc-brain-model-note">Explore the same teaching anatomy used in the reports. The larger 3D download starts only when you choose to open it.</p></section>;
   return <section className={`cc-brain cc-brain-v2 ${compact?'compact':''}`} aria-label="Blender-built educational brain explorer">
     <div className="cc-brain-v2-header cc-print-hide">
-      <span className="cc-brain-version">BLENDER / ANATOMY EXPLORER</span>
+      <span className="cc-brain-version">CORTEX / ANATOMY EXPLORER</span>
       <div className="cc-brain-modes" aria-label="Brain layers">
         {['surface','cutaway','deep'].map(value=><button key={value} aria-pressed={mode===value} onClick={()=>changeMode(value)}>{value==='deep'?'Deep structures':value[0].toUpperCase()+value.slice(1)}</button>)}
       </div>

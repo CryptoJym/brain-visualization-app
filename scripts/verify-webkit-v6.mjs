@@ -24,7 +24,7 @@ try{
  await page.getByRole('button',{name:'Scientific Report',exact:true}).click();
  record('WebKit scientific atlas has all regions',await page.locator('[data-atlas-region]').count()===26);
  record('WebKit scientific report has no horizontal overflow',await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
- record('WebKit private history default stays off',!(await page.locator('.cc-private-choice input').isChecked()));
+ record('WebKit private history default stays off',!(await page.locator('.cc-private-choice input').first().isChecked()));
  await page.evaluate(()=>{window.__printKinds=[];window.print=()=>window.__printKinds.push(document.querySelector('[data-report]').dataset.report);});
  await page.getByRole('button',{name:'Print Scientific / Save PDF',exact:true}).click();
  await page.waitForFunction(()=>window.__printKinds[0]==='scientific');
@@ -41,6 +41,21 @@ try{
  await page.locator('.cc-brain-region-selector select').selectOption('hippocampus');
  record('WebKit region selection is functional',await page.locator('[data-model]').getAttribute('data-selected')==='hippocampus');
  await page.screenshot({path:`${out}/brain-iphone-webkit.png`,fullPage:true});
+ await page.goto(origin,{waitUntil:'domcontentloaded',timeout:60000});
+ await page.getByRole('button',{name:'Begin my reflection',exact:false}).click();
+ await page.locator('.cc-context-screen').waitFor();
+ await page.locator('[data-context-question="sexAssigned"] select').selectOption('male');
+ await page.locator('[data-context-question="genderIdentity"] select').selectOption('woman');
+ record('WebKit separate sex and gender fields retain distinct answers',await page.locator('[data-context-question="sexAssigned"] select').inputValue()==='male'&&await page.locator('[data-context-question="genderIdentity"] select').inputValue()==='woman');
+ await page.getByRole('button',{name:'Continue to experiences →',exact:true}).click();
+ const q=page.locator('[data-question="physical_assault"]');await q.getByRole('button',{name:'Yes',exact:true}).click();
+ await q.locator('[data-stage="pubertal_transition"]').click();
+ record('WebKit stage selection works without calendar age',await q.locator('[data-stage="pubertal_transition"]').getAttribute('aria-pressed')==='true'&&!(await q.locator('.cc-calendar-optional').getAttribute('open')));
+ await q.getByRole('button',{name:'Not sure about development',exact:true}).click();
+ record('WebKit uncertain development clears selected stage',await q.locator('[data-stage][aria-pressed="true"]').count()===0);
+ record('WebKit journey marker tracks experiences',await page.locator('.cc-journey-rail li[aria-current="step"]').textContent().then(t=>t.includes('Your experiences')));
+ record('WebKit redesigned developmental picker has no overflow',await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+ await page.screenshot({path:`${out}/development-iphone-webkit.png`,fullPage:true});
  record('WebKit no page or console errors',errors.length===0);
  await context.close();
 }catch(error){failures.push(error.stack);process.exitCode=1;}finally{await browser.close();}

@@ -1,5 +1,5 @@
 import {guideRegions,researchForQuestion} from './questionRegionLinks.mjs';
-export const QUESTIONNAIRE_VERSION='cc-reflection-4.0';
+export const QUESTIONNAIRE_VERSION='cc-reflection-5.0';
 const maltreatment='Adapted maltreatment-domain prompt; not the validated MACE scale.';
 const context='Context only: no region-specific inference is assigned.';
 function q(id,title,text,sources,extra={}) {
@@ -31,7 +31,7 @@ export const SECTIONS=[
     q('sexual_boundary','Sexual boundaries','Were you subjected to unwanted sexual contact or sexual coercion?',['mace','brfss'],{basis:maltreatment,topics:['hippocampus','insula'],help:'No description or identifying details are needed.'}),
     q('discrimination','Identity-based mistreatment','Did you repeatedly experience discrimination because of an aspect of your identity?',[],{basis:'Personal context prompt, not a scored or validated item in this app.'}),
   ]},
-  {id:'health',title:'Health & early context',icon:'✚',subtitle:'Other events and optional information about pregnancy. Pregnancy is before birth, not part of the 0–18-month band.',questions:[
+  {id:'health',title:'Health & early context',icon:'✚',subtitle:'Other events and optional information about pregnancy. Pregnancy is a separate developmental context, not a post-birth age band.',questions:[
     q('medical_trauma','Medical experiences','Did a serious illness or medical treatment feel frightening or overwhelming?',[],{basis:'Personal context only; no specific brain change is inferred.'}),
     q('caregiver_death','Caregiver death','Did a parent or primary caregiver die before you turned 18?',[],{basis:'Personal context only; separate from separation or divorce.'}),
     q('disaster','Disaster exposure','Did you experience a natural disaster that seriously threatened your safety?',[],{basis:'Personal context only; not combined with assault or illness.'}),

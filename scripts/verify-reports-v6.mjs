@@ -43,7 +43,7 @@ try{
  await page.screenshot({path:`${out}/scientific-cover-desktop.png`});
  await click(page,'Print Scientific / Save PDF');await page.waitForFunction(()=>window.__prints.at(-1)==='scientific',{timeout:12000});record('Print action switches to Scientific only',await page.evaluate(()=>window.__prints.at(-1)==='scientific'));
  await page.click('.cc-private-choice input');record('Explicit choice reveals sensitive appendix',!!await page.$('.cc-private-ledger'));await page.click('.cc-private-choice input');
- await click(page,'Back to overview');await click(page,'Start my reflection');await click(page,'Review what I’ve shared');
+ await click(page,'Back to overview');await click(page,'Start my reflection');await click(page,'Continue to experiences →');await click(page,'Review what I’ve shared');
  await click(page,'Explore my strengths & friction →');
  record('Optional observation survey offers all responses',await page.$$eval('[data-insight-question="noticing"] button',es=>es.length===5));
  await click(page,'Often','[data-insight-question="noticing"]');await click(page,'Sometimes','[data-insight-question="ideas"]');
@@ -55,7 +55,7 @@ try{
  record('Explicit device save writes versioned observations',await page.evaluate(k=>{const r=JSON.parse(localStorage.getItem(k));return r.insights?.noticing==='often'&&r.insightsVersion==='cc-insights-1.0';},STORAGE_KEY));
  await page.reload({waitUntil:'domcontentloaded',timeout:60000});await click(page,'Open saved profile');await click(page,'Choose my reports');record('Saved observation survives reload',!!await page.$('[data-report-trait="noticing"]'));
  // Empty/skip boundary in actual UI, without fabricating answers.
- await click(page,'Back to overview');await page.click('.cc-results .cc-nav .cc-brand.button');await click(page,'Begin my reflection →');await click(page,'Review what I’ve shared');await click(page,'Choose my reports');
+ await click(page,'Back to overview');await page.click('.cc-results .cc-nav .cc-brand.button');await click(page,'Begin my reflection →');await click(page,'Continue to experiences →');await click(page,'Review what I’ve shared');await click(page,'Choose my reports');
  record('Empty report creates no strengths or combinations',await page.$$eval('[data-report-trait],[data-combination]',es=>es.length===0));
  for(const width of [320,390,768]){
   const mobile=await browser.newPage();mobile.on('pageerror',e=>errors.push(e.message));await mobile.setViewport({width,height:844,deviceScaleFactor:1,isMobile:width<700,hasTouch:width<700});await mobile.goto(origin,{waitUntil:'domcontentloaded',timeout:60000});
