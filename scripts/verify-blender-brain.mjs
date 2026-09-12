@@ -12,7 +12,7 @@ const click=async(page,text)=>{
   for(const button of await page.$$('button')) if((await button.evaluate(e=>e.textContent.trim()))===text){await button.click();return;}
   throw new Error(`Button not found: ${text}`);
 };
-const browser=await puppeteer.launch({headless:'new'});
+const browser=await puppeteer.launch({headless:'new',timeout:60000});
 try {
   const page=await browser.newPage();await page.setViewport({width:1440,height:1100,deviceScaleFactor:1});
   page.on('pageerror',e=>errors.push(e.message));
@@ -63,7 +63,7 @@ try {
   await page.emulateMediaType('print');record('Brain remains present in print',await page.$eval('canvas',c=>c.getBoundingClientRect().height>0));await page.emulateMediaType('screen');
   record('No browser or shader errors',errors.length===0);
   const mobile=await browser.newPage();await mobile.setViewport({width:390,height:844,isMobile:true,hasTouch:true,deviceScaleFactor:1});
-  await mobile.goto(origin,{waitUntil:'domcontentloaded',timeout:25000});await mobile.waitForSelector('[data-model="loaded"]',{timeout:35000});await wait(400);
+  await mobile.goto(origin,{waitUntil:'domcontentloaded',timeout:25000});await mobile.waitForSelector('.cc-brain-poster');await click(mobile,'Load interactive brain');await mobile.waitForSelector('[data-model="loaded"]',{timeout:35000});await wait(400);
   record('Mobile selects reduced geometry',await mobile.$eval('.cc-brain-canvas',e=>e.dataset.lod==='mobile'));
   record('Mobile no horizontal overflow',await mobile.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
   await mobile.select('.cc-brain-region-selector select','insula');await wait(150);

@@ -1,0 +1,17 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import {resolve,dirname} from 'node:path';
+import {pathToFileURL,fileURLToPath} from 'node:url';
+process.chdir(resolve(dirname(fileURLToPath(import.meta.url)),'..'));
+const root=process.env.CORTEX_SHARP_MODULE||'/Users/utlyze/Projects/freely-sweet/node_modules/sharp';
+const pkg=JSON.parse(readFileSync(`${root}/package.json`));
+const {default:sharp}=await import(pathToFileURL(resolve(root,pkg.main)).href);
+for(const size of [16,32,48,64,192,512])await sharp('public/favicon.svg',{density:144}).resize(size,size).png().toFile(`public/brand/favicon-${size}.png`);
+for(const [size,path] of [[180,'public/apple-touch-icon.png'],[512,'public/brand/icon-maskable-512.png']])await sharp('public/brand/icon-maskable.svg',{density:144}).resize(size,size).png().toFile(path);
+const sizes=[16,32,48,64],pngs=sizes.map(s=>readFileSync(`public/brand/favicon-${s}.png`));
+const header=Buffer.alloc(6+sizes.length*16);header.writeUInt16LE(1,2);header.writeUInt16LE(sizes.length,4);let offset=header.length;
+sizes.forEach((s,i)=>{const b=6+i*16;header[b]=s;header[b+1]=s;header.writeUInt16LE(1,b+4);header.writeUInt16LE(32,b+6);header.writeUInt32LE(pngs[i].length,b+8);header.writeUInt32LE(offset,b+12);offset+=pngs[i].length;});
+writeFileSync('public/favicon.ico',Buffer.concat([header,...pngs]));
+for(const variant of ['light','dark'])await sharp(`public/brand/logo-lockup-${variant}.svg`,{density:144}).resize(822,162).png().toFile(`public/brand/logo-lockup-${variant}.png`);
+const logo=await sharp('public/brand/logo-lockup-light.svg',{density:144}).resize(1000).png().toBuffer();
+await sharp({create:{width:1200,height:630,channels:3,background:'#f7fbfd'}}).composite([{input:logo,left:100,top:200}]).png().toFile('public/brand/social-card.png');
+console.log('Created favicon ICO/PNG, Apple icon, light/dark PNG logos and sharing image.');

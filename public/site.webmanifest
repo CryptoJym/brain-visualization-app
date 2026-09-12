@@ -1,0 +1,17 @@
+{
+  "id": "/",
+  "name": "Cortex Compass",
+  "short_name": "Cortex Compass",
+  "description": "Private research-informed reflection by Utlyze.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "browser",
+  "lang": "en",
+  "theme_color": "#071724",
+  "background_color": "#f7fbfd",
+  "icons": [
+    {"src": "/brand/favicon-192.png?v=cc-brand-20260912", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "/brand/favicon-512.png?v=cc-brand-20260912", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "/brand/icon-maskable-512.png?v=cc-brand-20260912", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

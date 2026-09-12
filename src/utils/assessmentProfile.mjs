@@ -1,3 +1,5 @@
+import {normalizeInsights} from './insightProfile.mjs';
+import {INSIGHT_VERSION} from '../data/insightQuestions.mjs';
 import {researchForQuestion,studyIdsForQuestions} from '../data/questionRegionLinks.mjs';
 import {REGION_STUDIES} from '../data/regionStudies.mjs';
 import {REGIONS} from '../data/brainSystems.mjs';
@@ -57,8 +59,9 @@ export function calculateProfile(raw={}) {
 export function migrateSavedRecord(record) {
   if(!record||typeof record!=='object'||!record.answers||typeof record.answers!=='object'||Array.isArray(record.answers))throw new Error('Saved reflection is not readable. It has not been changed.');
   if(record.schemaVersion===SAVE_SCHEMA){
+    if(record.insightsVersion!==undefined&&record.insightsVersion!==INSIGHT_VERSION)throw new Error('This reflection uses a different present-day questionnaire version. It has not been changed.');
     if(record.questionnaireVersion!==QUESTIONNAIRE_VERSION)throw new Error('This reflection uses a different questionnaire version. It has not been changed.');
-    return {answers:normalizeAnswers(record.answers),legacyRecord:record.legacyRecord||null,migrated:false,evidenceUpdated:record.evidenceVersion!==EVIDENCE_VERSION};
+    return {answers:normalizeAnswers(record.answers),insights:record.insightsVersion===INSIGHT_VERSION?normalizeInsights(record.insights):{},legacyRecord:record.legacyRecord||null,migrated:false,evidenceUpdated:record.evidenceVersion!==EVIDENCE_VERSION};
   }
   if(record.schemaVersion!==undefined)throw new Error('Unsupported saved version. It has not been changed.');
   // Only unchanged support prompts transfer automatically. Never split the old
@@ -74,10 +77,10 @@ export function readSavedRecord(storage) {
   try{return migrateSavedRecord(JSON.parse(raw));}
   catch(error){if(error instanceof SyntaxError)throw new Error('Saved reflection contains invalid JSON. It has not been changed.');throw error;}
 }
-export function saveRecord(storage,raw,legacyRecord,consent) {
+export function saveRecord(storage,raw,legacyRecord,consent,insights={}) {
   if(consent!==true)throw new Error('Choose explicit device-save consent first.');
   const record={schemaVersion:SAVE_SCHEMA,questionnaireVersion:QUESTIONNAIRE_VERSION,evidenceVersion:EVIDENCE_VERSION,
-    savedAt:new Date().toISOString(),answers:normalizeAnswers(raw),legacyRecord:legacyRecord||null};
+    savedAt:new Date().toISOString(),answers:normalizeAnswers(raw),insightsVersion:INSIGHT_VERSION,insights:normalizeInsights(insights),legacyRecord:legacyRecord||null};
   const text=JSON.stringify(record);
   if(text.length>256000)throw new Error('Reflection is too large to save. Existing data was not changed.');
   storage.setItem(STORAGE_KEY,text);

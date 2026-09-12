@@ -1,0 +1,76 @@
+import assert from 'node:assert/strict';
+import {mkdirSync,writeFileSync} from 'node:fs';
+import puppeteer from 'puppeteer';
+import {exportReportPDF} from './report-pdf-export-v6.mjs';
+import {SAMPLE_ANSWERS,STORAGE_KEY} from '../src/utils/assessmentProfile.mjs';
+import {SAMPLE_INSIGHTS,INSIGHT_QUESTIONS,INSIGHT_VERSION} from '../src/data/insightQuestions.mjs';
+import {QUESTIONNAIRE_VERSION} from '../src/data/assessmentQuestions.mjs';
+const origin=process.env.CORTEX_TEST_ORIGIN||'http://127.0.0.1:5266';
+const out=process.env.CORTEX_TEST_OUTPUT||'.local-evidence/reports-v6/browser';mkdirSync(out,{recursive:true});
+const checks=[],failures=[],errors=[];const record=(name,value)=>{assert.ok(value,name);checks.push(name);console.log('PASS '+name);};
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const click=async(page,text,scope='')=>{await page.waitForFunction((s,t)=>[...document.querySelectorAll(`${s} button`)].some(e=>e.textContent.trim()===t&&!e.disabled),{timeout:15000},scope,text);for(const b of await page.$$(`${scope} button`))if((await b.evaluate(e=>e.textContent.trim()))===text){await b.click();return;}throw Error(`Button not found: ${text}`);};
+const noOverflow=page=>page.evaluate(()=>({ok:document.documentElement.scrollWidth<=innerWidth+1,width:innerWidth,scrollWidth:document.documentElement.scrollWidth}));
+const browser=await puppeteer.launch({headless:'new',timeout:60000});
+const ready=async page=>{await page.waitForFunction(()=>['loaded','failed','unavailable'].includes(document.querySelector('[data-model]')?.dataset.model),{timeout:90000});assert.equal(await page.$eval('[data-model]',e=>e.dataset.model),'loaded','3D model readiness');};
+try{
+ const page=await browser.newPage();page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text().slice(0,250));});
+ await page.setViewport({width:1440,height:1050,deviceScaleFactor:1});await page.goto(origin,{waitUntil:'domcontentloaded',timeout:60000});await ready(page);
+ record('Desktop welcome no overflow',(await noOverflow(page)).ok);
+ const frames1=await page.$eval('[data-model]',e=>Number(e.dataset.renderCount));await wait(1100);const frames2=await page.$eval('[data-model]',e=>Number(e.dataset.renderCount));record('Idle viewer does not keep rendering',frames2-frames1<=2);
+ await click(page,'Explore sample profile');await ready(page);
+ record('Sample includes optional current observations',await page.$eval('.cc-report-gateway',e=>e.textContent.includes('9 / 16')));
+ await click(page,'Choose my reports');await page.waitForSelector('[data-report="superhero"]');
+ record('Superhero mode has two designed pages',await page.$$eval('.cc-paper-page',es=>es.length===2));
+ record('Sample is labeled fictional',await page.$eval('.cc-fictional',e=>e.textContent.includes('FICTIONAL')));
+ record('Strength based on explicit observation',await page.$eval('[data-report-trait="noticing"]',e=>e.textContent.includes('self-reported')));
+ record('Untested combination includes benefit and cost',await page.$eval('[data-combination="pattern_lab"]',e=>e.textContent.includes('UNTESTED')&&e.textContent.includes('Possible kryptonite')));
+ await page.evaluate(async()=>{await Promise.all([...document.images].map(i=>i.decode().catch(()=>{})));});
+ record('Brain report plates loaded',await page.$$eval('.cc-atlas-plate img',es=>es.length>0&&es.every(e=>e.complete&&e.naturalWidth>0)));
+ await page.screenshot({path:`${out}/superhero-desktop.png`,fullPage:true});
+ for(const format of ['A4','Letter'])await exportReportPDF(page,`${out}/Cortex-Compass-Superhero-${format}.pdf`,format);
+ await page.evaluate(()=>{window.__prints=[];window.print=()=>window.__prints.push(document.querySelector('[data-report]')?.dataset.report);});
+ await click(page,'Print Superhero / Save PDF');await wait(300);record('Print action targets the selected Superhero report',await page.evaluate(()=>window.__prints[0]==='superhero'));
+ await click(page,'Scientific Report');await page.waitForSelector('[data-report="scientific"]');
+ record('Scientific has 26 anatomy region cards',await page.$$eval('[data-atlas-region]',es=>es.length===26));
+ record('Scientific has all 15 primary studies',await page.$$eval('.cc-scientific-studies [data-study]',es=>es.length===15));
+ record('Private childhood appendix off by default',await page.$eval('.cc-private-choice input',e=>!e.checked)&&await page.$('.cc-private-ledger')===null);
+ record('Scientific report states causal limits',await page.$eval('.cc-report-document',e=>e.textContent.includes('Correlation is not causation')&&e.textContent.includes('Unknown here:')));
+ record('Scientific report keeps measurements distinct',await page.$eval('.cc-report-document',e=>e.textContent.includes('task activity into tissue volume')));
+ record('Current and childhood support sections are separate',await page.$eval('.cc-support-pair',e=>e.textContent.includes('What helped earlier')&&e.textContent.includes('What helps now')));
+ await page.evaluate(async()=>{await Promise.all([...document.images].map(i=>i.decode().catch(()=>{})));});
+ for(const format of ['A4','Letter'])await exportReportPDF(page,`${out}/Cortex-Compass-Scientific-${format}.pdf`,format);
+ await page.screenshot({path:`${out}/scientific-cover-desktop.png`});
+ await click(page,'Print Scientific / Save PDF');await page.waitForFunction(()=>window.__prints.at(-1)==='scientific',{timeout:12000});record('Print action switches to Scientific only',await page.evaluate(()=>window.__prints.at(-1)==='scientific'));
+ await page.click('.cc-private-choice input');record('Explicit choice reveals sensitive appendix',!!await page.$('.cc-private-ledger'));await page.click('.cc-private-choice input');
+ await click(page,'Back to overview');await click(page,'Start my reflection');await click(page,'Review what I’ve shared');
+ await click(page,'Explore my strengths & friction →');
+ record('Optional observation survey offers all responses',await page.$$eval('[data-insight-question="noticing"] button',es=>es.length===5));
+ await click(page,'Often','[data-insight-question="noticing"]');await click(page,'Sometimes','[data-insight-question="ideas"]');
+ await click(page,'Continue →');await click(page,'Often','[data-insight-question="overload"]');await click(page,'Continue →');
+ await click(page,'Often','[data-insight-question="current_support"]');await click(page,'Build my reports →');
+ record('Real flow retains only endorsed strengths',await page.$$eval('[data-report-trait]',es=>es.map(e=>e.dataset.reportTrait).sort().join(',')==='ideas,noticing,overload'));
+ record('Combination created from both endorsed components',!!await page.$('[data-combination="pattern_lab"]'));
+ await click(page,'Back to overview');await click(page,'Save profile');await page.click('.cc-save-panel input[type="checkbox"]');await click(page,'Save to this device');
+ record('Explicit device save writes versioned observations',await page.evaluate(k=>{const r=JSON.parse(localStorage.getItem(k));return r.insights?.noticing==='often'&&r.insightsVersion==='cc-insights-1.0';},STORAGE_KEY));
+ await page.reload({waitUntil:'domcontentloaded',timeout:60000});await click(page,'Open saved profile');await click(page,'Choose my reports');record('Saved observation survives reload',!!await page.$('[data-report-trait="noticing"]'));
+ // Empty/skip boundary in actual UI, without fabricating answers.
+ await click(page,'Back to overview');await page.click('.cc-results .cc-nav .cc-brand.button');await click(page,'Begin my reflection →');await click(page,'Review what I’ve shared');await click(page,'Choose my reports');
+ record('Empty report creates no strengths or combinations',await page.$$eval('[data-report-trait],[data-combination]',es=>es.length===0));
+ for(const width of [320,390,768]){
+  const mobile=await browser.newPage();mobile.on('pageerror',e=>errors.push(e.message));await mobile.setViewport({width,height:844,deviceScaleFactor:1,isMobile:width<700,hasTouch:width<700});await mobile.goto(origin,{waitUntil:'domcontentloaded',timeout:60000});
+  if(width<700){await mobile.waitForSelector('.cc-brain-poster');record(`${width}px welcome defers the large 3D download`,await mobile.$('[data-model]')===null);await click(mobile,'Load interactive brain');await ready(mobile);await click(mobile,'Return to page scrolling');}else await ready(mobile);
+  record(`${width}px welcome no horizontal overflow`,(await noOverflow(mobile)).ok);
+  if(width<700){const guard=await mobile.$('.cc-brain-touch-guard');record(`${width}px brain allows page scrolling by default`,await guard.evaluate(e=>getComputedStyle(e).display!=='none'&&getComputedStyle(e).touchAction==='pan-y'));await click(mobile,'Enable 3D touch · page scroll is on');record(`${width}px touch mode can be exited`,!!await mobile.$('.cc-brain-touch-exit'));await click(mobile,'Return to page scrolling');}
+  await click(mobile,'Explore sample profile');await ready(mobile);record(`${width}px overview no horizontal overflow`,(await noOverflow(mobile)).ok);
+  record(`${width}px edit action is visible`,await mobile.$eval('.cc-results .cc-nav .cc-secondary',e=>getComputedStyle(e).display!=='none'&&e.getBoundingClientRect().height>=44));
+  await click(mobile,'Choose my reports');record(`${width}px superhero no horizontal overflow`,(await noOverflow(mobile)).ok);
+  record(`${width}px report controls have touch-size targets`,await mobile.$$eval('.cc-report-switch button,.cc-report-tool-actions button',es=>es.every(e=>e.getBoundingClientRect().height>=44)));
+  if(width===390)await mobile.screenshot({path:`${out}/superhero-mobile.png`,fullPage:true});
+  await click(mobile,'Scientific Report');record(`${width}px scientific no horizontal overflow`,(await noOverflow(mobile)).ok);
+  await click(mobile,'Edit strengths & friction');record(`${width}px current reflection no overflow`,(await noOverflow(mobile)).ok);
+  if(width===390)await mobile.screenshot({path:`${out}/reflection-mobile.png`,fullPage:true});await mobile.close();
+ }
+ record('No JavaScript or console errors',errors.length===0);
+}catch(error){failures.push(error.stack);process.exitCode=1;}finally{await browser.close();}
+const result={origin,observedAt:new Date().toISOString(),passed:checks.length,failed:failures.length,checks,errors,failures};writeFileSync(`${out}/verification.json`,JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));

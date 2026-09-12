@@ -40,6 +40,8 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
   const [mode,setMode] = useState('surface'), [view,setView] = useState('perspective');
   const [selected,setSelected] = useState(''), [status,setStatus] = useState('loading'), [attempt,setAttempt] = useState(0);
   const [rotate,setRotate] = useState(false);
+  const [touchActive,setTouchActive]=useState(false);
+  const [loadRequested,setLoadRequested]=useState(()=>!compact||typeof window==='undefined'||!window.matchMedia('(max-width:700px)').matches);
   const [side,setSide]=useState('both'),[isolate,setIsolate]=useState(false),[regionColors,setRegionColors]=useState(true);
   callback.current=onSelect;
   const region = REGIONS.find(r => r.id === selected);
@@ -55,7 +57,7 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
   const chooseRef=useRef(choose); chooseRef.current=choose;
   useEffect(() => {
     const host=mount.current; if(!host) return;
-    let disposed=false, frame=0, model=null, down=null, visible=true;
+    let disposed=false, frame=0, model=null, down=null, visible=true, needsRender=true;
     const ownedMaterials=[];
     setStatus('loading'); host.dataset.model='loading'; host.dataset.version=MODEL_VERSION;
     const scene=new THREE.Scene();
@@ -70,6 +72,7 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
     renderer.domElement.setAttribute('aria-label','Rotate the 3D brain with pointer drag or arrow keys; plus and minus zoom. Region details are available below.');
     renderer.domElement.setAttribute('tabindex','0'); host.appendChild(renderer.domElement);
     const controls=new OrbitControls(camera,renderer.domElement);
+    const markDirty=()=>{needsRender=true;};controls.addEventListener('change',markDirty);
     controls.enableDamping=true; controls.enablePan=false; controls.dampingFactor=.08;
     controls.minDistance=8; controls.maxDistance=22; controls.target.set(0,0,0); controls.autoRotateSpeed=.45;
     scene.add(new THREE.HemisphereLight(0xcbeaff,0x162236,1.3));
@@ -80,7 +83,7 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
     const clip=new THREE.Plane(new THREE.Vector3(1,0,0),-.28);
     const resize=()=>{
       const width=host.clientWidth,height=host.clientHeight;if(!width||!height)return;
-      camera.aspect=width/height;camera.updateProjectionMatrix();renderer.setSize(width,height);
+      camera.aspect=width/height;camera.updateProjectionMatrix();renderer.setSize(width,height);needsRender=true;
     };
     const printImage=document.createElement('img');
     printImage.className='cc-brain-print-image';printImage.alt='Generic educational brain model rendered from the interactive 3D view';
@@ -102,7 +105,7 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
     const afterPrint=()=>requestAnimationFrame(()=>{if(!disposed){resize();renderer.render(scene,camera);}});
     window.addEventListener('beforeprint',beforePrint);window.addEventListener('afterprint',afterPrint);
     const observer=new ResizeObserver(resize);observer.observe(host);resize();
-    const intersection=new IntersectionObserver(entries=>{visible=entries[0]?.isIntersecting!==false;});intersection.observe(host);
+    const intersection=new IntersectionObserver(entries=>{visible=entries[0]?.isIntersecting!==false;if(visible)needsRender=true;});intersection.observe(host);
     const fitView=name=>{
       controls.minDistance=activeIsolate?.3:8;camera.up.set(0,1,0);camera.position.set(...(VIEWS[name]||VIEWS.perspective));
       if(name==='top')camera.up.set(0,0,-1);
@@ -111,7 +114,7 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
     };
     let activeMode='surface';
     const configure=(nextMode,id,selectedSide='both',only=false,colored=true)=>{
-      activeMode=nextMode;activeId=id;activeSide=selectedSide;activeIsolate=only;
+      needsRender=true;activeMode=nextMode;activeId=id;activeSide=selectedSide;activeIsolate=only;
       host.dataset.mode=nextMode;host.dataset.selected=id||'';host.dataset.side=selectedSide;host.dataset.isolated=String(only);
       const members=REGION_BY_ID[id]?.members||[id];selectedMeshes=[];
       const keep=selectedSide==='L'?'L':'R';clip.normal.set(keep==='L'?-1:1,0,0);clip.constant=-.06;
@@ -146,7 +149,8 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
     };
     engine.current={configure,frame:frameSelection,view:fitView,rotate:value=>{controls.autoRotate=value;},zoom:factor=>{camera.position.sub(controls.target).multiplyScalar(factor).add(controls.target);controls.update();}};
     const mobile=compact||window.matchMedia('(max-width: 700px)').matches;
-    withDeadline(loadModel(mobile),20000).catch(error=>mobile?Promise.reject(error):withDeadline(loadModel(true),15000)).then(gltf=>{
+    let loadedMobile=mobile;
+    withDeadline(loadModel(mobile),45000).catch(error=>{if(mobile)throw error;loadedMobile=true;return withDeadline(loadModel(true),30000);}).then(gltf=>{
       if(disposed)return;
       model=gltf.scene.clone(true);
       model.traverse(obj=>{
@@ -160,7 +164,7 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
       scene.add(model);configure('surface','');fitView('perspective');
       host.dataset.model='loaded';host.dataset.meshes=String(meshes.length);
       host.dataset.triangles=String(meshes.reduce((n,o)=>n+(o.geometry.index?.count||o.geometry.attributes.position.count)/3,0));
-      host.dataset.lod=mobile?'mobile':'desktop';setStatus('ready');
+      host.dataset.lod=loadedMobile?'mobile':'desktop';setStatus('ready');
     }).catch(()=>{if(!disposed){host.dataset.model='failed';setStatus('error');}});
     const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();
     const pointerDown=event=>{down={x:event.clientX,y:event.clientY};};
@@ -198,22 +202,23 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
       line.setAttribute('x1',String(x));line.setAttribute('y1',String(y));line.setAttribute('x2',String(lx+15));line.setAttribute('y2',String(ly+35));line.style.opacity='1';
     };
     let last=0;
-    const draw=time=>{if(disposed)return;frame=requestAnimationFrame(draw);if(!visible||document.hidden||time-last<32)return;last=time;controls.update();updateLabel();renderer.render(scene,camera);};
+    const draw=time=>{if(disposed)return;frame=requestAnimationFrame(draw);if(!visible||document.hidden||time-last<32)return;last=time;controls.update();if(!needsRender&&!controls.autoRotate)return;updateLabel();renderer.render(scene,camera);needsRender=false;host.dataset.renderCount=String((Number(host.dataset.renderCount)||0)+1);};
     frame=requestAnimationFrame(draw);
     return()=>{
       disposed=true;cancelAnimationFrame(frame);observer.disconnect();intersection.disconnect();
       canvas.removeEventListener('pointerdown',pointerDown);canvas.removeEventListener('pointerup',pointerUp);
       canvas.removeEventListener('keydown',keyDown);canvas.removeEventListener('webglcontextlost',lost);
       window.removeEventListener('beforeprint',beforePrint);window.removeEventListener('afterprint',afterPrint);printImage.remove();
-      controls.dispose();ownedMaterials.forEach(m=>m.dispose());
-      renderer.dispose();canvas.remove();engine.current=null;
+      controls.removeEventListener('change',markDirty);controls.dispose();ownedMaterials.forEach(m=>m.dispose());
+      renderer.dispose();renderer.forceContextLoss();canvas.remove();engine.current=null;
     };
-  },[attempt,compact]);
+  },[attempt,compact,loadRequested]);
   useEffect(()=>{engine.current?.configure(mode,selected,side,isolate,regionColors);},[mode,selected,side,isolate,regionColors,status]);
   useEffect(()=>{engine.current?.view(view);if(isolate)engine.current?.frame();},[view,isolate,selected,side,status]);
   useEffect(()=>{if(focus?.id)chooseRef.current(focus.id,focus.side,true);},[focus]);
   useEffect(()=>{engine.current?.rotate(rotate&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches);},[rotate,status]);
   const changeMode=next=>{setMode(next);setIsolate(false);setView(next==='cutaway'?(side==='L'?'right':'left'):'perspective');};
+  if(compact&&!loadRequested)return <section className="cc-brain cc-brain-v2 compact cc-brain-poster" aria-label="Educational brain preview"><div className="cc-brain-poster-image"><img src="/reports/brain-surface.jpg" width="1020" height="645" alt="Generic educational brain surface, not a personal scan"/><button className="cc-primary" onClick={()=>{setLoadRequested(true);setTouchActive(true);}}>Load interactive brain</button></div><p className="cc-brain-model-note">Explore the same teaching anatomy used in the reports. The larger 3D download starts only when you choose to open it.</p></section>;
   return <section className={`cc-brain cc-brain-v2 ${compact?'compact':''}`} aria-label="Blender-built educational brain explorer">
     <div className="cc-brain-v2-header cc-print-hide">
       <span className="cc-brain-version">BLENDER / ANATOMY EXPLORER</span>
@@ -223,6 +228,7 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
     </div>
     <div className="cc-brain-stage">
       <div ref={mount} className="cc-brain-canvas" />
+      {status==='ready'&&(!touchActive?<div className="cc-brain-touch-guard cc-print-hide"><button type="button" onClick={()=>setTouchActive(true)}>Enable 3D touch · page scroll is on</button></div>:<button type="button" className="cc-brain-touch-exit cc-print-hide" onClick={()=>setTouchActive(false)}>Return to page scrolling</button>)}
       <svg className="cc-region-leader cc-print-hide" aria-hidden="true"><line ref={lineRef}/></svg>
       <div ref={labelRef} className="cc-region-label cc-print-hide" aria-hidden="true">{region?.label}<small>{side==='L'?'Left':side==='R'?'Right':'Anatomy guide'}</small></div>
       {status==='loading'&&<div className="cc-brain-loading" role="status">Loading the detailed brain model…</div>}
