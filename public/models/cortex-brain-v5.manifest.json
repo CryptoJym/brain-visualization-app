@@ -1,0 +1,353 @@
+{
+  "version": "cc-blender-5.0",
+  "catalogVersion": "cc-anatomy-5.0",
+  "blender": "5.2.1 LTS",
+  "axes": "+X right, +Y superior, +Z anterior",
+  "educationalOnly": true,
+  "boundaryMethod": "Geometric teaching partitions, not registered atlas or patient segmentation",
+  "source": "AbdulMuhaymin, Brain - with labeled parts; CC BY 4.0; derivative of packed Cortex Compass v2",
+  "meshes": [
+    {
+      "name": "Cortex_auditory_L",
+      "regionId": "auditory",
+      "kind": "cortex",
+      "hemisphere": "L",
+      "triangles": 2590
+    },
+    {
+      "name": "Cortex_dlpfc_L",
+      "regionId": "dlpfc",
+      "kind": "cortex",
+      "hemisphere": "L",
+      "triangles": 4077
+    },
+    {
+      "name": "Cortex_frontal_L",
+      "regionId": "frontal",
+      "kind": "cortex",
+      "hemisphere": "L",
+      "triangles": 6744
+    },
+    {
+      "name": "Cortex_motor_L",
+      "regionId": "motor",
+      "kind": "cortex",
+      "hemisphere": "L",
+      "triangles": 1970
+    },
+    {
+      "name": "Cortex_occipital_L",
+      "regionId": "occipital",
+      "kind": "cortex",
+      "hemisphere": "L",
+      "triangles": 8807
+    },
+    {
+      "name": "Cortex_ofc_L",
+      "regionId": "ofc",
+      "kind": "cortex",
+      "hemisphere": "L",
+      "triangles": 8322
+    },
+    {
+      "name": "Cortex_parietal_L",
+      "regionId": "parietal",
+      "kind": "cortex",
+      "hemisphere": "L",
+      "triangles": 8089
+    },
+    {
+      "name": "Cortex_pcc_L",
+      "regionId": "pcc",
+      "kind": "cortex",
+      "hemisphere": "L",
+      "triangles": 109
+    },
+    {
+      "name": "Cortex_precuneus_L",
+      "regionId": "precuneus",
+      "kind": "cortex",
+      "hemisphere": "L",
+      "triangles": 3524
+    },
+    {
+      "name": "Cortex_somatosensory_L",
+      "regionId": "somatosensory",
+      "kind": "cortex",
+      "hemisphere": "L",
+      "triangles": 2943
+    },
+    {
+      "name": "Cortex_temporal_L",
+      "regionId": "temporal",
+      "kind": "cortex",
+      "hemisphere": "L",
+      "triangles": 9204
+    },
+    {
+      "name": "Cortex_visual_L",
+      "regionId": "visual",
+      "kind": "cortex",
+      "hemisphere": "L",
+      "triangles": 6403
+    },
+    {
+      "name": "Cortex_auditory_R",
+      "regionId": "auditory",
+      "kind": "cortex",
+      "hemisphere": "R",
+      "triangles": 2397
+    },
+    {
+      "name": "Cortex_dlpfc_R",
+      "regionId": "dlpfc",
+      "kind": "cortex",
+      "hemisphere": "R",
+      "triangles": 4855
+    },
+    {
+      "name": "Cortex_frontal_R",
+      "regionId": "frontal",
+      "kind": "cortex",
+      "hemisphere": "R",
+      "triangles": 7831
+    },
+    {
+      "name": "Cortex_motor_R",
+      "regionId": "motor",
+      "kind": "cortex",
+      "hemisphere": "R",
+      "triangles": 2050
+    },
+    {
+      "name": "Cortex_occipital_R",
+      "regionId": "occipital",
+      "kind": "cortex",
+      "hemisphere": "R",
+      "triangles": 6902
+    },
+    {
+      "name": "Cortex_ofc_R",
+      "regionId": "ofc",
+      "kind": "cortex",
+      "hemisphere": "R",
+      "triangles": 8249
+    },
+    {
+      "name": "Cortex_parietal_R",
+      "regionId": "parietal",
+      "kind": "cortex",
+      "hemisphere": "R",
+      "triangles": 7396
+    },
+    {
+      "name": "Cortex_pcc_R",
+      "regionId": "pcc",
+      "kind": "cortex",
+      "hemisphere": "R",
+      "triangles": 106
+    },
+    {
+      "name": "Cortex_precuneus_R",
+      "regionId": "precuneus",
+      "kind": "cortex",
+      "hemisphere": "R",
+      "triangles": 3408
+    },
+    {
+      "name": "Cortex_somatosensory_R",
+      "regionId": "somatosensory",
+      "kind": "cortex",
+      "hemisphere": "R",
+      "triangles": 3050
+    },
+    {
+      "name": "Cortex_temporal_R",
+      "regionId": "temporal",
+      "kind": "cortex",
+      "hemisphere": "R",
+      "triangles": 10081
+    },
+    {
+      "name": "Cortex_visual_R",
+      "regionId": "visual",
+      "kind": "cortex",
+      "hemisphere": "R",
+      "triangles": 6349
+    },
+    {
+      "name": "Brainstem",
+      "regionId": "brainstem",
+      "kind": "support",
+      "hemisphere": "M",
+      "triangles": 4836
+    },
+    {
+      "name": "Cerebellar_hemispheres",
+      "regionId": "cerebellar_hemispheres",
+      "kind": "support",
+      "hemisphere": "M",
+      "triangles": 15256
+    },
+    {
+      "name": "Amygdala_L",
+      "regionId": "amygdala",
+      "kind": "deep",
+      "hemisphere": "L",
+      "triangles": 1840
+    },
+    {
+      "name": "Hippocampus_L",
+      "regionId": "hippocampus",
+      "kind": "deep",
+      "hemisphere": "L",
+      "triangles": 1816
+    },
+    {
+      "name": "Thalamus_L",
+      "regionId": "thalamus",
+      "kind": "deep",
+      "hemisphere": "L",
+      "triangles": 1840
+    },
+    {
+      "name": "Insula_L",
+      "regionId": "insula",
+      "kind": "deep",
+      "hemisphere": "L",
+      "triangles": 1840
+    },
+    {
+      "name": "Anterior_cingulate_L",
+      "regionId": "acc",
+      "kind": "deep",
+      "hemisphere": "L",
+      "triangles": 1816
+    },
+    {
+      "name": "Corpus_callosum_L",
+      "regionId": "callosum",
+      "kind": "deep",
+      "hemisphere": "L",
+      "triangles": 1816
+    },
+    {
+      "name": "Amygdala_R",
+      "regionId": "amygdala",
+      "kind": "deep",
+      "hemisphere": "R",
+      "triangles": 1840
+    },
+    {
+      "name": "Hippocampus_R",
+      "regionId": "hippocampus",
+      "kind": "deep",
+      "hemisphere": "R",
+      "triangles": 1816
+    },
+    {
+      "name": "Thalamus_R",
+      "regionId": "thalamus",
+      "kind": "deep",
+      "hemisphere": "R",
+      "triangles": 1840
+    },
+    {
+      "name": "Insula_R",
+      "regionId": "insula",
+      "kind": "deep",
+      "hemisphere": "R",
+      "triangles": 1840
+    },
+    {
+      "name": "Anterior_cingulate_R",
+      "regionId": "acc",
+      "kind": "deep",
+      "hemisphere": "R",
+      "triangles": 1816
+    },
+    {
+      "name": "Corpus_callosum_R",
+      "regionId": "callosum",
+      "kind": "deep",
+      "hemisphere": "R",
+      "triangles": 1816
+    },
+    {
+      "name": "Hypothalamus",
+      "regionId": "hypothalamus",
+      "kind": "deep",
+      "hemisphere": "M",
+      "triangles": 1840
+    },
+    {
+      "name": "Periaqueductal_gray",
+      "regionId": "pag",
+      "kind": "deep",
+      "hemisphere": "M",
+      "triangles": 1816
+    },
+    {
+      "name": "Cerebellar_vermis",
+      "regionId": "cerebellum",
+      "kind": "deep",
+      "hemisphere": "M",
+      "triangles": 1840
+    },
+    {
+      "name": "Caudate_L",
+      "regionId": "caudate",
+      "kind": "deep",
+      "hemisphere": "L",
+      "triangles": 2040
+    },
+    {
+      "name": "putamen_L",
+      "regionId": "putamen",
+      "kind": "deep",
+      "hemisphere": "L",
+      "triangles": 1840
+    },
+    {
+      "name": "ventral_striatum_L",
+      "regionId": "ventral_striatum",
+      "kind": "deep",
+      "hemisphere": "L",
+      "triangles": 1840
+    },
+    {
+      "name": "Caudate_R",
+      "regionId": "caudate",
+      "kind": "deep",
+      "hemisphere": "R",
+      "triangles": 2040
+    },
+    {
+      "name": "putamen_R",
+      "regionId": "putamen",
+      "kind": "deep",
+      "hemisphere": "R",
+      "triangles": 1840
+    },
+    {
+      "name": "ventral_striatum_R",
+      "regionId": "ventral_striatum",
+      "kind": "deep",
+      "hemisphere": "R",
+      "triangles": 1840
+    }
+  ],
+  "assets": {
+    "cortex-brain-v5.glb": {
+      "bytes": 9398032,
+      "sha256": "fac443b148f9ca0eb17aef5271a8f62d1f3f61ac9a681da746360fffbb3e079a"
+    },
+    "cortex-brain-v5-mobile.glb": {
+      "bytes": 7236132,
+      "sha256": "77cdd3a57bf4d7a2e03810ad244360bed25457e4d2148ca91e4f851d145a83a7"
+    }
+  },
+  "catalogSha256": "51c8ccdc22090a458075ba80d1e3e1fcaa5a72758a79ac180d692ce27263bb71",
+  "sourceBlendSha256": "329b941cfcfe1d9a12ca8d15d1bbba39da3478f747387d9252a54d0e3a6922a7",
+  "builderSha256": "0249a113e24c2f1a25d79ee4f201b10a76f2b9261d2fe0683e5a10032a25c4d7"
+}

@@ -1,0 +1,499 @@
+{
+  "version": "cc-anatomy-5.0",
+  "note": "Generic illustrated anatomy. Boundaries and added internal shapes are approximate, not an MRI atlas. No additional assessment scores.",
+  "sources": {
+    "landmarks": {
+      "label": "BrainFacts / Society for Neuroscience — Major brain landmarks",
+      "url": "https://www.brainfacts.org/brain-anatomy-and-function/anatomy/2022/major-brain-landmarks-110822"
+    },
+    "hopkins": {
+      "label": "Johns Hopkins Medicine — Brain anatomy",
+      "url": "https://www.hopkinsmedicine.org/health/conditions-and-diseases/anatomy-of-the-brain"
+    },
+    "motor": {
+      "label": "Purves et al. — Primary motor cortex",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK10962/"
+    },
+    "sensory": {
+      "label": "Raju & Tadi — Somatosensory cortex",
+      "url": "https://www.ncbi.nlm.nih.gov/sites/books/NBK555915/"
+    },
+    "salience": {
+      "label": "Seeley et al. (2007) — Salience and executive-control networks",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2680293/"
+    },
+    "insula": {
+      "label": "Menon & Uddin (2010) — A network model of insula function",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2899886/"
+    },
+    "reward": {
+      "label": "Gottfried et al. (2003) — Predictive reward value",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/12934011/"
+    },
+    "striatum": {
+      "label": "Purves et al. — Projections to the basal ganglia",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK10988/"
+    },
+    "pag": {
+      "label": "Bandler & Shipley (1994) — PAG and defensive behavior",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/8136048/"
+    },
+    "general": {
+      "label": "Johns Hopkins Medicine — Brain anatomy",
+      "url": "https://www.hopkinsmedicine.org/health/conditions-and-diseases/anatomy-of-the-brain"
+    },
+    "defaultNetwork": {
+      "label": "Greicius et al. (2003) — Default-mode functional connectivity",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/12506194/"
+    },
+    "visualAwareness": {
+      "label": "Kjaer et al. (2001) — Precuneus-prefrontal activity",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/11697869/"
+    }
+  },
+  "regions": [
+    {
+      "id": "frontal",
+      "label": "Frontal lobe",
+      "group": "Cortical surface",
+      "color": "#53bce3",
+      "where": "Front of each cerebral hemisphere.",
+      "function": "Supports planning and coordinated behavior with other brain networks.",
+      "look": "Geometric teaching boundary on a generic surface, not a registered anatomical atlas. Follow the blue anterior surface. Named frontal subdivisions have their own colors.",
+      "related": [
+        "dlpfc",
+        "ofc",
+        "motor"
+      ],
+      "source": "landmarks",
+      "members": [
+        "frontal",
+        "dlpfc",
+        "ofc",
+        "motor"
+      ],
+      "kind": "cortex",
+      "system": "executive",
+      "hemispheres": "bilateral"
+    },
+    {
+      "id": "dlpfc",
+      "label": "Dorsolateral prefrontal cortex",
+      "short": "dlPFC",
+      "group": "Cortical surface",
+      "color": "#3992df",
+      "where": "Upper, outer prefrontal cortex.",
+      "function": "A contributor to executive-control networks for goal-directed tasks.",
+      "look": "Geometric teaching boundary on a generic surface, not a registered anatomical atlas. This patch marks an approximate teaching location, not a measured functional boundary.",
+      "related": [
+        "frontal",
+        "parietal",
+        "acc"
+      ],
+      "source": "salience",
+      "reportTopic": "dlpfc",
+      "kind": "cortex",
+      "system": "executive",
+      "hemispheres": "bilateral"
+    },
+    {
+      "id": "ofc",
+      "label": "Orbitofrontal cortex",
+      "short": "Orbitofrontal",
+      "group": "Cortical surface",
+      "color": "#70d8e5",
+      "where": "Underside of the frontal lobe, above the eye sockets.",
+      "function": "Helps represent expected outcomes and their changing value.",
+      "look": "Geometric teaching boundary on a generic surface, not a registered anatomical atlas. Rotate toward the underside or isolate this region to see its position.",
+      "related": [
+        "frontal",
+        "amygdala",
+        "caudate"
+      ],
+      "source": "reward",
+      "kind": "cortex",
+      "system": "executive",
+      "hemispheres": "bilateral",
+      "medial": true
+    },
+    {
+      "id": "motor",
+      "label": "Primary motor cortex",
+      "short": "Motor strip",
+      "group": "Cortical surface",
+      "color": "#f09c67",
+      "where": "Precentral gyrus, in front of the central sulcus.",
+      "function": "Contributes commands for voluntary movement.",
+      "look": "Geometric teaching boundary on a generic surface, not a registered anatomical atlas. Compare the orange strip with the sensory strip just behind it. Strips are illustrative.",
+      "related": [
+        "somatosensory",
+        "frontal",
+        "cerebellar_hemispheres"
+      ],
+      "source": "motor",
+      "kind": "cortex",
+      "system": "sensory",
+      "hemispheres": "bilateral"
+    },
+    {
+      "id": "somatosensory",
+      "label": "Primary somatosensory cortex",
+      "short": "Sensory strip",
+      "group": "Cortical surface",
+      "color": "#e8cd79",
+      "where": "Postcentral gyrus, behind the central sulcus.",
+      "function": "Processes body sensation, including touch and position.",
+      "look": "Geometric teaching boundary on a generic surface, not a registered anatomical atlas. The yellow strip is posterior to the motor strip; a full body map is not modeled.",
+      "related": [
+        "motor",
+        "parietal",
+        "thalamus"
+      ],
+      "source": "sensory",
+      "kind": "cortex",
+      "system": "sensory",
+      "hemispheres": "bilateral"
+    },
+    {
+      "id": "parietal",
+      "label": "Parietal lobe",
+      "group": "Cortical surface",
+      "color": "#81c798",
+      "where": "Upper posterior cerebrum, behind the frontal lobe.",
+      "function": "Integrates sensory information and spatial relationships.",
+      "look": "Geometric teaching boundary on a generic surface, not a registered anatomical atlas. Find the green upper surface behind the sensory strip.",
+      "related": [
+        "somatosensory",
+        "occipital",
+        "dlpfc"
+      ],
+      "source": "landmarks",
+      "members": [
+        "parietal",
+        "somatosensory",
+        "precuneus"
+      ],
+      "kind": "cortex",
+      "system": "sensory",
+      "hemispheres": "bilateral"
+    },
+    {
+      "id": "temporal",
+      "label": "Temporal lobe",
+      "group": "Cortical surface",
+      "color": "#c68ecb",
+      "where": "Lateral lower cerebrum, below the lateral fissure.",
+      "function": "Supports hearing, memory and aspects of language processing.",
+      "look": "Geometric teaching boundary on a generic surface, not a registered anatomical atlas. The purple side region is a lobe, not one single language or social center.",
+      "related": [
+        "hippocampus",
+        "amygdala",
+        "insula"
+      ],
+      "source": "landmarks",
+      "reportTopic": "temporal",
+      "kind": "cortex",
+      "system": "social",
+      "hemispheres": "bilateral",
+      "members": [
+        "temporal",
+        "auditory"
+      ]
+    },
+    {
+      "id": "occipital",
+      "label": "Occipital lobe",
+      "group": "Cortical surface",
+      "color": "#a08cdd",
+      "where": "Back of each cerebral hemisphere.",
+      "function": "Processes visual information.",
+      "look": "Geometric teaching boundary on a generic surface, not a registered anatomical atlas. Rotate to the rear to distinguish the occipital lobe from the cerebellum below.",
+      "related": [
+        "parietal",
+        "temporal",
+        "thalamus"
+      ],
+      "source": "landmarks",
+      "kind": "cortex",
+      "system": "sensory",
+      "hemispheres": "bilateral",
+      "members": [
+        "occipital",
+        "visual"
+      ]
+    },
+    {
+      "id": "auditory",
+      "label": "Auditory association cortex",
+      "short": "Auditory association",
+      "kind": "cortex",
+      "group": "Cortical surface",
+      "system": "sensory",
+      "color": "#d18aa7",
+      "where": "Upper temporal surface near the lateral fissure.",
+      "function": "Interpreting sounds and language-related auditory information.",
+      "look": "A broad superior-temporal teaching patch; not the exact cluster from a study.",
+      "related": [],
+      "source": "general",
+      "hemispheres": "bilateral"
+    },
+    {
+      "id": "visual",
+      "label": "Visual cortex (medial occipital)",
+      "short": "Visual cortex",
+      "kind": "cortex",
+      "group": "Cortical surface",
+      "system": "sensory",
+      "color": "#9d9fe8",
+      "where": "Back and inner surface of the occipital lobe.",
+      "function": "Visual processing within multiple interacting visual areas.",
+      "look": "A broad medial-occipital teaching patch, not a precise V2 or lingual-gyrus segmentation.",
+      "related": [],
+      "source": "general",
+      "hemispheres": "bilateral",
+      "medial": true
+    },
+    {
+      "id": "pcc",
+      "label": "Posterior cingulate cortex",
+      "short": "Posterior cingulate",
+      "kind": "cortex",
+      "group": "Cortical surface",
+      "system": "salience",
+      "color": "#bbaddf",
+      "where": "Inner posterior cortex above the corpus callosum.",
+      "function": "A contributor to the default-mode network; its roles depend on task and context.",
+      "look": "A small medial teaching patch, not a precise posterior-cingulate or isthmus atlas parcel.",
+      "related": [],
+      "source": "defaultNetwork",
+      "hemispheres": "bilateral",
+      "medial": true
+    },
+    {
+      "id": "precuneus",
+      "label": "Precuneus",
+      "short": "Precuneus",
+      "kind": "cortex",
+      "group": "Cortical surface",
+      "system": "sensory",
+      "color": "#a4c8b3",
+      "where": "Medial parietal surface above the posterior cingulate area.",
+      "function": "Participates in higher-order visual and awareness-related processing.",
+      "look": "An approximate medial teaching area.",
+      "related": [],
+      "source": "visualAwareness",
+      "hemispheres": "bilateral",
+      "medial": true
+    },
+    {
+      "id": "amygdala",
+      "label": "Amygdala",
+      "short": "Amygdala",
+      "kind": "deep",
+      "group": "Internal & medial",
+      "system": "salience",
+      "color": "#f0a1a5",
+      "where": "Medial temporal region, near the front of the hippocampus.",
+      "function": "Salience, learning and responses to significant events.",
+      "look": "Not simply a fear switch; shown as paired schematic structures.",
+      "related": [],
+      "source": "general",
+      "hemispheres": "bilateral"
+    },
+    {
+      "id": "hippocampus",
+      "label": "Hippocampus",
+      "short": "Hippocampus",
+      "kind": "deep",
+      "group": "Internal & medial",
+      "system": "memory",
+      "color": "#ae9aef",
+      "where": "Medial temporal region in each hemisphere.",
+      "function": "Learning, memory and contextual relationships.",
+      "look": "Curved teaching shape; hippocampal subfields are not individually segmented.",
+      "related": [],
+      "source": "general",
+      "hemispheres": "bilateral"
+    },
+    {
+      "id": "acc",
+      "label": "Anterior cingulate cortex",
+      "short": "Anterior cingulate",
+      "kind": "deep",
+      "group": "Internal & medial",
+      "system": "salience",
+      "color": "#e9abb6",
+      "where": "Medial frontal surface arching above the front of the corpus callosum.",
+      "function": "Monitoring, regulation and coordination within networks.",
+      "look": "The cingulate is cortex, not a deep nucleus. This arch is a schematic medial-cortex guide.",
+      "related": [],
+      "source": "salience",
+      "hemispheres": "bilateral"
+    },
+    {
+      "id": "insula",
+      "label": "Insula",
+      "short": "Insula",
+      "kind": "deep",
+      "group": "Internal & medial",
+      "system": "interoception",
+      "color": "#62d4c2",
+      "where": "Cortex buried inside the lateral fissure.",
+      "function": "Integrates bodily and other salient information.",
+      "look": "The insula is folded cortex, shown schematically beneath the outer surface.",
+      "related": [],
+      "source": "insula",
+      "hemispheres": "bilateral"
+    },
+    {
+      "id": "thalamus",
+      "label": "Thalamus",
+      "short": "Thalamus",
+      "kind": "deep",
+      "group": "Internal & medial",
+      "system": "sensory",
+      "color": "#91cde7",
+      "where": "Paired structures near the center of the brain.",
+      "function": "Routing and coordinating sensory and other information.",
+      "look": "Many thalamic nuclei are simplified into one teaching form per side.",
+      "related": [],
+      "source": "general",
+      "hemispheres": "bilateral"
+    },
+    {
+      "id": "hypothalamus",
+      "label": "Hypothalamus",
+      "short": "Hypothalamus",
+      "kind": "deep",
+      "group": "Internal & medial",
+      "system": "stress",
+      "color": "#edbe73",
+      "where": "Below the thalamus near the brain base.",
+      "function": "Homeostatic and hormonal regulation.",
+      "look": "A small midline teaching form; no hormone concentration is inferred.",
+      "related": [],
+      "source": "general",
+      "hemispheres": "midline"
+    },
+    {
+      "id": "pag",
+      "label": "Periaqueductal gray",
+      "short": "PAG",
+      "kind": "deep",
+      "group": "Internal & medial",
+      "system": "stress",
+      "color": "#ebb984",
+      "where": "Around the cerebral aqueduct in the midbrain.",
+      "function": "Contributes to pain modulation and defensive responses.",
+      "look": "Highly simplified ring-like guide; not the entire midbrain.",
+      "related": [],
+      "source": "pag",
+      "hemispheres": "midline"
+    },
+    {
+      "id": "callosum",
+      "label": "Corpus callosum",
+      "short": "Corpus callosum",
+      "kind": "deep",
+      "group": "Internal & medial",
+      "system": "sensory",
+      "color": "#d8e2e6",
+      "where": "Midline white-matter arch between the cerebral hemispheres.",
+      "function": "Communication between hemispheres.",
+      "look": "Two joined schematic halves illustrate a continuous commissure, not measured fiber pathways.",
+      "related": [],
+      "source": "general",
+      "hemispheres": "bilateral"
+    },
+    {
+      "id": "cerebellum",
+      "label": "Cerebellar vermis",
+      "short": "Cerebellar vermis",
+      "kind": "deep",
+      "group": "Internal & medial",
+      "system": "stress",
+      "color": "#c7afd9",
+      "where": "Midline portion of the cerebellum.",
+      "function": "Coordination and regulation within cerebellar networks.",
+      "look": "Schematic vermis shown separately from cerebellar hemispheres.",
+      "related": [],
+      "source": "general",
+      "hemispheres": "midline"
+    },
+    {
+      "id": "ventral_striatum",
+      "label": "Ventral striatum / nucleus accumbens guide",
+      "short": "Ventral striatum",
+      "kind": "deep",
+      "group": "Internal & medial",
+      "system": "reward",
+      "color": "#e9b679",
+      "where": "Ventral forebrain below the caudate head.",
+      "function": "Reward-related learning and motivated behavior.",
+      "look": "The small accumbens-centered guide is not the full ventral striatum or a pleasure meter.",
+      "related": [],
+      "source": "striatum",
+      "hemispheres": "bilateral"
+    },
+    {
+      "id": "caudate",
+      "label": "Caudate nucleus",
+      "short": "Caudate",
+      "kind": "deep",
+      "group": "Internal & medial",
+      "system": "reward",
+      "color": "#9cb9ec",
+      "where": "Curved structure around the lateral ventricle, medial to the putamen.",
+      "function": "Contributes to action selection and learning.",
+      "look": "A schematic curved nucleus; no neuronal counts or personal volume are represented.",
+      "related": [],
+      "source": "striatum",
+      "hemispheres": "bilateral"
+    },
+    {
+      "id": "putamen",
+      "label": "Putamen",
+      "short": "Putamen",
+      "kind": "deep",
+      "group": "Internal & medial",
+      "system": "reward",
+      "color": "#dda1b1",
+      "where": "Lateral striatum, outside the caudate and thalamus.",
+      "function": "Action selection and motor-learning networks.",
+      "look": "A schematic bilateral shape, distinct from the ventral-striatum guide.",
+      "related": [],
+      "source": "striatum",
+      "hemispheres": "bilateral"
+    },
+    {
+      "id": "cerebellar_hemispheres",
+      "label": "Cerebellar hemispheres",
+      "short": "Cerebellum (hemispheres)",
+      "kind": "support",
+      "group": "Supporting anatomy",
+      "system": "sensory",
+      "color": "#b3b7d5",
+      "where": "Below the posterior cerebrum.",
+      "function": "Coordination, timing and learning in distributed networks.",
+      "look": "Original licensed surface retained; no precise cerebellar lobular atlas.",
+      "related": [],
+      "source": "general",
+      "hemispheres": "bilateral"
+    },
+    {
+      "id": "brainstem",
+      "label": "Brainstem",
+      "short": "Brainstem",
+      "kind": "support",
+      "group": "Supporting anatomy",
+      "system": "stress",
+      "color": "#b4c5d3",
+      "where": "Below the cerebrum, continuous with the spinal cord.",
+      "function": "Contains pathways and centers supporting essential body functions.",
+      "look": "General teaching anatomy; not a localization of a respondent’s symptoms.",
+      "related": [],
+      "source": "general",
+      "hemispheres": "midline"
+    }
+  ]
+}

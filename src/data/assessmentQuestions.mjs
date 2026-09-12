@@ -1,8 +1,10 @@
+import {guideRegions,researchForQuestion} from './questionRegionLinks.mjs';
 export const QUESTIONNAIRE_VERSION='cc-reflection-4.0';
 const maltreatment='Adapted maltreatment-domain prompt; not the validated MACE scale.';
 const context='Context only: no region-specific inference is assigned.';
 function q(id,title,text,sources,extra={}) {
-  return {id,title,text,sources,kind:'history',topics:[],basis:context,...extra};
+  const research=researchForQuestion(id);
+  return {id,title,text,sources,kind:'history',basis:context,...extra,topics:guideRegions(id),research};
 }
 export const SECTIONS=[
   {id:'care',title:'Safety & care',icon:'⌂',subtitle:'Separate experiences of harm, threat and unmet needs. Think about the period before your 18th birthday.',questions:[
