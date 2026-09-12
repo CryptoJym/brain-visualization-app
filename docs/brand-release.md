@@ -17,3 +17,13 @@ Owned branch: astra/cortex-logo-20260912. The original v6 worktree is preserved.
 Prior native Worker version: 46935ccd-8683-4f22-922b-543bdfc6eae6. Publication must require this exact prior version and preserve it for rollback. Existing Worker/domain only: cortex-compass / cortexcompass.utlyze.com.
 
 Evidence: .local-evidence/brand. Mobile testing is browser/WebKit emulation, not physical-device native printing.
+
+## Published and publicly verified
+
+Native Worker version: 00c629c5-60be-40da-adaa-0d1234309abe, 100% traffic. Deployment time: 2026-09-12T16:19:53.079178Z. Source commit: 91f7217b33660c40e8c357254054b7704f1890b6; branch astra/cortex-logo-20260912, committed and pushed.
+
+Public checks: 43 branding/assets/layout checks, 13 WebKit/mobile checks and 51 report/mobile checks (107 total), all passed with zero page/console errors. Icons, logo artwork, manifest and both sample PDF endpoints match the verified local assets by SHA-256. The 88 unit tests passed before publication.
+
+Current public sample endpoints: /reports/Cortex-Compass-Superhero-Sample.pdf and /reports/Cortex-Compass-Scientific-Sample.pdf. Both now include the approved logo. A4 and Letter samples retain 2 and 22 pages respectively.
+
+Publication receipt: .local-evidence/brand/release-verification.json. Rollback remains 46935ccd-8683-4f22-922b-543bdfc6eae6.
