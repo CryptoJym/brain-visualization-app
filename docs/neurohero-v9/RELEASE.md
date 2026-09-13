@@ -1,6 +1,6 @@
 # Deep Hero Atlas integration release
 
-Status: local acceptance complete; native publication and public verification pending.
+Status: released and publicly verified.
 
 This release integrates the 27-observation functional atlas and 24 candidate compositions into the existing Cortex Compass app. A reader can review counterexamples, choose among currently eligible signatures, select independent portrait preferences, and print a two-page hero guide or one-page strengths-only card. The Scientific Report retains the original research and adds the functional ledger, selection rules and linked evidence context when the atlas has answers.
 
@@ -17,3 +17,9 @@ PDFs: deep hero guide 2 pages in A4 and Letter, strengths card 1 page, deep Scie
 Source branch: astra/cortex-neurohero-v9. Worktree: /Users/utlyze/Projects/cortex-compass-neurohero-v9. Work item: eco-a318wk. Evidence: .local-evidence/neurohero-v9 (not public). Baseline/rollback Worker version: 8cc9f3fa-0986-497e-920f-1c6f2a15b1ec. Existing worker/domain only; Worker security headers and authentication state are unchanged.
 
 Remaining work after this release: dedicated application image credential and model evaluation; authenticated private cloud storage; quota/idempotency-controlled paid image jobs; real provider/storage authorization tests; separately scoped scientific validation and broader evidence extraction. The overall work item remains open for those deliverables.
+
+## Public receipt
+
+Worker version: `adb875e6-357a-487d-b792-93eb88577d74` at 100% traffic. Source commit: `63b72381e1f4ddff9297e08e258442d99bba624e`. Deployment: 2026-09-13T00:38:02.459235Z.
+
+Live acceptance: 183 checks across the hero flow, mobile WebKit, reports, development and branding; zero page/console errors. Ten publicly served assets match the frozen publication by SHA-256, including the application bundles and all three new sample PDFs. Paid generation/cloud accounts remain off.
