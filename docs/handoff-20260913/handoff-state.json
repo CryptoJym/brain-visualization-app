@@ -1,0 +1,611 @@
+{
+  "schema": "cortex-agent-handoff/v1",
+  "observedAt": "2026-09-13T20:07:42.007816+00:00",
+  "device": "Studio0.localdomain",
+  "currentSourceWorktree": "/Users/utlyze/Projects/cortex-compass-hero-editions-20260913",
+  "liveSourceCommit": "85a29955e7b206a2cd8581289c321f72e1f21243",
+  "liveReceiptCommit": "157971e",
+  "production": {
+    "origin": "https://cortexcompass.utlyze.com",
+    "version": "e127727f-f809-4b6f-85ca-fa7e7f67b75d",
+    "trafficPercent": 100,
+    "deployedAt": "2026-09-13T16:08:22.057377Z",
+    "rollbackVersion": "6fc5170e-fbea-44f1-bfaf-07e0b6d7fec0"
+  },
+  "graph": {
+    "worktree": "/Users/utlyze/Projects/cortex-compass-neurograph-v1",
+    "branch": "astra/cortex-neurograph-v1",
+    "checkpoint": "aae0e60e9d0b36c17ec19154c32881a11be90413",
+    "prototypeTestsPassed": 9,
+    "integrated": false,
+    "calibrated": false
+  },
+  "worktrees": [
+    {
+      "path": "/Users/utlyze/Projects/cortex-compass-integration",
+      "head": "3c7710accfe827c9654c6a19ca8e5391ee0d351b",
+      "branch": "astra/cortex-research-regions-v5",
+      "statusAtInspection": []
+    },
+    {
+      "path": "/Users/utlyze/Projects/cortex-compass-development-v7",
+      "head": "e17f57298d088d8d6c736c2fd12b132d9b3b33a9",
+      "branch": "astra/cortex-development-v7",
+      "statusAtInspection": [
+        "?? docs/experience-v8/",
+        "?? src/components/CompassExperience.css",
+        "?? src/components/CompassExperience.jsx"
+      ]
+    },
+    {
+      "path": "/Users/utlyze/Projects/cortex-compass-hero-editions-20260913",
+      "head": "157971eb90d23dc33808d02ca65ecaa44098e75d",
+      "branch": "astra/cortex-hero-editions-20260913",
+      "statusAtInspection": [
+        "M README.md",
+        "?? docs/archive/README-v6-before-handoff-20260913.md",
+        "?? docs/handoff-20260913/",
+        "?? scripts/freeze-hero-artifacts.mjs"
+      ]
+    },
+    {
+      "path": "/Users/utlyze/Projects/cortex-compass-logo-20260912",
+      "head": "8f796961e57126de77982a4501065fc2b36406b6",
+      "branch": "astra/cortex-logo-20260912",
+      "statusAtInspection": []
+    },
+    {
+      "path": "/Users/utlyze/Projects/cortex-compass-neurograph-v1",
+      "head": "aae0e60e9d0b36c17ec19154c32881a11be90413",
+      "branch": "astra/cortex-neurograph-v1",
+      "statusAtInspection": []
+    },
+    {
+      "path": "/Users/utlyze/Projects/cortex-compass-neurohero-v9",
+      "head": "a784b7735fc96f083cb4261480f935b5f815226b",
+      "branch": "astra/cortex-neurohero-v9",
+      "statusAtInspection": [
+        "?? scripts/check-portrait-webkit.mjs"
+      ]
+    },
+    {
+      "path": "/Users/utlyze/Projects/cortex-compass-observatory-20260912",
+      "head": "8f796961e57126de77982a4501065fc2b36406b6",
+      "branch": "astra/cortex-observatory-20260912",
+      "statusAtInspection": [
+        "M scripts/verify-assessment-v4.mjs",
+        " M scripts/verify-brand.mjs",
+        " M scripts/verify-reports-v6.mjs",
+        " M scripts/verify-research-v5.mjs",
+        " M scripts/verify-webkit-v6.mjs",
+        " M src/components/CompassReports.jsx",
+        " M src/components/CortexBrain.jsx",
+        " M src/components/CortexCompass.jsx",
+        " M src/components/InsightReflection.jsx",
+        " M src/data/assessmentEvidence.mjs",
+        " M src/data/assessmentQuestions.mjs",
+        " M src/main.jsx",
+        " M src/utils/assessmentProfile.mjs",
+        " M src/utils/insightProfile.mjs",
+        " M tests/reports-v6.test.mjs",
+        " M tests/research-regions-v5.test.mjs",
+        "?? docs/development-v7/",
+        "?? scripts/verify-development-v7.mjs",
+        "?? scripts/verify-experience-v8.mjs",
+        "?? src/components/CompassExperience.css",
+        "?? src/components/CompassExperience.jsx",
+        "?? src/components/CortexExperience.css",
+        "?? src/components/CortexExperience.jsx",
+        "?? src/components/DevelopmentContext.css",
+        "?? src/components/DevelopmentContext.jsx",
+        "?? src/components/DevelopmentResearch.jsx",
+        "?? src/data/developmentContext.mjs",
+        "?? src/data/developmentEvidence.mjs",
+        "?? src/utils/developmentProfile.mjs",
+        "?? tests/development-v7.test.mjs"
+      ]
+    },
+    {
+      "path": "/Users/utlyze/Projects/cortex-compass-portable-profiles",
+      "head": "43ceccb585c82fd48868dc827339c5784f3887a7",
+      "branch": "astra/cortex-portable-profiles",
+      "statusAtInspection": [
+        "M docs/portable-profiles/RELEASE.md",
+        " M scripts/run-portable-checks.mjs",
+        "?? docs/portable-profiles/REVIEW.md",
+        "?? scripts/fix-backup-download.mjs",
+        "?? scripts/freeze-portable-release.mjs",
+        "?? scripts/integrate-portable-ui.mjs",
+        "?? scripts/publish-portable-release.mjs",
+        "?? scripts/seal-portable-release.mjs",
+        "?? scripts/tighten-portable-contracts.mjs"
+      ]
+    },
+    {
+      "path": "/Users/utlyze/Projects/cortex-compass-reports-v6",
+      "head": "3c7710accfe827c9654c6a19ca8e5391ee0d351b",
+      "branch": "astra/cortex-reports-mobile-v6",
+      "statusAtInspection": [
+        "M README.md",
+        " M package-lock.json",
+        " M package.json",
+        " M scripts/verify-blender-brain.mjs",
+        " M src/components/CortexBrain.jsx",
+        " M src/components/CortexCompass.jsx",
+        " M src/cortex-compass.css",
+        " M src/main.jsx",
+        " M src/utils/assessmentProfile.mjs",
+        " M worker/index.js",
+        "?? docs/archive/",
+        "?? docs/reports-v6/",
+        "?? public/reports/",
+        "?? scripts/export-sample-reports-v6.mjs",
+        "?? scripts/inspect-print-v6.mjs",
+        "?? scripts/pdf-contact-sheets-v6.mjs",
+        "?? scripts/prepare-report-assets-v6.mjs",
+        "?? scripts/render-report-plates-v6.mjs",
+        "?? scripts/report-pdf-export-v6.mjs",
+        "?? scripts/verify-public-assets-v6.mjs",
+        "?? scripts/verify-reports-v6.mjs",
+        "?? scripts/verify-webkit-v6.mjs",
+        "?? src/components/CompassReports.css",
+        "?? src/components/CompassReports.jsx",
+        "?? src/components/CortexMobile.css",
+        "?? src/components/InsightReflection.jsx",
+        "?? src/data/insightQuestions.mjs",
+        "?? src/utils/insightProfile.mjs",
+        "?? tests/reports-v6.test.mjs",
+        "?? tests/worker-v6.test.mjs"
+      ]
+    },
+    {
+      "path": "/Users/utlyze/Projects/cortex-compass-xai-portraits",
+      "head": "a7b13ce946f527c8cbd98a8d588b64f81a2e8fa3",
+      "branch": "astra/cortex-xai-portraits",
+      "statusAtInspection": [
+        "?? scripts/check-mail-domain.mjs",
+        "?? scripts/cloudflare-portrait-capabilities.mjs",
+        "?? scripts/verify-xai-webkit.mjs"
+      ]
+    }
+  ],
+  "residualFilesPreserved": [
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-development-v7/docs/experience-v8/COORDINATION.md",
+      "snapshot": "preserved-residue/cortex-compass-development-v7/docs/experience-v8/COORDINATION.md",
+      "sha256": "5635637058a571f21ebc59231e12375005f2a455d4f8d72df5330eb78b1b5451"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-development-v7/src/components/CompassExperience.css",
+      "snapshot": "preserved-residue/cortex-compass-development-v7/src/components/CompassExperience.css",
+      "sha256": "3c4d0927ef639dace84092479d1c40f34344340e8013433ab6f1c2cade68ba4b"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-development-v7/src/components/CompassExperience.jsx",
+      "snapshot": "preserved-residue/cortex-compass-development-v7/src/components/CompassExperience.jsx",
+      "sha256": "fe31a2a0813418a1ff4bd96046b2aebb89de2adff5f412a9a175f774e176ce4e"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-hero-editions-20260913/docs/archive/README-v6-before-handoff-20260913.md",
+      "snapshot": "preserved-residue/cortex-compass-hero-editions-20260913/docs/archive/README-v6-before-handoff-20260913.md",
+      "sha256": "c1140311b3f3e9e7e06ab11debfd3192b868569ade2b04d730319671a59c0268"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-hero-editions-20260913/scripts/freeze-hero-artifacts.mjs",
+      "snapshot": "preserved-residue/cortex-compass-hero-editions-20260913/scripts/freeze-hero-artifacts.mjs",
+      "sha256": "90be92764a37d8b701fe597d9f241efd60e953e4b5acd0f9bdef5511fe34f47d"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-neurohero-v9/scripts/check-portrait-webkit.mjs",
+      "snapshot": "preserved-residue/cortex-compass-neurohero-v9/scripts/check-portrait-webkit.mjs",
+      "sha256": "b17fc5c8b4a076e476c2323c817cb25d1c31185941976402fe2a977647b355f0"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-observatory-20260912/docs/development-v7/PLAN.md",
+      "snapshot": "preserved-residue/cortex-compass-observatory-20260912/docs/development-v7/PLAN.md",
+      "sha256": "a467250c3bc4a341eda17a37a29dc5a479d963223e2b1137bb862b4fdca88cad"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-observatory-20260912/scripts/verify-development-v7.mjs",
+      "snapshot": "preserved-residue/cortex-compass-observatory-20260912/scripts/verify-development-v7.mjs",
+      "sha256": "7a3e0fc0abac5532573a9e919332bba983ce9a047dcaad220ce36841530d4165"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-observatory-20260912/scripts/verify-experience-v8.mjs",
+      "snapshot": "preserved-residue/cortex-compass-observatory-20260912/scripts/verify-experience-v8.mjs",
+      "sha256": "2b0c953d7eeb72c4aaf4b9c3dd02ff14540f0c890bacee737fade35660736d51"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-observatory-20260912/src/components/CompassExperience.css",
+      "snapshot": "preserved-residue/cortex-compass-observatory-20260912/src/components/CompassExperience.css",
+      "sha256": "349fed16845bb831a354e75c4c8c9b90e99c9e932f9549aae90cf2a10d0a8075"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-observatory-20260912/src/components/CompassExperience.jsx",
+      "snapshot": "preserved-residue/cortex-compass-observatory-20260912/src/components/CompassExperience.jsx",
+      "sha256": "02d8da0432f76ab6f34372bab72bfee60dd2763c3e71465e609a76d227546111"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-observatory-20260912/src/components/CortexExperience.css",
+      "snapshot": "preserved-residue/cortex-compass-observatory-20260912/src/components/CortexExperience.css",
+      "sha256": "5144263dc0994f26a267a22298c489b6c2e9135a3a39629fc141a93334c3c153"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-observatory-20260912/src/components/CortexExperience.jsx",
+      "snapshot": "preserved-residue/cortex-compass-observatory-20260912/src/components/CortexExperience.jsx",
+      "sha256": "eb4ea3424f286ddad42ef79448a639db69e92007a7464818cd20a08eabe10ec6"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-observatory-20260912/src/components/DevelopmentContext.css",
+      "snapshot": "preserved-residue/cortex-compass-observatory-20260912/src/components/DevelopmentContext.css",
+      "sha256": "edf8d08f5adda1f4ef231661bcff50ed3e0d7650901ea746f2d1425f9148c637"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-observatory-20260912/src/components/DevelopmentContext.jsx",
+      "snapshot": "preserved-residue/cortex-compass-observatory-20260912/src/components/DevelopmentContext.jsx",
+      "sha256": "fd08f19f663655a0e9b7ec804433049204363081879209772022a78f5f317d52"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-observatory-20260912/src/components/DevelopmentResearch.jsx",
+      "snapshot": "preserved-residue/cortex-compass-observatory-20260912/src/components/DevelopmentResearch.jsx",
+      "sha256": "0c64849e6328fc5170a44d5fef23457bf8acc8d7897ddc6601033652ae3a8d22"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-observatory-20260912/src/data/developmentContext.mjs",
+      "snapshot": "preserved-residue/cortex-compass-observatory-20260912/src/data/developmentContext.mjs",
+      "sha256": "2513c7c2afbed57d92bcc29386fadc8a7f77feeeb18b256e8c54ca200b03f3ea"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-observatory-20260912/src/data/developmentEvidence.mjs",
+      "snapshot": "preserved-residue/cortex-compass-observatory-20260912/src/data/developmentEvidence.mjs",
+      "sha256": "48945f5af7c60db5b6671d6240dda1ab79f27ff9279393a8b474a9f27fbeae5b"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-observatory-20260912/src/utils/developmentProfile.mjs",
+      "snapshot": "preserved-residue/cortex-compass-observatory-20260912/src/utils/developmentProfile.mjs",
+      "sha256": "b82b26e98ed3aee24c8512ed2aa87872f4a444590227ae70e6a1cc88c02c31e3"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-observatory-20260912/tests/development-v7.test.mjs",
+      "snapshot": "preserved-residue/cortex-compass-observatory-20260912/tests/development-v7.test.mjs",
+      "sha256": "b73fad6efbd6051ecb07ef4efb5b9fb0ef210d9e447216e0da8ed64abea1655c"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-portable-profiles/docs/portable-profiles/REVIEW.md",
+      "snapshot": "preserved-residue/cortex-compass-portable-profiles/docs/portable-profiles/REVIEW.md",
+      "sha256": "5938bee69b3a5da2575616a6fa2034ccda351a2f93939f14b9f0fd56f1282d70"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-portable-profiles/scripts/fix-backup-download.mjs",
+      "snapshot": "preserved-residue/cortex-compass-portable-profiles/scripts/fix-backup-download.mjs",
+      "sha256": "75ce9edac123ef4861019fc73e1f84f9d330c2b5223eaddf8730ee64e2fd4e22"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-portable-profiles/scripts/freeze-portable-release.mjs",
+      "snapshot": "preserved-residue/cortex-compass-portable-profiles/scripts/freeze-portable-release.mjs",
+      "sha256": "bad3cb0e979497bd40b93b073a91bf55ffc59ece54af0d60a7b6cf035b6916ce"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-portable-profiles/scripts/integrate-portable-ui.mjs",
+      "snapshot": "preserved-residue/cortex-compass-portable-profiles/scripts/integrate-portable-ui.mjs",
+      "sha256": "725e4698cf94c11f8cc37aefb0f4887c28187899d85b0f600062c920aa62ee27"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-portable-profiles/scripts/publish-portable-release.mjs",
+      "snapshot": "preserved-residue/cortex-compass-portable-profiles/scripts/publish-portable-release.mjs",
+      "sha256": "04a6cbf41a16a16027516d0578a069b0066f7aa682ce968bc3ebe17aadc04b1a"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-portable-profiles/scripts/seal-portable-release.mjs",
+      "snapshot": "preserved-residue/cortex-compass-portable-profiles/scripts/seal-portable-release.mjs",
+      "sha256": "f83eee80b0a889beb4be953675a371e530c055c85ece73f49da6d5f85ebc7bd8"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-portable-profiles/scripts/tighten-portable-contracts.mjs",
+      "snapshot": "preserved-residue/cortex-compass-portable-profiles/scripts/tighten-portable-contracts.mjs",
+      "sha256": "70d7323659c8e7484b427c147e3a9f4a4903a182158a8272a130869bffc57f2f"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/docs/archive/LEGACY-README.md",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/docs/archive/LEGACY-README.md",
+      "sha256": "3a7de9edae81132bf17b1ac0a566fd108389055663f4c58d624ff3da3b43a077"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/docs/reports-v6/COORDINATION.md",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/docs/reports-v6/COORDINATION.md",
+      "sha256": "f042ed25fb99f23d1a9a6c27daf895d35d0e2e084d5c79c6cf5004419a7877f4"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/docs/reports-v6/PLAN.md",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/docs/reports-v6/PLAN.md",
+      "sha256": "5b37614e6f83e662f43121176836208446b790ba2e42745eb31b8d83304d1af6"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/docs/reports-v6/README.md",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/docs/reports-v6/README.md",
+      "sha256": "b146d35d913403069e3e94bb5218a2ebaea7d0b74e0ea3461a396fec4b7a4b2a"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/docs/reports-v6/RELEASE.md",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/docs/reports-v6/RELEASE.md",
+      "sha256": "9646aa54601ea4e7eab2c34282eef3489ea382d00293b281f8f8c101be5f5f7b"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/public/reports/Cortex-Compass-Scientific-Sample.pdf",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/public/reports/Cortex-Compass-Scientific-Sample.pdf",
+      "sha256": "cce707888e15f3b61a59f8c101a35d936f11d5c47ec4d9cc6a555bc5fcc915f6"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/public/reports/Cortex-Compass-Superhero-Sample.pdf",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/public/reports/Cortex-Compass-Superhero-Sample.pdf",
+      "sha256": "24de110ffce422a7b839c39b85037b4b6fefd3790da49411c38f92352a073713"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/public/reports/brain-cutaway.webp",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/public/reports/brain-cutaway.webp",
+      "sha256": "f2108cb6f43f71378d0bdf9646c09083c6e208f40588e8a2fa26cbf75791584f"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/public/reports/brain-deep.webp",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/public/reports/brain-deep.webp",
+      "sha256": "f7b13c3ab4a48878429ee66c5203f7182e1f0586105a46b863552737f85fee1b"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/public/reports/brain-right.webp",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/public/reports/brain-right.webp",
+      "sha256": "c7adbe233afc7fd79689108bdb87add6d36143aded1768c69099e410531ee33b"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/public/reports/brain-surface.webp",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/public/reports/brain-surface.webp",
+      "sha256": "59db051c08e0ddda9708a8863ed193cbcc3895dcf8640dc69e05c95e5b76032f"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/public/reports/samples/Cortex-Compass-Scientific-A4.pdf",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/public/reports/samples/Cortex-Compass-Scientific-A4.pdf",
+      "sha256": "141d23586e6ab0413cd3bbdc9bdc457580a5078cc0631e913cda2818c525eb01"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/public/reports/samples/Cortex-Compass-Scientific-Letter.pdf",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/public/reports/samples/Cortex-Compass-Scientific-Letter.pdf",
+      "sha256": "b4580139ef70c9f755ed0286e392816ba7399a1cf3305eb7db36a18c57d45832"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/public/reports/samples/Cortex-Compass-Superhero-A4.pdf",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/public/reports/samples/Cortex-Compass-Superhero-A4.pdf",
+      "sha256": "1a100208e5062d861583be34128b890075d64c596bb08e6ba478ba09aba3f2d9"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/public/reports/samples/Cortex-Compass-Superhero-Letter.pdf",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/public/reports/samples/Cortex-Compass-Superhero-Letter.pdf",
+      "sha256": "49bfaa43f9537ab79bfe792ac2cc8fe8ffad09dcc993c1fdc3ef9b8ab405c6bf"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/scripts/export-sample-reports-v6.mjs",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/scripts/export-sample-reports-v6.mjs",
+      "sha256": "9488085048fb09438fc3b0dc33e19dcefae910ec17b373ede7cbfaa52b3d9da9"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/scripts/inspect-print-v6.mjs",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/scripts/inspect-print-v6.mjs",
+      "sha256": "3367eae2e3198ef6b7406629f939e61a42fb1ba894c009c3e691d4596219ab61"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/scripts/pdf-contact-sheets-v6.mjs",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/scripts/pdf-contact-sheets-v6.mjs",
+      "sha256": "0ad934386b3cdb9fa07121b1a5c0a9de565a0d278aa492848c2deb2006e5b16c"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/scripts/prepare-report-assets-v6.mjs",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/scripts/prepare-report-assets-v6.mjs",
+      "sha256": "ca15390559d960f89ac2570346c5dc517c8e166921d277787e538db3d515e2fe"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/scripts/render-report-plates-v6.mjs",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/scripts/render-report-plates-v6.mjs",
+      "sha256": "997715777bd87c2381b3de0ab7fe41a84c612fcb0af82cd57a7555b20063c9bb"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/scripts/report-pdf-export-v6.mjs",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/scripts/report-pdf-export-v6.mjs",
+      "sha256": "a4ec9cc8a81124a39f79fe14726dd110c9d8bc55f4349b2f8d5f74b1fae8eb0c"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/scripts/verify-public-assets-v6.mjs",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/scripts/verify-public-assets-v6.mjs",
+      "sha256": "136521d5258cb960f915f24349c841fdda5f681567b678b46b675e73f82a58b5"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/scripts/verify-reports-v6.mjs",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/scripts/verify-reports-v6.mjs",
+      "sha256": "63b963e8f747171d3f0b26c46a03d9b6636105d8d572c1eefa4dda8110c8c982"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/scripts/verify-webkit-v6.mjs",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/scripts/verify-webkit-v6.mjs",
+      "sha256": "94eae08c544119d339c95749faf93711ff8c8fdf5cf901030caa6b83e1af6f45"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/src/components/CompassReports.css",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/src/components/CompassReports.css",
+      "sha256": "53d0cc3f48f39b9468f85ead08e9c558f77822f2d8ace9a735d7dbb33ce808a0"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/src/components/CompassReports.jsx",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/src/components/CompassReports.jsx",
+      "sha256": "e693b28dcd9729e6ae842a4d19c338e374aa19d3fe499e017a32b15c151d3030"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/src/components/CortexMobile.css",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/src/components/CortexMobile.css",
+      "sha256": "d99b1fac792a970143a12ff107880b8ae314255ce6bf6897c1cb848e19f1f940"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/src/components/InsightReflection.jsx",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/src/components/InsightReflection.jsx",
+      "sha256": "3b708409e1d3c0a0e6775c3deeabbbe3d1e4a9222410dfb012f70c51d6995703"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/src/data/insightQuestions.mjs",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/src/data/insightQuestions.mjs",
+      "sha256": "9b46886e6ed48c4088ed1a144c8341db4aaaae7b50b17f875b52a71c2607788a"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/src/utils/insightProfile.mjs",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/src/utils/insightProfile.mjs",
+      "sha256": "f5e553ad5a0582591c2408b35ee0cba595b8b8a6aab6e67e608c88f46f82cea3"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/tests/reports-v6.test.mjs",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/tests/reports-v6.test.mjs",
+      "sha256": "4495207607550a790131d3f82901fe87da194fd57e19b3ee229464e35a311976"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/tests/worker-v6.test.mjs",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/tests/worker-v6.test.mjs",
+      "sha256": "a2f3798a380e0f2926cd11a19af9ef06708ecda7beed0c61cf8221604870eec8"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-xai-portraits/scripts/check-mail-domain.mjs",
+      "snapshot": "preserved-residue/cortex-compass-xai-portraits/scripts/check-mail-domain.mjs",
+      "sha256": "eb53acc9ef8d961c25b1cb20ed7c1040b599475a7cd57f16cb5285fba4dc854a"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-xai-portraits/scripts/cloudflare-portrait-capabilities.mjs",
+      "snapshot": "preserved-residue/cortex-compass-xai-portraits/scripts/cloudflare-portrait-capabilities.mjs",
+      "sha256": "f99e0ef7299a7622f20dbccd338d5969c706eaa9fd736eabd612d4fe0b1002eb"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-xai-portraits/scripts/verify-xai-webkit.mjs",
+      "snapshot": "preserved-residue/cortex-compass-xai-portraits/scripts/verify-xai-webkit.mjs",
+      "sha256": "6efccdda5763b93514bfb2fc8782a156de117d95398e718d0a3366cc4bf57482"
+    }
+  ],
+  "sourceOnlyPreservation": true,
+  "secretsExported": false,
+  "productionChangedByHandoff": false,
+  "localTransferDirectory": "/Users/utlyze/Projects/cortex-compass-handoff-20260913",
+  "ignoredPythonSourcesPreserved": [
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-development-v7/scripts/integrate-development-report.py",
+      "snapshot": "preserved-residue/cortex-compass-development-v7/ignored-source/scripts/integrate-development-report.py",
+      "sha256": "f576d5a4cfa8df4dab860db81475a85aacbc05a8c9bc641a7242153ebedf6793"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-development-v7/scripts/integrate-development.py",
+      "snapshot": "preserved-residue/cortex-compass-development-v7/ignored-source/scripts/integrate-development.py",
+      "sha256": "c6ba25975fd10e9d00b33ce6703807a796d554c5c2c92589e957910e10626562"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-development-v7/scripts/integrate-experience.py",
+      "snapshot": "preserved-residue/cortex-compass-development-v7/ignored-source/scripts/integrate-experience.py",
+      "sha256": "61ecd8f7a8ea0573c98a5ae2aab42ba2c01838dcc99cec0c5ac514eec616e90e"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-hero-editions-20260913/scripts/audit-hero-edition-pdfs.py",
+      "snapshot": "preserved-residue/cortex-compass-hero-editions-20260913/ignored-source/scripts/audit-hero-edition-pdfs.py",
+      "sha256": "3e541bfea866f62c302b9140f66a29a11d13c88a62ee2b877bcc9c375aa4cd98"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-hero-editions-20260913/scripts/build-cortex-handoff.py",
+      "snapshot": "preserved-residue/cortex-compass-hero-editions-20260913/ignored-source/scripts/build-cortex-handoff.py",
+      "sha256": "17f240d061f121633f1bb08afa875d4d60b431d554cf0d7ac7929222fff030a9"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-hero-editions-20260913/scripts/create-handoff-board.py",
+      "snapshot": "preserved-residue/cortex-compass-hero-editions-20260913/ignored-source/scripts/create-handoff-board.py",
+      "sha256": "103a6740059d58bce2d0d5c35b2e8d44cbf0806b80c1345e2cae2f6ca6c5f8aa"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-hero-editions-20260913/scripts/finalize-edition-scope.py",
+      "snapshot": "preserved-residue/cortex-compass-hero-editions-20260913/ignored-source/scripts/finalize-edition-scope.py",
+      "sha256": "2eb2dc6a93e0594bbafb2558e0346584168517c1bfcdba75c167377114513763"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-hero-editions-20260913/scripts/integrate-hero-editions.py",
+      "snapshot": "preserved-residue/cortex-compass-hero-editions-20260913/ignored-source/scripts/integrate-hero-editions.py",
+      "sha256": "a49566eef37e8cc963fabb9555332542978b124b1e4628269b9b592a6750069c"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-hero-editions-20260913/scripts/reconcile-handoff-board.py",
+      "snapshot": "preserved-residue/cortex-compass-hero-editions-20260913/ignored-source/scripts/reconcile-handoff-board.py",
+      "sha256": "d124b4475b1da374f6bf78143096d5909468ff5cb480aa4d021ecd3c094ca272"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-hero-editions-20260913/scripts/record-handoff-state.py",
+      "snapshot": "preserved-residue/cortex-compass-hero-editions-20260913/ignored-source/scripts/record-handoff-state.py",
+      "sha256": "d26bade015d2e1b8ac3632e8e00f6c4031a737f3af2bc6564cf44c0a2cf1321b"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-hero-editions-20260913/scripts/refine-edition-layout.py",
+      "snapshot": "preserved-residue/cortex-compass-hero-editions-20260913/ignored-source/scripts/refine-edition-layout.py",
+      "sha256": "371d10b387d11306d36dffb9fac264834789076f7ba96d1c6ece065b514e3a7b"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-hero-editions-20260913/scripts/require-sex-selection.py",
+      "snapshot": "preserved-residue/cortex-compass-hero-editions-20260913/ignored-source/scripts/require-sex-selection.py",
+      "sha256": "710cc90e1693ee76acf9c32efd66060318e2e92221e6ebde22e151d85d0ffd18"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-hero-editions-20260913/scripts/revise-sex-context.py",
+      "snapshot": "preserved-residue/cortex-compass-hero-editions-20260913/ignored-source/scripts/revise-sex-context.py",
+      "sha256": "280976f2dfc2da80612ceda2add4c9f27c764f84d4978b6fd89dd16647e3adfe"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-hero-editions-20260913/scripts/update-edition-checks.py",
+      "snapshot": "preserved-residue/cortex-compass-hero-editions-20260913/ignored-source/scripts/update-edition-checks.py",
+      "sha256": "93e8cf0d0e10a3d5a45b6d02011dfba4324a61466774cbde46c0d7afe341ca75"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-hero-editions-20260913/scripts/verify-handoff.py",
+      "snapshot": "preserved-residue/cortex-compass-hero-editions-20260913/ignored-source/scripts/verify-handoff.py",
+      "sha256": "a6db50a1d1edd61b6e8d8fb3f9a35202558f20f2557d5cdcf0ce28fa1a8b7200"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-neurohero-v9/scripts/integrate-neurohero-report-v9.py",
+      "snapshot": "preserved-residue/cortex-compass-neurohero-v9/ignored-source/scripts/integrate-neurohero-report-v9.py",
+      "sha256": "226341dcc5388e280e5200987daa177229d6738b09d9f0ef0b12b9e06c379ee5"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-neurohero-v9/scripts/integrate-neurohero-v9.py",
+      "snapshot": "preserved-residue/cortex-compass-neurohero-v9/ignored-source/scripts/integrate-neurohero-v9.py",
+      "sha256": "4cbe3f891fce66b26c5828c4db43ea77eafc88e48a7527bc00feb265d6303531"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-neurohero-v9/scripts/publish-neurohero-v9.py",
+      "snapshot": "preserved-residue/cortex-compass-neurohero-v9/ignored-source/scripts/publish-neurohero-v9.py",
+      "sha256": "f7cdc031d0ccf9942461bf71283cbd2115353c9964e1cfbd3252cd8c36340f3e"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-observatory-20260912/scripts/finish-experience-integration.py",
+      "snapshot": "preserved-residue/cortex-compass-observatory-20260912/ignored-source/scripts/finish-experience-integration.py",
+      "sha256": "0f7fd6d39edd819590e7bdc08a2695ee67feba847902cc1b51130f94b95e9557"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-observatory-20260912/scripts/integrate-development-report.py",
+      "snapshot": "preserved-residue/cortex-compass-observatory-20260912/ignored-source/scripts/integrate-development-report.py",
+      "sha256": "f576d5a4cfa8df4dab860db81475a85aacbc05a8c9bc641a7242153ebedf6793"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-observatory-20260912/scripts/integrate-development.py",
+      "snapshot": "preserved-residue/cortex-compass-observatory-20260912/ignored-source/scripts/integrate-development.py",
+      "sha256": "c6ba25975fd10e9d00b33ce6703807a796d554c5c2c92589e957910e10626562"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-observatory-20260912/scripts/integrate-experience.py",
+      "snapshot": "preserved-residue/cortex-compass-observatory-20260912/ignored-source/scripts/integrate-experience.py",
+      "sha256": "61ecd8f7a8ea0573c98a5ae2aab42ba2c01838dcc99cec0c5ac514eec616e90e"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-observatory-20260912/scripts/verify-experience-release.py",
+      "snapshot": "preserved-residue/cortex-compass-observatory-20260912/ignored-source/scripts/verify-experience-release.py",
+      "sha256": "445eb504b51c60b9f36f2f4e7475ba07b5e44edd7a4a108ae873cc8b767e2565"
+    },
+    {
+      "source": "/Users/utlyze/Projects/cortex-compass-reports-v6/scripts/audit-pdfs-v6.py",
+      "snapshot": "preserved-residue/cortex-compass-reports-v6/ignored-source/scripts/audit-pdfs-v6.py",
+      "sha256": "4f835d119b59b4578ab522901469e0c4000384bddf98522063f6972170d215de"
+    }
+  ],
+  "nativeTaskReadback": "beads-sync.json"
+}

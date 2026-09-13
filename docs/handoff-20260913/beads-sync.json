@@ -1,0 +1,83 @@
+{
+  "verifiedAt": "2026-09-13T19:55:59.151450+00:00",
+  "status": "verified",
+  "ids": {
+    "NG01": "eco-eib7d3",
+    "NG02": "eco-yn5ip8",
+    "NG03": "eco-hb5qwn",
+    "NG04": "eco-g272fw",
+    "NG05": "eco-r3nv7o",
+    "NG06": "eco-kkn8hg",
+    "NG07": "eco-dfbod1",
+    "OP01": "eco-763a8h",
+    "OP02": "eco-bzuidj"
+  },
+  "taskCount": 9,
+  "blockingEdgeCount": 10,
+  "edges": [
+    {
+      "from": "eco-hb5qwn",
+      "dependsOn": "eco-eib7d3",
+      "type": "blocks"
+    },
+    {
+      "from": "eco-hb5qwn",
+      "dependsOn": "eco-yn5ip8",
+      "type": "blocks"
+    },
+    {
+      "from": "eco-g272fw",
+      "dependsOn": "eco-eib7d3",
+      "type": "blocks"
+    },
+    {
+      "from": "eco-g272fw",
+      "dependsOn": "eco-yn5ip8",
+      "type": "blocks"
+    },
+    {
+      "from": "eco-r3nv7o",
+      "dependsOn": "eco-g272fw",
+      "type": "blocks"
+    },
+    {
+      "from": "eco-r3nv7o",
+      "dependsOn": "eco-hb5qwn",
+      "type": "blocks"
+    },
+    {
+      "from": "eco-kkn8hg",
+      "dependsOn": "eco-r3nv7o",
+      "type": "blocks"
+    },
+    {
+      "from": "eco-dfbod1",
+      "dependsOn": "eco-kkn8hg",
+      "type": "blocks"
+    },
+    {
+      "from": "eco-bzuidj",
+      "dependsOn": "eco-g272fw",
+      "type": "blocks"
+    },
+    {
+      "from": "eco-bzuidj",
+      "dependsOn": "eco-yn5ip8",
+      "type": "blocks"
+    }
+  ],
+  "nativeAcceptanceVerified": true,
+  "nativeParentLinksVerified": true,
+  "creationWarningsReconciled": [
+    "Batch graph ignored explicit id, status and acceptance_criteria fields; retained generated IDs and set acceptance via native bd update."
+  ],
+  "sharedTrackerRemoteConfigured": false,
+  "historicalStatuses": {
+    "eco-cortex-handoff-20260913": "in_progress",
+    "eco-cq76kh": "open",
+    "eco-a318wk": "in_progress",
+    "eco-iln18c": "closed",
+    "eco-ii5x99": "closed",
+    "eco-fxdv65": "open"
+  }
+}

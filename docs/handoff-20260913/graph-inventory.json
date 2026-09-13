@@ -1,0 +1,25 @@
+{
+  "observedAt": "2026-09-13T17:31:51.420Z",
+  "systems": 16,
+  "constructs": 46,
+  "observations": 27,
+  "namedCompositions": 24,
+  "evidenceRecords": 24,
+  "systemOperators": 5,
+  "partialUnusedProcessRecords": 16,
+  "integrity": {
+    "ok": true,
+    "problems": [],
+    "nodeCount": 137,
+    "edgeCount": 212,
+    "pairPotentialities": 351
+  },
+  "combinatorialSpace": {
+    "recognized": 27,
+    "pairs": 351,
+    "triples": 2925,
+    "quads": 17550
+  },
+  "liveIntegration": false,
+  "calibrated": false
+}

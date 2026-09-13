@@ -1,0 +1,301 @@
+{
+  "schema": "cortex-handoff-workboard/v1",
+  "generatedAt": "2026-09-13T17:42:09.707320+00:00",
+  "canonicalTracker": "/Users/utlyze/.beads (Dolt server / eco)",
+  "nativeSyncStatus": "verified-native-tasks-acceptance-and-dependencies",
+  "program": "eco-a318wk",
+  "graphParent": "eco-cq76kh",
+  "handoffRequestedId": "eco-cortex-handoff-20260913",
+  "tasks": [
+    {
+      "alias": "NG01",
+      "title": "Reconcile graph checkpoint onto current verified Cortex source",
+      "priority": 1,
+      "type": "task",
+      "canonicalId": "eco-eib7d3",
+      "nativeStatus": "open",
+      "planStatus": "ready",
+      "ownerRole": "integration engineer",
+      "dependsOn": [],
+      "scope": [
+        "new isolated worktree",
+        "graph-only checkpoint aae0e60"
+      ],
+      "description": "Start from the latest verified hero-editions branch, not the old 43ceccb graph base. Import only graph paths, retain original history and keep runtime integration off until accepted. Confirm active ownership and native release version.",
+      "acceptance": [
+        "Current production UI, required Male/Female control, backup and xAI service are preserved.",
+        "Graph checkpoint is present on a new named branch with clean ownership.",
+        "Existing regression baseline and nine prototype tests are recorded without calling them scientific validation."
+      ],
+      "parent": "eco-cq76kh",
+      "nativeSynchronized": true,
+      "nativeAcceptance": "Current production UI, required Male/Female control, encrypted backup and xAI service are preserved. Graph checkpoint aae0e60 is imported into a new branch with clean ownership. Baseline regression and prototype tests are recorded separately from scientific validation.",
+      "supersededRequestedId": "eco-ccg-ng01-20260913"
+    },
+    {
+      "alias": "NG02",
+      "title": "Build claim-level source, cohort and measurement provenance",
+      "priority": 1,
+      "type": "task",
+      "canonicalId": "eco-yn5ip8",
+      "nativeStatus": "open",
+      "planStatus": "ready",
+      "ownerRole": "research engineer",
+      "dependsOn": [],
+      "scope": [
+        "src/data/neurograph/evidenceRegistry.mjs",
+        "new source/claim schema",
+        "research audit docs"
+      ],
+      "description": "Review primary studies and relevant frameworks. Record actual task, population, outcome, estimate/uncertainty when available, nulls, corrections, read depth and cohort overlap. Separate component evidence, joint-effect evidence and editorial hypothesis. No numeric weights from publication type alone.",
+      "acceptance": [
+        "Every imported empirical claim has a result-specific locator and scope.",
+        "Null, conflicting and overlapping-cohort evidence is retained.",
+        "Unsupported/uncertain records are quarantined or explicitly labeled rather than upgraded."
+      ],
+      "parent": "eco-cq76kh",
+      "nativeSynchronized": true,
+      "nativeAcceptance": "Every imported empirical claim resolves to a result-specific source and scope. Null and contrary findings and overlapping cohorts are retained. Unsupported records remain explicitly unknown rather than being promoted by source count.",
+      "supersededRequestedId": "eco-ccg-ng02-20260913"
+    },
+    {
+      "alias": "NG03",
+      "title": "Reconcile functional ontology and typed graph edges",
+      "priority": 1,
+      "type": "task",
+      "canonicalId": "eco-hb5qwn",
+      "nativeStatus": "open",
+      "planStatus": "blocked-by-plan-dependencies",
+      "ownerRole": "graph engineer",
+      "dependsOn": [
+        "NG01",
+        "NG02"
+      ],
+      "scope": [
+        "src/data/neurograph/systems.mjs",
+        "model.mjs",
+        "processes.mjs",
+        "operators.mjs",
+        "graph integrity tests"
+      ],
+      "description": "Resolve the partial unused process file and inconsistent domain mapping. Introduce stable IDs and deliberate process-to-system links. Distinguish measured association, task mapping, hypothetical interaction, context and narrative edges. Do not infer a joint mechanism from a shared citation.",
+      "acceptance": [
+        "All node and claim references resolve with explicit edge semantics.",
+        "ID stability, duplicate claims/cohorts and missing data are tested.",
+        "Distinct threat/safety, working-context and social processes are not accidentally collapsed by a generic UI-domain mapping."
+      ],
+      "parent": "eco-cq76kh",
+      "nativeSynchronized": true,
+      "nativeAcceptance": "All nodes and claims resolve with typed edge semantics. Stable IDs, duplicate/cohort checks and missing-data tests pass. Threat/safety and working-context processes are not accidentally collapsed by generic domain mapping.",
+      "supersededRequestedId": "eco-ccg-ng03-20260913"
+    },
+    {
+      "alias": "NG04",
+      "title": "Replace uncalibrated confidence scoring with an auditable evidence contract",
+      "priority": 1,
+      "type": "task",
+      "canonicalId": "eco-g272fw",
+      "nativeStatus": "open",
+      "planStatus": "blocked-by-plan-dependencies",
+      "ownerRole": "methods engineer",
+      "dependsOn": [
+        "NG01",
+        "NG02"
+      ],
+      "scope": [
+        "confidenceEngine.mjs",
+        "weights.mjs",
+        "evidence appraisals",
+        "method tests"
+      ],
+      "description": "Current weights and thresholds are editorial constants, not learned or calibrated. Separate reported fit, counterexample coverage, source directness/consistency, joint-effect evidence and individual measurement. Define a valid estimand/data protocol before any probability or effect-size claim.",
+      "acceptance": [
+        "No current supportIndex is represented as a probability, biomarker or measured certainty.",
+        "Tests do not require arbitrary high scores for a favored hero.",
+        "Perturbing unknown/counterexample/source-quality inputs has documented bounded behavior."
+      ],
+      "parent": "eco-cq76kh",
+      "nativeSynchronized": true,
+      "nativeAcceptance": "Support indices are not represented as probabilities, biomarkers or measured certainty. Remove arbitrary high-score acceptance targets. Document bounded, testable effects of missing answers, counterexamples and evidence quality.",
+      "supersededRequestedId": "eco-ccg-ng04-20260913"
+    },
+    {
+      "alias": "NG05",
+      "title": "Implement bounded compositional inference and explanations",
+      "priority": 1,
+      "type": "task",
+      "canonicalId": "eco-r3nv7o",
+      "nativeStatus": "open",
+      "planStatus": "blocked-by-plan-dependencies",
+      "ownerRole": "inference engineer",
+      "dependsOn": [
+        "NG03",
+        "NG04"
+      ],
+      "scope": [
+        "compositionEngine.mjs",
+        "environmentEngine.mjs",
+        "explanationEngine.mjs",
+        "profileEngine.mjs",
+        "new graph tests"
+      ],
+      "description": "Evaluate eligible compositions with the accepted evidence contract. Preserve preferred eligible signatures, explicit counterexamples and unknowns. Bound pair/hyperedge traversal; counts of possible combinations are not numbers of validated relationships. Keep observed friction separate from proposed trade-offs.",
+      "acceptance": [
+        "Deterministic output, malformed inputs, source withdrawal and counterfactual response changes are tested.",
+        "No path manufactures anatomy or ability from age, sex, gender or history.",
+        "Each personal conclusion resolves to input observations; each research claim resolves to accepted evidence."
+      ],
+      "parent": "eco-cq76kh",
+      "nativeSynchronized": true,
+      "nativeAcceptance": "Determinism, malformed inputs, source withdrawal and changed/counterexample responses are tested. No anatomy or ability is manufactured from demographics or history. Every personal conclusion resolves to observations and every research claim to accepted evidence.",
+      "supersededRequestedId": "eco-ccg-ng05-20260913"
+    },
+    {
+      "alias": "NG06",
+      "title": "Integrate accessible evidence graph and scientific report adapter",
+      "priority": 1,
+      "type": "task",
+      "canonicalId": "eco-kkn8hg",
+      "nativeStatus": "open",
+      "planStatus": "blocked-by-plan-dependencies",
+      "ownerRole": "frontend/report engineer",
+      "dependsOn": [
+        "NG05"
+      ],
+      "scope": [
+        "new graph components",
+        "NeuroheroLab.jsx",
+        "CompassReports.jsx",
+        "report and backup adapters"
+      ],
+      "description": "Expose paths from observation to process to claim and source, with measured/hypothesized edges and accessible text. Preserve current short hero style, privacy appendices, stable hero/portrait IDs, device saves and encrypted backups. No private graph details go to image/design providers.",
+      "acceptance": [
+        "Desktop, 320/390/768 mobile and WebKit navigation are usable.",
+        "A4/Letter scientific explanation and hero PDFs are visually inspected.",
+        "Existing accepted image bytes, saved profiles and backup roundtrips remain valid; no automatic paid request."
+      ],
+      "parent": "eco-cq76kh",
+      "nativeSynchronized": true,
+      "nativeAcceptance": "Desktop, narrow mobile and WebKit flows work. A4/Letter reports are visually inspected. Existing saved profiles, encrypted backup roundtrips and accepted image bytes remain compatible, with no automatic paid requests.",
+      "supersededRequestedId": "eco-ccg-ng06-20260913"
+    },
+    {
+      "alias": "NG07",
+      "title": "Independent review, complete regression and exact-artifact publication",
+      "priority": 1,
+      "type": "task",
+      "canonicalId": "eco-dfbod1",
+      "nativeStatus": "open",
+      "planStatus": "blocked-by-plan-dependencies",
+      "ownerRole": "release/review engineer",
+      "dependsOn": [
+        "NG06"
+      ],
+      "scope": [
+        "review evidence",
+        "test receipts",
+        "release scripts",
+        "completion handoff"
+      ],
+      "description": "Independently challenge representative evidence paths and misleading score/wording risks. Run affected full tests, keep failed receipts, verify an immutable artifact, re-read native production, preserve rollback, deploy only accepted output and verify public hashes and user flow.",
+      "acceptance": [
+        "Research review and software checks are distinguished.",
+        "Current source/commit, build hashes, provider version, rollback and live checks are recorded.",
+        "No capability is called clinically validated or calibrated without actual proof."
+      ],
+      "parent": "eco-cq76kh",
+      "nativeSynchronized": true,
+      "nativeAcceptance": "Independent research review and software acceptance are documented separately. Source/build hashes, native deployment, rollback and public checks are recorded. No validation or calibration is claimed without actual evidence.",
+      "supersededRequestedId": "eco-ccg-ng07-20260913"
+    },
+    {
+      "alias": "OP01",
+      "title": "Design optional public account and portrait entitlement rollout",
+      "priority": 3,
+      "type": "task",
+      "canonicalId": "eco-763a8h",
+      "nativeStatus": "open",
+      "planStatus": "ready",
+      "ownerRole": "backend/privacy engineer",
+      "dependsOn": [],
+      "scope": [
+        "future auth design",
+        "no current production mutation"
+      ],
+      "description": "The current xAI studio is a private-pass pilot. Assess real signup/account recovery, private access, lifecycle, quotas and costs before replacing it. An account does not by itself make questionnaire data confidential or end-to-end encrypted. Keep anonymous reflection and local backups functional.",
+      "acceptance": [
+        "Concrete identity, deletion, recovery and provider/data-transfer boundaries reviewed.",
+        "Separate user authorization and rollout acceptance before activating paid/public endpoints."
+      ],
+      "parent": "eco-a318wk",
+      "nativeSynchronized": true,
+      "nativeAcceptance": "Identity, account recovery, deletion, provider processing and privacy boundaries are reviewed. Public paid rollout has its own authorization and operational acceptance. Existing local reflection and backups remain usable.",
+      "supersededRequestedId": "eco-ccg-op01-20260913"
+    },
+    {
+      "alias": "OP02",
+      "title": "Design consented longitudinal usefulness and calibration study",
+      "priority": 3,
+      "type": "task",
+      "canonicalId": "eco-bzuidj",
+      "nativeStatus": "open",
+      "planStatus": "blocked-by-plan-dependencies",
+      "ownerRole": "research methods lead",
+      "dependsOn": [
+        "NG02",
+        "NG04"
+      ],
+      "scope": [
+        "future research protocol only"
+      ],
+      "description": "Specify research questions, outcomes, counterexamples, repeatability, sampling, privacy, withdrawal and separate opt-in consent. Do not silently reuse private reflections or claim a completed meta-analysis from the registry.",
+      "acceptance": [
+        "A prespecified study/evaluation protocol is reviewed before data collection.",
+        "Product enjoyment, self-recognition, performance and neural measurement remain distinct outcomes."
+      ],
+      "parent": "eco-a318wk",
+      "nativeSynchronized": true,
+      "nativeAcceptance": "A prespecified research protocol, consent and data-handling plan is reviewed before collection. Enjoyment, self-recognition, performance and neural measurement remain distinct outcomes.",
+      "supersededRequestedId": "eco-ccg-op02-20260913"
+    }
+  ],
+  "historicalItems": [
+    {
+      "id": "eco-iln18c",
+      "lastConfirmedStatus": "closed",
+      "scope": "live hero editions/required sex",
+      "nativeStatus": "closed",
+      "statusVerified": true
+    },
+    {
+      "id": "eco-ii5x99",
+      "lastConfirmedStatus": "closed",
+      "scope": "portable profiles/portrait editions",
+      "nativeStatus": "closed",
+      "statusVerified": true
+    },
+    {
+      "id": "eco-fxdv65",
+      "lastConfirmedStatus": "see xAI completion receipt",
+      "scope": "xAI portrait service",
+      "nativeStatus": "open",
+      "statusVerified": true
+    },
+    {
+      "id": "eco-a318wk",
+      "lastConfirmedStatus": "open in previous release record",
+      "scope": "broader Neurohero program",
+      "nativeStatus": "in_progress",
+      "statusVerified": true
+    },
+    {
+      "id": "eco-cq76kh",
+      "lastConfirmedStatus": "open prototype work",
+      "scope": "unfinished graph",
+      "nativeStatus": "open",
+      "statusVerified": true
+    }
+  ],
+  "nativeVerifiedAt": "2026-09-13T19:55:59.151450+00:00",
+  "handoffCanonicalId": "eco-cortex-handoff-20260913"
+}

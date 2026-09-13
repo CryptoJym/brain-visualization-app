@@ -1,0 +1,201 @@
+{
+  "commit_message": "Cortex Compass resumable graph handoff tasks",
+  "nodes": [
+    {
+      "key": "NG01",
+      "id": "eco-ccg-ng01-20260913",
+      "title": "Reconcile graph checkpoint onto current verified Cortex source",
+      "type": "task",
+      "status": "open",
+      "priority": 1,
+      "parent_id": "eco-cq76kh",
+      "description": "Start from the latest verified hero-editions branch, not the old 43ceccb graph base. Import only graph paths, retain original history and keep runtime integration off until accepted. Confirm active ownership and native release version.\n\nOwner role: integration engineer.\nScope: new isolated worktree, graph-only checkpoint aae0e60.\nHandoff: docs/handoff-20260913/tasks/NG01.md",
+      "acceptance_criteria": "Current production UI, required Male/Female control, backup and xAI service are preserved.\nGraph checkpoint is present on a new named branch with clean ownership.\nExisting regression baseline and nine prototype tests are recorded without calling them scientific validation.",
+      "labels": [
+        "cortex-compass",
+        "handoff-20260913",
+        "neurograph"
+      ]
+    },
+    {
+      "key": "NG02",
+      "id": "eco-ccg-ng02-20260913",
+      "title": "Build claim-level source, cohort and measurement provenance",
+      "type": "task",
+      "status": "open",
+      "priority": 1,
+      "parent_id": "eco-cq76kh",
+      "description": "Review primary studies and relevant frameworks. Record actual task, population, outcome, estimate/uncertainty when available, nulls, corrections, read depth and cohort overlap. Separate component evidence, joint-effect evidence and editorial hypothesis. No numeric weights from publication type alone.\n\nOwner role: research engineer.\nScope: src/data/neurograph/evidenceRegistry.mjs, new source/claim schema, research audit docs.\nHandoff: docs/handoff-20260913/tasks/NG02.md",
+      "acceptance_criteria": "Every imported empirical claim has a result-specific locator and scope.\nNull, conflicting and overlapping-cohort evidence is retained.\nUnsupported/uncertain records are quarantined or explicitly labeled rather than upgraded.",
+      "labels": [
+        "cortex-compass",
+        "handoff-20260913",
+        "neurograph"
+      ]
+    },
+    {
+      "key": "NG03",
+      "id": "eco-ccg-ng03-20260913",
+      "title": "Reconcile functional ontology and typed graph edges",
+      "type": "task",
+      "status": "open",
+      "priority": 1,
+      "parent_id": "eco-cq76kh",
+      "description": "Resolve the partial unused process file and inconsistent domain mapping. Introduce stable IDs and deliberate process-to-system links. Distinguish measured association, task mapping, hypothetical interaction, context and narrative edges. Do not infer a joint mechanism from a shared citation.\n\nOwner role: graph engineer.\nScope: src/data/neurograph/systems.mjs, model.mjs, processes.mjs, operators.mjs, graph integrity tests.\nHandoff: docs/handoff-20260913/tasks/NG03.md",
+      "acceptance_criteria": "All node and claim references resolve with explicit edge semantics.\nID stability, duplicate claims/cohorts and missing data are tested.\nDistinct threat/safety, working-context and social processes are not accidentally collapsed by a generic UI-domain mapping.",
+      "labels": [
+        "cortex-compass",
+        "handoff-20260913",
+        "neurograph"
+      ]
+    },
+    {
+      "key": "NG04",
+      "id": "eco-ccg-ng04-20260913",
+      "title": "Replace uncalibrated confidence scoring with an auditable evidence contract",
+      "type": "task",
+      "status": "open",
+      "priority": 1,
+      "parent_id": "eco-cq76kh",
+      "description": "Current weights and thresholds are editorial constants, not learned or calibrated. Separate reported fit, counterexample coverage, source directness/consistency, joint-effect evidence and individual measurement. Define a valid estimand/data protocol before any probability or effect-size claim.\n\nOwner role: methods engineer.\nScope: confidenceEngine.mjs, weights.mjs, evidence appraisals, method tests.\nHandoff: docs/handoff-20260913/tasks/NG04.md",
+      "acceptance_criteria": "No current supportIndex is represented as a probability, biomarker or measured certainty.\nTests do not require arbitrary high scores for a favored hero.\nPerturbing unknown/counterexample/source-quality inputs has documented bounded behavior.",
+      "labels": [
+        "cortex-compass",
+        "handoff-20260913",
+        "neurograph"
+      ]
+    },
+    {
+      "key": "NG05",
+      "id": "eco-ccg-ng05-20260913",
+      "title": "Implement bounded compositional inference and explanations",
+      "type": "task",
+      "status": "open",
+      "priority": 1,
+      "parent_id": "eco-cq76kh",
+      "description": "Evaluate eligible compositions with the accepted evidence contract. Preserve preferred eligible signatures, explicit counterexamples and unknowns. Bound pair/hyperedge traversal; counts of possible combinations are not numbers of validated relationships. Keep observed friction separate from proposed trade-offs.\n\nOwner role: inference engineer.\nScope: compositionEngine.mjs, environmentEngine.mjs, explanationEngine.mjs, profileEngine.mjs, new graph tests.\nHandoff: docs/handoff-20260913/tasks/NG05.md",
+      "acceptance_criteria": "Deterministic output, malformed inputs, source withdrawal and counterfactual response changes are tested.\nNo path manufactures anatomy or ability from age, sex, gender or history.\nEach personal conclusion resolves to input observations; each research claim resolves to accepted evidence.",
+      "labels": [
+        "cortex-compass",
+        "handoff-20260913",
+        "neurograph"
+      ]
+    },
+    {
+      "key": "NG06",
+      "id": "eco-ccg-ng06-20260913",
+      "title": "Integrate accessible evidence graph and scientific report adapter",
+      "type": "task",
+      "status": "open",
+      "priority": 1,
+      "parent_id": "eco-cq76kh",
+      "description": "Expose paths from observation to process to claim and source, with measured/hypothesized edges and accessible text. Preserve current short hero style, privacy appendices, stable hero/portrait IDs, device saves and encrypted backups. No private graph details go to image/design providers.\n\nOwner role: frontend/report engineer.\nScope: new graph components, NeuroheroLab.jsx, CompassReports.jsx, report and backup adapters.\nHandoff: docs/handoff-20260913/tasks/NG06.md",
+      "acceptance_criteria": "Desktop, 320/390/768 mobile and WebKit navigation are usable.\nA4/Letter scientific explanation and hero PDFs are visually inspected.\nExisting accepted image bytes, saved profiles and backup roundtrips remain valid; no automatic paid request.",
+      "labels": [
+        "cortex-compass",
+        "handoff-20260913",
+        "neurograph"
+      ]
+    },
+    {
+      "key": "NG07",
+      "id": "eco-ccg-ng07-20260913",
+      "title": "Independent review, complete regression and exact-artifact publication",
+      "type": "task",
+      "status": "open",
+      "priority": 1,
+      "parent_id": "eco-cq76kh",
+      "description": "Independently challenge representative evidence paths and misleading score/wording risks. Run affected full tests, keep failed receipts, verify an immutable artifact, re-read native production, preserve rollback, deploy only accepted output and verify public hashes and user flow.\n\nOwner role: release/review engineer.\nScope: review evidence, test receipts, release scripts, completion handoff.\nHandoff: docs/handoff-20260913/tasks/NG07.md",
+      "acceptance_criteria": "Research review and software checks are distinguished.\nCurrent source/commit, build hashes, provider version, rollback and live checks are recorded.\nNo capability is called clinically validated or calibrated without actual proof.",
+      "labels": [
+        "cortex-compass",
+        "handoff-20260913",
+        "neurograph"
+      ]
+    },
+    {
+      "key": "OP01",
+      "id": "eco-ccg-op01-20260913",
+      "title": "Design optional public account and portrait entitlement rollout",
+      "type": "task",
+      "status": "open",
+      "priority": 3,
+      "parent_id": "eco-a318wk",
+      "description": "The current xAI studio is a private-pass pilot. Assess real signup/account recovery, private access, lifecycle, quotas and costs before replacing it. An account does not by itself make questionnaire data confidential or end-to-end encrypted. Keep anonymous reflection and local backups functional.\n\nOwner role: backend/privacy engineer.\nScope: future auth design, no current production mutation.\nHandoff: docs/handoff-20260913/tasks/OP01.md",
+      "acceptance_criteria": "Concrete identity, deletion, recovery and provider/data-transfer boundaries reviewed.\nSeparate user authorization and rollout acceptance before activating paid/public endpoints.",
+      "labels": [
+        "cortex-compass",
+        "handoff-20260913",
+        "future-scope"
+      ]
+    },
+    {
+      "key": "OP02",
+      "id": "eco-ccg-op02-20260913",
+      "title": "Design consented longitudinal usefulness and calibration study",
+      "type": "task",
+      "status": "open",
+      "priority": 3,
+      "parent_id": "eco-a318wk",
+      "description": "Specify research questions, outcomes, counterexamples, repeatability, sampling, privacy, withdrawal and separate opt-in consent. Do not silently reuse private reflections or claim a completed meta-analysis from the registry.\n\nOwner role: research methods lead.\nScope: future research protocol only.\nHandoff: docs/handoff-20260913/tasks/OP02.md",
+      "acceptance_criteria": "A prespecified study/evaluation protocol is reviewed before data collection.\nProduct enjoyment, self-recognition, performance and neural measurement remain distinct outcomes.",
+      "labels": [
+        "cortex-compass",
+        "handoff-20260913",
+        "future-scope"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from_key": "NG03",
+      "to_key": "NG01",
+      "type": "blocks"
+    },
+    {
+      "from_key": "NG03",
+      "to_key": "NG02",
+      "type": "blocks"
+    },
+    {
+      "from_key": "NG04",
+      "to_key": "NG01",
+      "type": "blocks"
+    },
+    {
+      "from_key": "NG04",
+      "to_key": "NG02",
+      "type": "blocks"
+    },
+    {
+      "from_key": "NG05",
+      "to_key": "NG03",
+      "type": "blocks"
+    },
+    {
+      "from_key": "NG05",
+      "to_key": "NG04",
+      "type": "blocks"
+    },
+    {
+      "from_key": "NG06",
+      "to_key": "NG05",
+      "type": "blocks"
+    },
+    {
+      "from_key": "NG07",
+      "to_key": "NG06",
+      "type": "blocks"
+    },
+    {
+      "from_key": "OP02",
+      "to_key": "NG02",
+      "type": "blocks"
+    },
+    {
+      "from_key": "OP02",
+      "to_key": "NG04",
+      "type": "blocks"
+    }
+  ]
+}
