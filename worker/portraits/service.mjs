@@ -1,3 +1,4 @@
+import {checkXaiConnection} from './connection.mjs';
 import {generateXaiPortrait,normalizeVisualSpec,visualFingerprint,sha256,XAI_CONFIG,PortraitError} from './xai.mjs';
 const COOKIE='__Host-cc-portrait';const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const token=()=>btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(32)))).replaceAll('+','-').replaceAll('/','_').replaceAll('=','');
@@ -25,6 +26,7 @@ export class PortraitService{
  if(path==='/status'&&request.method==='GET')return await this.status(request);
  if(path==='/session'&&request.method==='POST')return await this.login(request);
  const s=await this.session(request);if(!s)throw new PortraitError('sign_in_required',401);
+ if(path==='/connection'&&request.method==='GET')return json(await checkXaiConnection(this.env.CORTEX_XAI_API_KEY));
  if(path==='/session'&&request.method==='DELETE'){await this.store.delete('session:'+s.key);return json({authenticated:false},200,{'Set-Cookie':setCookie('',0)});}
  if(path==='/jobs'&&request.method==='POST')return await this.createJob(request,s);
  const match=path.match(/^\/jobs\/([a-f0-9-]{36})(\/image)?$/);if(!match||!UUID.test(match[1]))throw new PortraitError('not_found',404);return await this.jobAction(request,s,match[1],Boolean(match[2]));
