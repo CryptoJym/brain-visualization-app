@@ -47,3 +47,16 @@ test('completed private storage can be recovered after a worker interruption',as
 test('deleting queued artwork never spends a provider call and preserves budget ledger',async()=>{const f=await fixture(),c=await login(f);const {job}=await (await makeJob(f,c)).json();assert.equal((await request(f,'/jobs/'+job.id,'DELETE',null,c)).status,200);await f.service.alarm();assert.equal((await request(f,'/jobs/'+job.id,'GET',null,c)).status,404);assert.equal(await f.store.get('total-attempts'),1);});
 test('deleted visual edition requires an explicit new edition',async()=>{const f=await fixture(),c=await login(f);const {job}=await (await makeJob(f,c)).json();await request(f,'/jobs/'+job.id,'DELETE',null,c);assert.equal((await makeJob(f,c)).status,409);assert.equal((await makeJob(f,c,{...spec,edition:1})).status,202);assert.equal(await f.store.get('total-attempts'),2);});
 test('deletion during provider generation prevents retention of the result',async t=>{const f=await fixture(),c=await login(f);const {job}=await (await makeJob(f,c)).json();let release,started;const begin=new Promise(r=>started=r);const old=globalThis.fetch;globalThis.fetch=async()=>{started();return await new Promise(r=>release=()=>r(Response.json(image())));};t.after(()=>globalThis.fetch=old);const alarm=f.service.alarm();await begin;assert.equal((await request(f,'/jobs/'+job.id,'DELETE',null,c)).status,202);release();await alarm;assert.equal(f.bucket.map.size,0);assert.equal((await request(f,'/jobs/'+job.id,'GET',null,c)).status,404);});
+
+test('a queued deletion cannot race into a provider call while object deletion waits',async t=>{
+ const f=await fixture(),c=await login(f);const {job}=await(await makeJob(f,c)).json();
+ let release,start;const began=new Promise(r=>start=r);f.bucket.delete=async()=>{start();await new Promise(r=>release=r);};
+ const old=globalThis.fetch;let calls=0;globalThis.fetch=async()=>{calls++;return Response.json(image());};t.after(()=>globalThis.fetch=old);
+ const deleting=request(f,'/jobs/'+job.id,'DELETE',null,c);await began;
+ const state=await f.store.get('job:'+f.a+':'+job.id);
+ assert.ok(state.deleteRequested||state.status==='deleted'||state.status==='deleting','deletion intent must precede object-storage I/O');
+ release();await deleting;await f.service.alarm();assert.equal(calls,0);assert.equal(f.bucket.map.size,0);
+});
+test('the provider request uses non-following redirects compatible with Workers',async()=>{
+ await generateXaiPortrait(spec,{apiKey:'fixture',fetchImpl:async(_url,options)=>{assert.equal(options.redirect,'manual');return Response.json(image());}});
+});

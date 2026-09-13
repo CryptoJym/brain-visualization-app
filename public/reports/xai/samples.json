@@ -1,0 +1,24 @@
+{
+  "fictional": true,
+  "provider": "xAI",
+  "model": "grok-imagine-image-2.0",
+  "note": "Demonstration artwork and synthetic report answers. Personal portrait-library objects are never publicly listed.",
+  "files": [
+    {
+      "name": "Cortex-Compass-xAI-Hero-Sample-A4.pdf",
+      "sha256": "b40afc6048891ff194a7715abd1eb544779b7f459764f86a9f4e6a18e3ad6f30"
+    },
+    {
+      "name": "Cortex-Compass-xAI-Hero-Sample-Letter.pdf",
+      "sha256": "8bef23136392c4211e54c2e65b381f3aa78c9440eb7d0decd2b2eecdfd1bf4de"
+    },
+    {
+      "name": "Cortex-Compass-xAI-Strengths-Card.pdf",
+      "sha256": "c86dede8edd7e25316b7da8e2701630efbc07e57b56baac6fcf80031cd99f025"
+    },
+    {
+      "name": "Cortex-Compass-xAI-Signal-Cartographer.jpg",
+      "sha256": "941250035ab077bc326d19ecdc9f2736804bfbfbf1ce99b15f9923adbab8deb5"
+    }
+  ]
+}
