@@ -13,3 +13,15 @@ export async function saveDevicePortrait(file,consent=false){
  const scale=Math.min(1,1920/bitmap.width,2400/bitmap.height);width=Math.round(bitmap.width*scale);height=Math.round(bitmap.height*scale);const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;const ctx=canvas.getContext('2d');ctx.fillStyle='#f7fbfd';ctx.fillRect(0,0,width,height);ctx.drawImage(bitmap,0,0,width,height);blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('Image conversion failed.')),'image/jpeg',.9));}finally{bitmap.close();}
  const bytes=await blob.arrayBuffer();const sha256=[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(n=>n.toString(16).padStart(2,'0')).join('');const id=crypto.randomUUID();await transact('readwrite',s=>s.put({id,sha256,bytes,width,height}));return {kind:'device',id,sha256,width,height};
 }
+// Restore an already accepted JPEG without re-encoding it. Existing image entries are never overwritten.
+export async function restoreDevicePortrait(bytes,reference,consent=false){
+ if(consent!==true)throw new Error('Choose permission to open this backup on the device first.');
+ const source=normalizePortraitAsset(reference);
+ if(!source||!(bytes instanceof Uint8Array)||bytes.length>8*1024*1024||bytes[0]!==255||bytes[1]!==216||bytes[2]!==255)throw new Error('Unsupported backup portrait.');
+ const sha256=[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(v=>v.toString(16).padStart(2,'0')).join('');
+ if(sha256!==source.sha256)throw new Error('The backup image does not match its saved fingerprint.');
+ const bitmap=await createImageBitmap(new Blob([bytes],{type:'image/jpeg'}));let width,height;
+ try{width=bitmap.width;height=bitmap.height;if(width<32||height<32||width*height>32000000)throw new Error('The backup image dimensions are unsupported.');}finally{bitmap.close();}
+ const id=crypto.randomUUID();await transact('readwrite',store=>store.put({id,sha256,bytes:bytes.slice().buffer,width,height}));
+ return {...source,id,width,height};
+}
