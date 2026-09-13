@@ -1,0 +1,12 @@
+import React,{useEffect,useRef,useState} from 'react';
+import CortexBrand from '../CortexBrand';
+import {encryptBackup,decryptBackup,MAX_BACKUP_BYTES} from '../../utils/backup/cryptoEnvelope.mjs';
+import {canonicalBackupProfile,createBackupPayload,validateBackupPayload} from '../../utils/backup/profileBackup.mjs';
+import {getDevicePortrait,restoreDevicePortrait} from '../../utils/neurohero/portraitDevice.mjs';
+import {buildHeroProfile} from '../../utils/neurohero/engine.mjs';
+export default function ProfileBackup({snapshot,fictional=false,initialTab='export',onBack,onOpen}){
+ const [tab,setTab]=useState(initialTab),[password,setPassword]=useState(''),[confirmation,setConfirmation]=useState(''),[restorePassword,setRestorePassword]=useState('');
+ const [includeImage,setIncludeImage]=useState(true),[file,setFile]=useState(null),[preview,setPreview]=useState(null),[consent,setConsent]=useState(false),[busy,setBusy]=useState(false),[message,setMessage]=useState(''),[download,setDownload]=useState(null);
+ const lock=useRef(false),alive=useRef(true),generation=useRef(0),downloadRef=useRef(null);
+ useEffect(()=>{alive.current=true;return()=>{alive.current=false;generation.current++;if(downloadRef.current)URL.revokeObjectURL(downloadRef.current);};},[]);
+ const act=async fn=>{if(lock.current)return;lock.current=true;setBusy(true);setMessage('');const run=generation.current;try{await fn(run);}catch(e){if(alive.current&&run===generation.current)setMessage(e.message||'The backup could not be processed. The saved profile is unchanged.');}finally{lock.current=false;if(alive.current)setBusy(false);}};
