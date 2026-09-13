@@ -1,0 +1,43 @@
+{
+  "status": "baseline-reconciliation-verified",
+  "verifiedAt": "2026-09-13T20:56:00.320Z",
+  "workItem": "eco-eib7d3",
+  "baselineCommit": "2aa769bc3728146a3bfa8801da0253b93c4293f8",
+  "originalGraphCheckpoint": "aae0e60e9d0b36c17ec19154c32881a11be90413",
+  "branch": "astra/cortex-neurograph-next",
+  "graph": {
+    "ok": true,
+    "problems": [],
+    "nodeCount": 137,
+    "edgeCount": 212,
+    "pairPotentialities": 351
+  },
+  "checks": [
+    {
+      "name": "existing-runtime-files-identical",
+      "count": 222
+    },
+    {
+      "name": "graph-checkpoint-files-identical",
+      "count": 15
+    },
+    {
+      "name": "built-assets-identical-to-deployed-snapshot",
+      "count": 72
+    },
+    {
+      "name": "test-baseline",
+      "applicationTests": 253,
+      "prototypeTests": 9,
+      "total": 262,
+      "clinicalValidation": false
+    },
+    {
+      "name": "production-unchanged",
+      "version": "e127727f-f809-4b6f-85ca-fa7e7f67b75d"
+    }
+  ],
+  "liveGraphEnabled": false,
+  "scientificCalibrationCompleted": false,
+  "paidRequests": 0
+}

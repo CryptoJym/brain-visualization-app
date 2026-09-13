@@ -1,5 +1,7 @@
 # Cortex Compass by Utlyze
 
+**Current successor workspace:** this branch is `astra/cortex-neurograph-next`. The graph checkpoint has been reconciled onto the latest product baseline, with no public graph activation. Start with [the resumption receipt](docs/neurograph-next/README.md), then use the complete historical handoff below.
+
 **Next agent: start with [the complete handoff](docs/handoff-20260913/README.md).** It includes the architecture, exact unfinished graph checkpoint, work dependencies, test evidence, local source locations, deployment/rollback procedure and preserved decisions. The older v6 README is retained in `docs/archive/README-v6-before-handoff-20260913.md` and is not current product documentation.
 
 ## Live state at the handoff
