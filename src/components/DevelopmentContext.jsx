@@ -17,12 +17,12 @@ export function DevelopmentPicker({value,onChange,questionId}) {
  </div>;
 }
 export function PersonContextPage({value,onChange,onDone,doneLabel='Continue to experiences',onBack}) {
- const c=normalizePersonContext(value);
+ const c=normalizePersonContext(value),sexComplete=['male','female'].includes(c.sexAssigned);
  return <main className="cc-shell cc-context-screen"><header className="cc-nav"><div className="cc-brand"><CortexBrand/></div><button className="cc-secondary" onClick={onBack}>Back</button></header><section className="cc-context-page"><JourneyRail active="context"/>
- <span className="cc-eyebrow">OPTIONAL CONTEXT · NOT A BIOLOGICAL SCORE</span><h1>Development, sex & gender</h1><p className="cc-lead">Development is not one birthday. The next questions use your reported developmental context instead of assigning sensitive periods from age.</p>
- <p className="cc-development-boundary">Studies measure different things: physical puberty, hormones, brain structure, task responses, and gender-related experience. We keep those separate. Every question can be left unanswered.</p>
- <div className="cc-context-question-grid">{CONTEXT_QUESTIONS.map(q=><label className="cc-context-question" key={q.id} data-context-question={q.id}><strong>{q.label}</strong><span>{q.help}</span><select value={c[q.id]||''} aria-label={q.label} onChange={e=>onChange(normalizePersonContext({...c,[q.id]:e.target.value}))}><option value="">Not reviewed / optional</option>{q.choices.map(([v,t])=><option key={v} value={v}>{t}</option>)}</select></label>)}</div>
- <p className="cc-small-note">Identity and sex/hormonal context stay out of both printable reports unless you separately include the sensitive context appendix. Device saving remains an explicit choice.</p><button className="cc-primary" onClick={onDone}>{doneLabel} →</button>
+ <span className="cc-eyebrow">BIOLOGICAL CONTEXT</span><h1>Development & biological sex</h1><p className="cc-lead">Development is not one birthday. The next questions use your reported developmental context instead of assigning sensitive periods from age.</p>
+ <p className="cc-development-boundary">Studies measure different things: physical puberty, hormones, brain structure, and task responses. We keep those separate. Select Male or Female to continue. The additional medical-context questions are optional.</p>
+ <div className="cc-context-question-grid">{CONTEXT_QUESTIONS.map(q=><label className="cc-context-question" key={q.id} data-context-question={q.id}><strong>{q.label}</strong><span>{q.help}</span><select required={q.required===true} value={c[q.id]||''} aria-label={q.label} onChange={e=>onChange(normalizePersonContext({...c,[q.id]:e.target.value}))}><option value="" disabled={q.required===true} hidden={q.required===true}>{q.required?'Select Male or Female':'Not reviewed / optional'}</option>{q.choices.map(([v,t])=><option key={v} value={v}>{t}</option>)}</select></label>)}</div>
+ <p className="cc-small-note">Sex and hormonal context stay out of both printable reports unless you separately include the sensitive context appendix. Device saving remains an explicit choice.</p><button className="cc-primary" disabled={!sexComplete} onClick={()=>{if(sexComplete)onDone();}}>{doneLabel} →</button>
  </section></main>;
 }
 export function PersonContextSummary({value}) {

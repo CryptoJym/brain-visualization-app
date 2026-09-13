@@ -8,7 +8,7 @@ import {DEVELOPMENT_STUDIES,MATURATION_SYSTEMS} from '../src/data/developmentEvi
 import {buildInsights} from '../src/utils/insightProfile.mjs';
 const storage=()=>{const map=new Map();return {getItem:k=>map.get(k)||null,setItem:(k,v)=>map.set(k,v)};};
 const stage={status:'reported',stages:['pubertal_transition'],source:'memory',response:'variable',support:'yes'};
-test('five developmental labels and six independent context prompts',()=>{assert.equal(DEVELOPMENT_STAGES.length,5);assert.equal(CONTEXT_QUESTIONS.length,6);});
+test('five developmental labels and three biological-context prompts',()=>{assert.equal(DEVELOPMENT_STAGES.length,5);assert.equal(CONTEXT_QUESTIONS.length,3);});
 test('stages are canonical and deduplicated',()=>assert.deepEqual(norm({status:'reported',stages:['after_puberty','prepubertal','after_puberty','imaginary']}).stages,['prepubertal','after_puberty']));
 test('age alone never assigns developmental stage',()=>{for(const age of [0,5,11,17,25,90]){assert.deepEqual(norm({age,brainAge:age}).stages,[]);assert.deepEqual(developmentReading({age}),[]);}});
 test('changing age never changes stage-related reading',()=>{assert.deepEqual(developmentReading({...stage,age:3}),developmentReading({...stage,age:17}));});
@@ -21,7 +21,7 @@ test('unrecognized fields and malformed values are discarded',()=>{assert.deepEq
 test('sex assigned at birth and gender are never collapsed',()=>assert.deepEqual(person({sexAssigned:'male',genderIdentity:'woman'}),{sexAssigned:'male',genderIdentity:'woman'}));
 test('nonbinary gender never fills in assigned sex',()=>{const p=person({genderIdentity:'nonbinary'});assert.equal(p.sexAssigned,undefined);assert.match(contextInterpretation(p).notes[0],/No binary/);});
 test('historical hormone and variation flags preserve uncertainty',()=>assert.match(contextInterpretation({sexTraits:'yes',hormonalContext:'yes'}).notes.join(' '),/especially uncertain/));
-test('gender-related support is direct context, not a score',()=>{const p=contextInterpretation({genderSupport:'yes'});assert.match(p.notes.join(' '),/without subtracting adversity/);assert.equal(p.protectivePercentage,undefined);});
+test('retired social-context answers are archived, not reinterpreted as biology',()=>{const p=contextInterpretation({genderSupport:'yes'});assert.match(p.notes.join(' '),/not collected or used/);assert.equal(p.protectivePercentage,undefined);});
 test('No removes stale event development and calendar timing',()=>assert.deepEqual(normalizeAnswers({physical_assault:{value:'no',development:stage,timing:{status:'known'}}}),{physical_assault:{value:'no'}}));
 test('prenatal responses never acquire a post-birth developmental stage',()=>assert.equal(normalizeAnswers({prenatal_depression:{value:'yes',development:stage}}).prenatal_depression.development,undefined));
 test('event development does not change anatomy or adversity counts',()=>{const a={physical_assault:{value:'yes'}};const b={physical_assault:{...a.physical_assault,development:stage}};assert.deepEqual(calculateProfile(a).regions,calculateProfile(b).regions);assert.equal(calculateProfile(a).historyCount,calculateProfile(b).historyCount);});

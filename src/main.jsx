@@ -18,3 +18,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 );
 
 import './components/neurohero/XaiPortraitControls.css';
+
+import './components/CinematicReports.css';

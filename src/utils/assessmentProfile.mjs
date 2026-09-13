@@ -1,6 +1,6 @@
 import {normalizeHeroRecord} from './neurohero/storage.mjs';
 import {normalizeDevelopment,normalizePersonContext} from './developmentProfile.mjs';
-import {DEVELOPMENT_VERSION,CONTEXT_VERSION} from '../data/developmentContext.mjs';
+import {DEVELOPMENT_VERSION,CONTEXT_VERSION,SUPPORTED_CONTEXT_VERSIONS} from '../data/developmentContext.mjs';
 import {normalizeInsights} from './insightProfile.mjs';
 import {INSIGHT_VERSION} from '../data/insightQuestions.mjs';
 import {researchForQuestion,studyIdsForQuestions} from '../data/questionRegionLinks.mjs';
@@ -69,10 +69,10 @@ export function migrateSavedRecord(record) {
     return {answers,insights:record.insightsVersion===INSIGHT_VERSION?normalizeInsights(record.insights):{},personContext:{},legacyRecord:record.legacyRecord||null,migrated:true,developmentMigration:true,evidenceUpdated:record.evidenceVersion!==EVIDENCE_VERSION};
   }
   if(record.schemaVersion===SAVE_SCHEMA){
-    if(record.developmentVersion!==DEVELOPMENT_VERSION||record.contextVersion!==CONTEXT_VERSION)throw new Error('This reflection uses an unsupported developmental-context version. It has not been changed.');
+    if(record.developmentVersion!==DEVELOPMENT_VERSION||!SUPPORTED_CONTEXT_VERSIONS.includes(record.contextVersion))throw new Error('This reflection uses an unsupported developmental-context version. It has not been changed.');
     if(record.insightsVersion!==undefined&&record.insightsVersion!==INSIGHT_VERSION)throw new Error('This reflection uses a different present-day questionnaire version. It has not been changed.');
     if(record.questionnaireVersion!==QUESTIONNAIRE_VERSION)throw new Error('This reflection uses a different questionnaire version. It has not been changed.');
-    return {neurohero:normalizeHeroRecord(record.neurohero),answers:normalizeAnswers(record.answers),personContext:normalizePersonContext(record.personContext),insights:record.insightsVersion===INSIGHT_VERSION?normalizeInsights(record.insights):{},legacyRecord:record.legacyRecord||null,migrated:false,evidenceUpdated:record.evidenceVersion!==EVIDENCE_VERSION};
+    return {neurohero:normalizeHeroRecord(record.neurohero),answers:normalizeAnswers(record.answers),personContext:normalizePersonContext(record.personContext),insights:record.insightsVersion===INSIGHT_VERSION?normalizeInsights(record.insights):{},legacyRecord:record.legacyRecord||null,migrated:record.contextVersion!==CONTEXT_VERSION,contextUpdated:record.contextVersion!==CONTEXT_VERSION,evidenceUpdated:record.evidenceVersion!==EVIDENCE_VERSION};
   }
   if(record.schemaVersion!==undefined)throw new Error('Unsupported saved version. It has not been changed.');
   // Only unchanged support prompts transfer automatically. Never split the old
