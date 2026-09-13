@@ -1,5 +1,5 @@
 import {INSIGHT_VERSION,INSIGHT_CHOICES,INSIGHT_QUESTIONS,COMBINATIONS} from '../data/insightQuestions.mjs';
-export const REPORT_VERSION='cc-reports-7.0';
+export const REPORT_VERSION='cc-reports-9.0';
 const allowed=new Set(INSIGHT_CHOICES.map(([id])=>id));
 export function normalizeInsights(raw={}) {
  const result={};if(!raw||typeof raw!=='object'||Array.isArray(raw))return result;

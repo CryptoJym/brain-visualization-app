@@ -1,3 +1,4 @@
+import {normalizeHeroRecord} from './neurohero/storage.mjs';
 import {normalizeDevelopment,normalizePersonContext} from './developmentProfile.mjs';
 import {DEVELOPMENT_VERSION,CONTEXT_VERSION} from '../data/developmentContext.mjs';
 import {normalizeInsights} from './insightProfile.mjs';
@@ -71,7 +72,7 @@ export function migrateSavedRecord(record) {
     if(record.developmentVersion!==DEVELOPMENT_VERSION||record.contextVersion!==CONTEXT_VERSION)throw new Error('This reflection uses an unsupported developmental-context version. It has not been changed.');
     if(record.insightsVersion!==undefined&&record.insightsVersion!==INSIGHT_VERSION)throw new Error('This reflection uses a different present-day questionnaire version. It has not been changed.');
     if(record.questionnaireVersion!==QUESTIONNAIRE_VERSION)throw new Error('This reflection uses a different questionnaire version. It has not been changed.');
-    return {answers:normalizeAnswers(record.answers),personContext:normalizePersonContext(record.personContext),insights:record.insightsVersion===INSIGHT_VERSION?normalizeInsights(record.insights):{},legacyRecord:record.legacyRecord||null,migrated:false,evidenceUpdated:record.evidenceVersion!==EVIDENCE_VERSION};
+    return {neurohero:normalizeHeroRecord(record.neurohero),answers:normalizeAnswers(record.answers),personContext:normalizePersonContext(record.personContext),insights:record.insightsVersion===INSIGHT_VERSION?normalizeInsights(record.insights):{},legacyRecord:record.legacyRecord||null,migrated:false,evidenceUpdated:record.evidenceVersion!==EVIDENCE_VERSION};
   }
   if(record.schemaVersion!==undefined)throw new Error('Unsupported saved version. It has not been changed.');
   // Only unchanged support prompts transfer automatically. Never split the old
@@ -87,9 +88,9 @@ export function readSavedRecord(storage) {
   try{return migrateSavedRecord(JSON.parse(raw));}
   catch(error){if(error instanceof SyntaxError)throw new Error('Saved reflection contains invalid JSON. It has not been changed.');throw error;}
 }
-export function saveRecord(storage,raw,legacyRecord,consent,insights={},personContext={}) {
+export function saveRecord(storage,raw,legacyRecord,consent,insights={},personContext={},neurohero=null) {
   if(consent!==true)throw new Error('Choose explicit device-save consent first.');
-  const record={schemaVersion:SAVE_SCHEMA,developmentVersion:DEVELOPMENT_VERSION,contextVersion:CONTEXT_VERSION,personContext:normalizePersonContext(personContext),questionnaireVersion:QUESTIONNAIRE_VERSION,evidenceVersion:EVIDENCE_VERSION,
+  const record={neurohero:normalizeHeroRecord(neurohero),schemaVersion:SAVE_SCHEMA,developmentVersion:DEVELOPMENT_VERSION,contextVersion:CONTEXT_VERSION,personContext:normalizePersonContext(personContext),questionnaireVersion:QUESTIONNAIRE_VERSION,evidenceVersion:EVIDENCE_VERSION,
     savedAt:new Date().toISOString(),answers:normalizeAnswers(raw),insightsVersion:INSIGHT_VERSION,insights:normalizeInsights(insights),legacyRecord:legacyRecord||null};
   const text=JSON.stringify(record);
   if(text.length>256000)throw new Error('Reflection is too large to save. Existing data was not changed.');

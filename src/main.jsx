@@ -8,6 +8,7 @@ import './components/CompassReports.css';
 import './components/CortexBrand.css';
 import './components/DevelopmentContext.css';
 import './components/CortexExperience.css';
+import './components/neurohero/Neurohero.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
