@@ -1,0 +1,41 @@
+import puppeteer from 'puppeteer';
+import {mkdirSync,writeFileSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
+import {dirname,resolve} from 'node:path';
+import assert from 'node:assert/strict';
+import {exportReportPDF} from './report-pdf-export-v6.mjs';
+import {saveRecord} from '../src/utils/assessmentProfile.mjs';
+import {makeHeroRecord} from '../src/utils/neurohero/storage.mjs';
+import {SAMPLE_HERO_ANSWERS} from '../src/data/neurohero/processes.mjs';
+const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');process.chdir(root);
+const origin=process.env.CORTEX_TEST_ORIGIN||'http://127.0.0.1:5681',out=process.env.CORTEX_TEST_OUTPUT||'.local-evidence/hero-editions/browser';mkdirSync(out,{recursive:true});
+const checks=[],errors=[],failures=[];let posts=0;const check=(name,ok)=>{assert.ok(ok,name);checks.push(name);console.log('PASS '+name);};
+const click=async(p,text)=>{await p.waitForFunction(t=>[...document.querySelectorAll('button')].some(b=>b.textContent.trim()===t&&!b.disabled),{timeout:20000},text);for(const b of await p.$$('button'))if(await b.evaluate(e=>e.textContent.trim())===text){await b.click();return;}};
+const browser=await puppeteer.launch({headless:'new',timeout:60000});
+try{const p=await browser.newPage();await p.setViewport({width:1440,height:1100});p.on('pageerror',e=>errors.push(e.message));p.on('request',r=>{if(r.method()==='POST')posts++;});await p.goto(origin,{waitUntil:'domcontentloaded'});check('Landing page introduces the fictional cinematic hero experience',await p.$eval('.cc-hero-edition-showcase',e=>e.textContent.includes('FICTIONAL HERO PREVIEW')));await click(p,'Explore a hero’s possibilities →');check('Hero showcase opens the working atlas sample',!!await p.$('.nh-signature-choice select'));await p.goto(origin,{waitUntil:'domcontentloaded'});await click(p,'Begin my reflection →');
+ check('Scientific form collects exactly three biological context fields',await p.$$eval('[data-context-question]',es=>es.length===3));
+ check('No gender identity selection in the active questionnaire',await p.$('[data-context-question="genderIdentity"]')===null);
+ check('Sex selector has only Male and Female',await p.$$eval('[data-context-question="sexAssigned"] option',es=>es.map(e=>e.value).join(',')===',male,female'));
+ check('Sex is required and has no preselected answer',await p.$eval('[data-context-question=sexAssigned] select',e=>e.required&&e.value===''));
+ check('Continue is disabled without Male or Female',await p.$eval('.cc-context-page .cc-primary',e=>e.disabled));
+ check('No Not sure or Prefer not to answer in the sex field',await p.$eval('[data-context-question=sexAssigned]',e=>!e.textContent.includes('Not sure')&&!e.textContent.includes('Prefer not to answer')));
+ await p.screenshot({path:resolve(out,'required-sex-context.png'),fullPage:true});
+ await p.select('[data-context-question="sexAssigned"] select','female');await click(p,'Continue to experiences →');await click(p,'Review what I’ve shared');check('Biological sex appears in the overview without inferred hormones',await p.$eval('[data-person-context]',e=>e.textContent.includes('Female')&&e.textContent.includes('Not reviewed')));
+ const fixture=saveRecord({setItem:()=>{}},{},null,true,{}, {sexAssigned:'male',genderIdentity:'woman'},makeHeroRecord({answers:SAMPLE_HERO_ANSWERS,selectedId:'signal_cartographer',portraitChoices:{presentation:'woman'}}));fixture.contextVersion='cc-context-1.0';await p.evaluate(r=>localStorage.setItem('cortex-compass-profile',JSON.stringify(r)),fixture);await p.reload({waitUntil:'domcontentloaded'});await click(p,'Open saved profile');
+ check('Earlier stored identity remains archived but is not displayed as biology',await p.$eval('[data-person-context]',e=>e.textContent.includes('Male')&&!e.textContent.includes('Woman'))&&await p.evaluate(()=>JSON.parse(localStorage.getItem('cortex-compass-profile')).personContext.genderIdentity==='woman'));
+ await click(p,'Deep Hero Atlas · Signal Cartographer');await click(p,'Build my hero field guide →');await p.click('.nh-image-availability .nh-image-consent input');await (await p.$('input[type=file]')).uploadFile(resolve(root,'public/reports/xai/Cortex-Compass-xAI-Signal-Cartographer.jpg'));await p.waitForSelector('[data-portrait-state="ready"]');await click(p,'Use this visual direction →');await p.waitForSelector('[data-portrait-state="ready"]');
+ check('Cinematic report is the default with the accepted portrait',await p.$eval('[data-edition]',e=>e.dataset.edition==='cinematic')&&!!await p.$('.nh-hero-cover .nh-portrait img'));
+ const text=await p.$eval('.cc-report-document',e=>e.innerText),image=await p.$eval('.nh-portrait img',e=>e.src);
+ for(const palette of ['atlas','forge','aurora','haven','tide']){await p.select('select[aria-label="Signature palette"]',palette);check(`${palette} palette changes decoration only`,await p.$eval('[data-palette]',e=>e.dataset.palette)===palette&&await p.$eval('.cc-report-document',e=>e.innerText)===text&&await p.$eval('.nh-portrait img',e=>e.src)===image);}
+ await p.select('select[aria-label="Signature palette"]','auto');await p.screenshot({path:resolve(out,'hero-cinematic-desktop.png'),fullPage:true});
+ for(const format of ['A4','Letter'])await exportReportPDF(p,resolve(out,`Cortex-Compass-Hero-Cinematic-${format}.pdf`),format);
+ await click(p,'Ink-saving edition');check('Ink-saving edition preserves all text and the accepted artwork',await p.$eval('.cc-report-document',e=>e.innerText)===text&&await p.$eval('.nh-portrait img',e=>e.src)===image);for(const format of ['A4','Letter'])await exportReportPDF(p,resolve(out,`Cortex-Compass-Hero-Paper-${format}.pdf`),format);
+ await click(p,'Cinematic edition');await click(p,'Strengths-only card');await exportReportPDF(p,resolve(out,'Cortex-Compass-Strengths-Cinematic-A4.pdf'),'A4');check('Fast report switching waits for the full portrait and background',await p.$eval('.nh-card-page [data-portrait-state]',e=>e.dataset.portraitState==='ready')&&await p.$eval('.nh-card-page [data-artwork-state]',e=>e.dataset.artworkState==='ready'));check('Strengths card has no personal context appendix',await p.$('[data-person-context]')===null);
+ await click(p,'Scientific Report');check('Scientific report retains all 26 anatomy cards and primary source lists',await p.$$eval('[data-atlas-region]',es=>es.length===26)&&await p.$$eval('[data-development-study]',es=>es.length===7));
+ for(const format of ['A4','Letter'])await exportReportPDF(p,resolve(out,`Cortex-Compass-Scientific-Cinematic-${format}.pdf`),format);
+ await p.click('.cc-private-context-choice input');check('Private biological appendix excludes archived identity answers',await p.$eval('[data-person-context]',e=>e.textContent.includes('Male')&&!e.textContent.includes('Woman')));await p.click('.cc-private-context-choice input');
+ await click(p,'Ink-saving edition');await exportReportPDF(p,resolve(out,'Cortex-Compass-Scientific-Paper-A4.pdf'),'A4');
+ for(const width of [320,390,768]){await p.setViewport({width,height:844});for(const edition of ['Cinematic edition','Ink-saving edition']){await click(p,edition);check(`${width}px ${edition} scientific report fits`,await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));}await click(p,'Superhero Report');await click(p,'Cinematic edition');check(`${width}px cinematic hero fits`,await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));check(`${width}px edition controls have touch-sized targets`,await p.$$eval('.cc-edition-controls button,.cc-edition-controls select',es=>es.every(e=>e.getBoundingClientRect().height>=44)));if(width===390)await p.screenshot({path:resolve(out,'hero-cinematic-mobile.png'),fullPage:true});await click(p,'Scientific Report');}
+ check('No data upload or image-generation POST occurred',posts===0);check('No browser JavaScript errors',errors.length===0);
+}catch(e){failures.push(e.stack);process.exitCode=1;}finally{await browser.close();}
+const result={origin,at:new Date().toISOString(),passed:checks.length,failed:failures.length,checks,errors,failures,paidRequests:0};writeFileSync(resolve(out,'verification.json'),JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));

@@ -21,7 +21,7 @@ try{
   const page=await browser.newPage();await page.setViewport({width:1440,height:1100,deviceScaleFactor:1});
   page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text().slice(0,400));});
   await page.goto(origin,{waitUntil:'domcontentloaded',timeout:25000});await page.waitForSelector('h1');
-  await click(page,'Begin my reflection →');await click(page,'Continue to experiences →');
+  await click(page,'Begin my reflection →');await page.select('[data-context-question=sexAssigned] select','male');await click(page,'Continue to experiences →');
   const q='[data-question="physical_assault"]';await click(page,'Yes',q);
   check('Clear birth-to-months preset',await page.$eval(q,e=>e.textContent.includes('Birth–18 months')));
   await click(page,'Birth–18 months',q);await click(page,'Custom range',q);
@@ -75,7 +75,7 @@ try{
   check('Print snapshot contains rendered brain pixels',await page.$eval('.cc-brain-print-image',e=>e.naturalWidth>50&&e.naturalHeight>50));
   await page.emulateMediaType('screen');
   const mobile=await browser.newPage();await mobile.setViewport({width:390,height:844,isMobile:true,hasTouch:true,deviceScaleFactor:1});
-  await mobile.goto(origin,{waitUntil:'domcontentloaded'});await click(mobile,'Begin my reflection →');await click(mobile,'Continue to experiences →');await click(mobile,'Yes',q);await click(mobile,'Custom range',q);
+  await mobile.goto(origin,{waitUntil:'domcontentloaded'});await click(mobile,'Begin my reflection →');await mobile.select('[data-context-question=sexAssigned] select','male');await click(mobile,'Continue to experiences →');await click(mobile,'Yes',q);await click(mobile,'Custom range',q);
   await setAges(mobile,q,2,4,5,6);await click(mobile,'Add this period',q);
   check('Mobile custom years/months',await mobile.$eval(`${q} .cc-recorded-periods`,e=>e.textContent.includes('2 years 4 months → 5 years 6 months')));
   check('Mobile has no horizontal overflow',await mobile.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));

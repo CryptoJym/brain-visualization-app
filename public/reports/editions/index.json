@@ -1,0 +1,80 @@
+{
+  "version": "cc-hero-editions-1.0",
+  "fictionalSamples": [
+    {
+      "file": "Cortex-Compass-Cinematic-Hero-A4.pdf",
+      "pages": 2,
+      "bytes": 4106993,
+      "fictional": true,
+      "textBoundsPass": true,
+      "embeddedImage": true,
+      "sha256": "8702f5acc3f045e3b4dcd97b5d9cf4694c841e38d9173817c9405f32a12a973c"
+    },
+    {
+      "file": "Cortex-Compass-Cinematic-Hero-Letter.pdf",
+      "pages": 2,
+      "bytes": 4089890,
+      "fictional": true,
+      "textBoundsPass": true,
+      "embeddedImage": true,
+      "sha256": "db27c039198d7ec49be7010feda0078093f25d6af6d9703659038518fb560caf"
+    },
+    {
+      "file": "Cortex-Compass-Cinematic-Scientific-A4.pdf",
+      "pages": 31,
+      "bytes": 1347611,
+      "fictional": true,
+      "textBoundsPass": true,
+      "embeddedImage": true,
+      "sha256": "4a5b9bf4feb07bae510f4cf44a07df6fc9599782b3d3c535db2d411cb93e6bad"
+    },
+    {
+      "file": "Cortex-Compass-Cinematic-Scientific-Letter.pdf",
+      "pages": 31,
+      "bytes": 1343844,
+      "fictional": true,
+      "textBoundsPass": true,
+      "embeddedImage": true,
+      "sha256": "310f1bbad9da58050c8a20320e027020e0f0c830f7258a644483bbb61b03dd31"
+    },
+    {
+      "file": "Cortex-Compass-Cinematic-Strengths-Card.pdf",
+      "pages": 1,
+      "bytes": 3512871,
+      "fictional": true,
+      "textBoundsPass": true,
+      "embeddedImage": true,
+      "sha256": "66588711dc445a4f98e626d2d4a39203b08004c740825b09000dd910a461c31c"
+    },
+    {
+      "file": "Cortex-Compass-Ink-Saving-Hero-A4.pdf",
+      "pages": 2,
+      "bytes": 3301498,
+      "fictional": true,
+      "textBoundsPass": true,
+      "embeddedImage": true,
+      "sha256": "2e8ae4a78e3cdb3e89fa4af7cf6bad49175e90796c725a59cec63c2a0c0c42eb"
+    },
+    {
+      "file": "Cortex-Compass-Ink-Saving-Hero-Letter.pdf",
+      "pages": 2,
+      "bytes": 3301038,
+      "fictional": true,
+      "textBoundsPass": true,
+      "embeddedImage": true,
+      "sha256": "b646db966ec775d88cb582a59880555917bb95556f309b79576443e81995ce14"
+    },
+    {
+      "file": "Cortex-Compass-Ink-Saving-Scientific-A4.pdf",
+      "pages": 31,
+      "bytes": 1182481,
+      "fictional": true,
+      "textBoundsPass": true,
+      "embeddedImage": true,
+      "sha256": "dceb0f783f1532ef20c9b638b047ac91df053f1b7e161828116ac0aa42bb03de"
+    }
+  ],
+  "gammaComparison": "Gamma-Cortex-Fictional-Design-Study.pdf",
+  "gammaPurpose": "Fictional design exploration only, not a scientific or personal report.",
+  "contextVersion": "cc-context-2.1"
+}

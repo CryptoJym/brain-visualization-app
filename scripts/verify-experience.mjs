@@ -19,7 +19,7 @@ try{
  await click(p,'Scientific Report');check(`${width}px scientific report fits`,await fit(p));
  await click(p,'Back to overview');await click(p,'Start my reflection');await p.waitForSelector('.cc-context-screen');check(`${width}px context current step`,await p.$eval('.cc-journey-rail li[aria-current=step]',e=>e.textContent.includes('Your context')));
  if(width===390)await p.screenshot({path:`${out}/context-390.png`,fullPage:true});
- await click(p,'Continue to experiences →');check(`${width}px assessment fits`,await fit(p));
+ await p.select('[data-context-question=sexAssigned] select','male');await click(p,'Continue to experiences →');check(`${width}px assessment fits`,await fit(p));
  if(width===1440)await p.screenshot({path:`${out}/questionnaire-1440.png`});await p.close();
  }
  check('No page errors',errors.length===0);

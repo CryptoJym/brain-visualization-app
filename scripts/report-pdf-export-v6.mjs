@@ -3,6 +3,7 @@ export async function exportReportPDF(page,path,format){
  try{
   await page.emulateMediaType('print');
   await page.waitForFunction(()=>matchMedia('print').matches);
+  await page.waitForFunction(()=>!!document.querySelector('.cc-report-document')&&!document.querySelector('.cc-report-document [data-portrait-state="loading"],.cc-report-document [data-artwork-state="loading"]'),{timeout:20000});
   await page.evaluate(async()=>{
    await document.fonts.ready;
    await Promise.all([...document.querySelectorAll('.cc-report-document img')].map(img=>img.decode().catch(()=>{})));

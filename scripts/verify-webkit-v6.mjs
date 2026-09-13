@@ -47,7 +47,7 @@ try{
  await page.locator('[data-context-question="sexAssigned"] select').selectOption('male');
  await page.locator('[data-context-question="genderIdentity"] select').selectOption('woman');
  record('WebKit separate sex and gender fields retain distinct answers',await page.locator('[data-context-question="sexAssigned"] select').inputValue()==='male'&&await page.locator('[data-context-question="genderIdentity"] select').inputValue()==='woman');
- await page.getByRole('button',{name:'Continue to experiences →',exact:true}).click();
+ await page.locator('[data-context-question=sexAssigned] select').selectOption('male');await page.getByRole('button',{name:'Continue to experiences →',exact:true}).click();
  const q=page.locator('[data-question="physical_assault"]');await q.getByRole('button',{name:'Yes',exact:true}).click();
  await q.locator('[data-stage="pubertal_transition"]').click();
  record('WebKit stage selection works without calendar age',await q.locator('[data-stage="pubertal_transition"]').getAttribute('aria-pressed')==='true'&&!(await q.locator('.cc-calendar-optional').getAttribute('open')));

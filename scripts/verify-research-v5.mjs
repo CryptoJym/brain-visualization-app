@@ -47,7 +47,7 @@ try{
   }
   await page.click('.cc-research-audit summary');record('Complete 28-question audit',await page.$$eval('[data-audit-question]',es=>es.length===28));
   record('Desktop no horizontal overflow',await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
-  await click(page,'← Back to reflection');await click(page,'Begin my reflection →');await click(page,'Continue to experiences →');
+  await click(page,'← Back to reflection');await click(page,'Begin my reflection →');await page.select('[data-context-question=sexAssigned] select','male');await click(page,'Continue to experiences →');
   await click(page,'Yes','[data-question="verbal_harm"]');await page.click('[data-question="verbal_harm"] .cc-question-evidence summary');
   await click(page,'Explore studies & brain regions','[data-question="verbal_harm"]');
   record('Question-level entry preserves matching filter',await page.$eval('[aria-label="Research question filter"]',e=>e.value==='verbal_harm'));

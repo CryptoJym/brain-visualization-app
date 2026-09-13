@@ -35,7 +35,7 @@ try{
   check(`${width}px no horizontal overflow`,await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
   await (await p.$('.cc-nav')).screenshot({path:`${out}/header-${width}.png`});if(width===390)await p.screenshot({path:`${out}/home-mobile.png`});
   await click(p,'Research & methods');await loadLogos(p);check(`${width}px research header branded`,!!await p.$('.cc-evidence-screen .cc-identity'));
-  await click(p,'← Back to reflection');await click(p,'Begin my reflection →');await click(p,'Continue to experiences →');await loadLogos(p);check(`${width}px assessment header branded`,!!await p.$('.cc-assessment .cc-identity'));
+  await click(p,'← Back to reflection');await click(p,'Begin my reflection →');await p.select('[data-context-question=sexAssigned] select','male');await click(p,'Continue to experiences →');await loadLogos(p);check(`${width}px assessment header branded`,!!await p.$('.cc-assessment .cc-identity'));
   await p.close();
  }
  check('No browser errors',errors.length===0);
