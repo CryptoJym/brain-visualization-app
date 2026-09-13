@@ -3,7 +3,7 @@ export const BACKUP_FORMAT='cortex-compass-profile-backup',BACKUP_VERSION=1,MAX_
 const object=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
 export async function digestBytes(bytes){return [...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(v=>v.toString(16).padStart(2,'0')).join('');}
 function base64(bytes){let raw='';for(let i=0;i<bytes.length;i+=32768)raw+=String.fromCharCode(...bytes.subarray(i,i+32768));return btoa(raw);}
-function fromBase64(text){if(typeof text!=='string'||text.length>Math.ceil(MAX_PORTRAIT_BYTES/3)*4||text.length%4||!/^[A-Za-z0-9+/]*={0,2}$/.test(text))throw new Error('The portrait data in this backup is invalid.');let raw;try{raw=atob(text);}catch{throw new Error('The portrait data in this backup is invalid.');}const bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);return bytes;}
+function fromBase64(text){if(typeof text!=='string'||text.length>Math.ceil(MAX_PORTRAIT_BYTES/3)*4||text.length%4||!/^[A-Za-z0-9+/]*={0,2}$/.test(text))throw new Error('The portrait data in this backup is invalid.');let raw;try{raw=atob(text);}catch{throw new Error('The portrait data in this backup is invalid.');}if(raw.length>MAX_PORTRAIT_BYTES)throw new Error('Portrait data exceeds the supported size.');const bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);return bytes;}
 export function canonicalBackupProfile(raw){
  if(!object(raw)||raw.schemaVersion!==SAVE_SCHEMA||JSON.stringify(raw).length>256000)throw new Error('This backup uses an unsupported profile or exceeds the supported size.');
  const p=migrateSavedRecord(raw);const record=saveRecord({setItem:()=>{}},p.answers,p.legacyRecord,true,p.insights,p.personContext,p.neurohero);

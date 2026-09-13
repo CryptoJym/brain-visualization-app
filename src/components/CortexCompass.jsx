@@ -1,4 +1,5 @@
 import CortexBrand from './CortexBrand';
+import ProfileBackup from './backup/ProfileBackup';
 import {JourneyRail,AtlasHeading,FieldGuideIntro,SiteSignature} from './CortexExperience';
 import NeuroheroLab from './neurohero/NeuroheroLab';
 import NeuroheroPortrait from './neurohero/NeuroheroPortrait';
@@ -24,13 +25,14 @@ import './ResearchRegions.css';
 import AgeRangePicker,{TimingSource} from './AgeRangePicker';
 import {QuestionEvidence,EvidenceLibrary,SourceLinks} from './AssessmentEvidence';
 import {SECTIONS,ALL_QUESTIONS,FREQUENCIES,ANSWER_CHOICES,QUESTIONNAIRE_VERSION} from '../data/assessmentQuestions.mjs';
-import {calculateProfile,normalizeAnswers,readSavedRecord,saveRecord,STORAGE_KEY,SAMPLE_ANSWERS,SAVE_SCHEMA} from '../utils/assessmentProfile.mjs';
+import {calculateProfile,normalizeAnswers,migrateSavedRecord,readSavedRecord,saveRecord,STORAGE_KEY,SAMPLE_ANSWERS,SAVE_SCHEMA} from '../utils/assessmentProfile.mjs';
 import './AssessmentTiming.css';
 const SAMPLE_PROFILE=calculateProfile(SAMPLE_ANSWERS);
 function savedExists(){try{return !!localStorage.getItem(STORAGE_KEY);}catch{return false;}}
 
 export default function CortexCompass(){
   const [screen,setScreen]=useState('welcome'),[sectionIndex,setSectionIndex]=useState(0),[answers,setAnswers]=useState({});
+  const [backupReturn,setBackupReturn]=useState('welcome'),[backupTab,setBackupTab]=useState('export');
   const [selectedRegion,setSelectedRegion]=useState(null),[demo,setDemo]=useState(false),[saved,setSaved]=useState(false);
   const [saveOpen,setSaveOpen]=useState(false),[consent,setConsent]=useState(false),[hasSaved,setHasSaved]=useState(savedExists);
   const [legacyRecord,setLegacyRecord]=useState(null),[message,setMessage]=useState(''),[evidenceReturn,setEvidenceReturn]=useState('welcome');
@@ -58,21 +60,25 @@ export default function CortexCompass(){
     const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
     const link=document.createElement('a');link.href=url;link.download='cortex-compass-reflection.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
   };
+  const showBackup=(tab='export')=>{setBackupReturn(screen);setBackupTab(tab);navigate('backup');};
+  const openImported=data=>{const p=migrateSavedRecord(data),h=p.neurohero;setAnswers(p.answers);setPersonContext(p.personContext||{});setInsightAnswers(p.insights||{});setHeroAnswers(h?.answers||{});setSelectedHeroId(h?.selectedId||'');setPortraitChoices(h?.portraitChoices||{});setPortraitAsset(h?.portraitAsset||null);setLegacyRecord(p.legacyRecord);setDemo(data.fictional===true);setSaved(false);setConsent(false);setSaveOpen(false);setSelectedRegion(null);setMessage('Backup opened. Your previous saved browser profile is unchanged. Choose Save profile to keep this reflection here.');navigate('results');};
+  const backupSnapshot=()=>({...saveRecord({setItem:()=>{}},answers,legacyRecord,true,insightAnswers,personContext,makeHeroRecord({answers:heroAnswers,selectedId:selectedHeroId,portraitChoices,portraitAsset})),fictional:demo});
   const brand=<div className="cc-brand"><CortexBrand/></div>;
   const notice=message?<p className="cc-app-notice" role="status">{message}</p>:null;
   const legacyNotice=legacyRecord?<section className="cc-legacy-notice"><b>Earlier reflection preserved—not silently reinterpreted.</b><p>The previous questionnaire combined some experiences and used ambiguous age bands. Its history answers are retained below but are not used by the new report until you answer the revised questions. Unchanged support answers were carried forward.</p><details className="cc-print-hide"><summary>View original saved answers</summary><pre>{JSON.stringify(legacyRecord.answers,null,2)}</pre></details></section>:null;
+  if(screen==='backup')return <ProfileBackup snapshot={backupSnapshot()} fictional={demo} initialTab={backupTab} onBack={()=>navigate(backupReturn)} onOpen={openImported}/>;
   if(screen==='context')return <PersonContextPage value={personContext} onChange={v=>{setPersonContext(v);setSaved(false);}} onDone={()=>navigate(contextReturn)} doneLabel={contextReturn==='assessment'?'Continue to experiences':'Return to overview'} onBack={()=>navigate(contextReturn==='assessment'?'welcome':contextReturn)}/>;
   if(screen==='insights')return <InsightReflection answers={insightAnswers} onChange={value=>{setInsightAnswers(value);setSaved(false);}} onDone={()=>navigate('report')} onBack={()=>navigate('results')}/>;
   if(screen==='neurohero')return <NeuroheroLab selectedId={selectedHeroId} onSelect={id=>{setSelectedHeroId(id);setSaved(false);}} answers={heroAnswers} onChange={value=>{setHeroAnswers(value);setSaved(false);}} onDone={()=>navigate('portrait')} onBack={()=>navigate('results')}/>;
   if(screen==='portrait')return <NeuroheroPortrait profile={heroProfile} choices={portraitChoices} onChange={value=>{setPortraitChoices(value);setSaved(false);}} asset={portraitAsset} onAsset={a=>{setPortraitAsset(a);setSaved(false);}} onDone={()=>navigate('report')} onBack={()=>navigate('neurohero')}/>;
-  if(screen==='report')return <CompassReports profile={profile} personContext={personContext} insightAnswers={insightAnswers} heroAnswers={heroAnswers} selectedHeroId={selectedHeroId} onHeroEdit={()=>navigate('neurohero')} portraitChoices={portraitChoices} portraitAsset={portraitAsset} answers={answers} demo={demo} onBack={()=>navigate('results')} onEdit={()=>navigate('insights')}/>;
+  if(screen==='report')return <CompassReports onBackup={()=>showBackup()} profile={profile} personContext={personContext} insightAnswers={insightAnswers} heroAnswers={heroAnswers} selectedHeroId={selectedHeroId} onHeroEdit={()=>navigate('neurohero')} portraitChoices={portraitChoices} portraitAsset={portraitAsset} answers={answers} demo={demo} onBack={()=>navigate('results')} onEdit={()=>navigate('insights')}/>;
   if(screen==='evidence')return <main className="cc-shell cc-evidence-screen"><header className="cc-nav">{brand}<button className="cc-secondary" onClick={()=>navigate(evidenceReturn)}>← Back to reflection</button></header><div className="cc-research-intro"><span className="cc-eyebrow">QUESTION → STUDY → ANATOMY</span><h1>Explore what the research actually measured.</h1><p>Use a region button to locate a teaching model. Group associations are not predictions about your brain.</p></div><div className="cc-research-layout"><div className="cc-research-brain"><CortexBrain focus={brainFocus}/><p className="cc-research-model-note">26 teaching regions · geometric boundaries, not a segmented atlas.</p></div><ResearchStudyBrowser questionId={researchQuestion} onQuestionChange={setResearchQuestion} onFocus={focusBrain}/></div><DevelopmentResearch/><ResearchLessons/><QuestionResearchAudit onExplore={id=>{setResearchQuestion(id);window.scrollTo({top:0});}}/><EvidenceLibrary ids={Object.keys(SOURCES).filter(id=>!REGION_STUDIES[id])}/></main>;
   if(screen==='welcome')return <main className="cc-shell cc-welcome">
     <header className="cc-nav">{brand}<button className="cc-secondary" onClick={showEvidence}>Research & methods</button></header>{notice}
     <section className="cc-hero"><div className="cc-hero-copy"><span className="cc-eyebrow">RESEARCH-INFORMED SELF REFLECTION</span>
       <h1>Understand the patterns.<br/><em>See the systems.</em></h1>
       <p>Explore early experiences with separate questions, developmental context and transparent sources—without pretending a questionnaire is a brain scan.</p>
-      <div className="cc-actions"><button className="cc-primary" onClick={start}>Begin my reflection <span>→</span></button><button className="cc-secondary" onClick={sample}>Explore sample profile</button><button className="cc-secondary" onClick={()=>{sample();setHeroAnswers({...SAMPLE_HERO_ANSWERS});navigate('neurohero');}}>Explore hero sample</button>{hasSaved&&<button className="cc-secondary" onClick={resume}>Open saved profile</button>}</div>
+      <div className="cc-actions"><button className="cc-primary" onClick={start}>Begin my reflection <span>→</span></button><button className="cc-secondary" onClick={sample}>Explore sample profile</button><button className="cc-secondary" onClick={()=>{sample();setHeroAnswers({...SAMPLE_HERO_ANSWERS});navigate('neurohero');}}>Explore hero sample</button>{hasSaved&&<button className="cc-secondary" onClick={resume}>Open saved profile</button>}<button className="cc-secondary" onClick={()=>showBackup('import')}>Open a backup</button></div>
       <div className="cc-trust"><span>{ALL_QUESTIONS.length} optional prompts</span><span>Development before calendar age</span><span>Device save only</span></div>
       <p className="cc-home-boundary">An educational reflection for adults. Pregnancy is separate from ages since birth. No diagnosis, measured brain changes or clinical ACE score.</p>
     </div><div className="cc-hero-brain"><AtlasHeading/><CortexBrain profile={SAMPLE_PROFILE} compact/></div></section>
@@ -107,11 +113,11 @@ export default function CortexCompass(){
     <header className="cc-nav cc-print-hide"><button className="cc-brand button" onClick={()=>navigate('welcome')}>{brand}</button><div className="cc-actions small">
       <button className="cc-secondary" onClick={demo?start:()=>navigate('assessment')}>{demo?'Start my reflection':'Edit answers'}</button>
       <button className="cc-secondary" disabled={demo} onClick={()=>setSaveOpen(v=>!v)}>{saved?'Saved on device ✓':'Save profile'}</button>
-      <button className="cc-primary" onClick={()=>navigate('report')}>Reports / PDF</button>
+      <button className="cc-secondary" onClick={()=>showBackup()}>Backup / restore</button><button className="cc-primary" onClick={()=>navigate('report')}>Reports / PDF</button>
     </div></header>{notice}{legacyNotice}
     {saveOpen&&!demo&&<section className="cc-save-panel cc-print-hide"><h2>Save on this device</h2><p>These responses are sensitive. Browser storage is not an encrypted cloud account; someone using this browser profile may be able to open them. Nothing is sent to a profile backend.</p>
       <label><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)}/> I consent to saving this reflection in this browser on this device.</label>
-      <div className="cc-actions"><button className="cc-primary" disabled={!consent} onClick={save}>Save to this device</button><button className="cc-secondary" onClick={exportReflection}>Export my reflection (.json)</button><button className="cc-secondary" disabled={!hasSaved} onClick={()=>{if(window.confirm('Delete the reflection saved in this browser? This includes any preserved earlier answers. Your current open-page answers stay until you leave or restart.')){try{localStorage.removeItem(STORAGE_KEY);localStorage.removeItem(HERO_STORAGE_KEY);deleteDevicePortrait(portraitAsset).catch(()=>setMessage('Profile removed; device portrait cleanup failed.'));setHasSaved(false);setSaved(false);setMessage('Saved browser copy deleted.');}catch{setMessage('Could not delete browser storage.');}}}}>Delete device copy</button></div>
+      <div className="cc-actions"><button className="cc-primary" disabled={!consent} onClick={save}>Save to this device</button><button className="cc-secondary" onClick={()=>showBackup()}>Password-protected backup</button><button className="cc-secondary" onClick={exportReflection}>Export my reflection (.json)</button><button className="cc-secondary" disabled={!hasSaved} onClick={()=>{if(window.confirm('Delete the reflection saved in this browser? This includes any preserved earlier answers. Your current open-page answers stay until you leave or restart.')){try{localStorage.removeItem(STORAGE_KEY);localStorage.removeItem(HERO_STORAGE_KEY);deleteDevicePortrait(portraitAsset).catch(()=>setMessage('Profile removed; device portrait cleanup failed.'));setHasSaved(false);setSaved(false);setMessage('Saved browser copy deleted.');}catch{setMessage('Could not delete browser storage.');}}}}>Delete device copy</button></div>
     </section>}
     {demo&&<p className="cc-example-banner">FICTIONAL SAMPLE · These are demonstration answers, not your history.</p>}
     <section className="cc-report-head"><div><span className="cc-eyebrow">YOUR CORTEX COMPASS</span><h1>Patterns, not predictions.</h1><p>A record of what you chose to share, with timing and a research reading guide. Not a score of trauma severity, neurodivergence or brain damage.</p></div><div className="cc-load"><small>Responses recorded</small><strong>{profile.answered} / {profile.total}</strong><span>{profile.substantive} Yes/No · {profile.unsure} Not sure · {profile.skipped} skipped · {profile.unanswered} unanswered</span></div></section>

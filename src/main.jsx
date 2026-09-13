@@ -6,6 +6,7 @@ import './cortex-compass.css';
 import './components/CortexMobile.css';
 import './components/CompassReports.css';
 import './components/CortexBrand.css';
+import './components/backup/ProfileBackup.css';
 import './components/DevelopmentContext.css';
 import './components/CortexExperience.css';
 import './components/neurohero/Neurohero.css';

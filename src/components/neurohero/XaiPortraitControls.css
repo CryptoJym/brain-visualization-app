@@ -14,3 +14,5 @@
 .nh-xai-panel .nh-brief,.nh-xai-panel .nh-image-consent{min-width:0;overflow-wrap:anywhere}
 .nh-xai-panel .nh-image-consent input{flex:none}
 .nh-image-availability input[type=file]{max-width:100%;min-width:0}
+
+.nh-xai-library button span,.nh-xai-library button small{display:block;text-transform:none;line-height:1.55}.nh-xai-library button small{font-size:11px;color:#a8cdd5;margin-top:6px}.nh-edition-status{border-left:2px solid #92cfcb;padding-left:13px}.nh-visual-mismatch{padding:13px;border:1px solid #98855e;border-radius:9px;background:#302f2a;color:#eadcc0!important}
