@@ -26,7 +26,6 @@ try{
  await page.locator('.nh-xai-library button').click();await page.locator('.nh-xai-preview img').waitFor();await page.getByRole('button',{name:'Use this portrait in my report',exact:true}).click();await page.locator('[data-portrait-state="ready"]').waitFor();
  check('WebKit validates and saves accepted image bytes',await page.locator('.nh-portrait img').evaluate(e=>e.naturalWidth>0));
  check('iPhone studio has no horizontal overflow',await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
- await page.screenshot({path:`out`,fullPage:false}).catch(()=>{});
  await page.screenshot({path:`${out}/portrait-studio-iphone.png`,fullPage:true});
  await page.getByRole('button',{name:'Use this visual direction →',exact:true}).click();await page.locator('[data-portrait-state="ready"]').waitFor();
  check('WebKit report embeds the accepted portrait',await page.locator('.nh-portrait img').evaluate(e=>e.naturalWidth>0));

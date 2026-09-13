@@ -1,6 +1,6 @@
 # xAI portrait integration
 
-Status: implemented and locally verified; publication and live-generation receipt pending.
+Status: released and publicly verified. See COMPLETION.md for the final native version and acceptance results. Historical implementation details follow.
 
 Owner: ChatGPT; task eco-fxdv65 (parent eco-a318wk). Worktree cortex-compass-xai-portraits, branch astra/cortex-xai-portraits. Baseline a784b77 / existing public Deep Hero Atlas. The neuroscience and questionnaire models are unchanged.
 
