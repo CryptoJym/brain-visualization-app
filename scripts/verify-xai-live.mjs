@@ -1,4 +1,4 @@
-// One idempotent, fictional end-to-end portrait. Owner access pass is stdin-only.
+// One idempotent fictional test. Uses only the one-request verification grant, never the owner workspace.
 import puppeteer from 'puppeteer';
 import assert from 'node:assert/strict';
 import {mkdirSync,writeFileSync} from 'node:fs';
@@ -7,8 +7,9 @@ import {saveRecord} from '../src/utils/assessmentProfile.mjs';
 import {makeHeroRecord} from '../src/utils/neurohero/storage.mjs';
 import {SAMPLE_HERO_ANSWERS} from '../src/data/neurohero/processes.mjs';
 import {exportReportPDF} from './report-pdf-export-v6.mjs';
-let pass='';for await(const chunk of process.stdin)pass+=chunk;pass=pass.trim();if(!/^[A-Za-z0-9_-]{43}$/.test(pass))throw new Error('A valid private portrait access pass is required through stdin.');
+let pass=execFileSync('/Users/utlyze/bin/infisical-secret',['CORTEX_PORTRAIT_TEST_PASS','--project','utlyze-web','--env','prod'],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();if(!/^[A-Za-z0-9_-]{43}$/.test(pass))throw new Error('The purpose-scoped verification workspace is unavailable.');
 const origin='https://cortexcompass.utlyze.com',out='.local-evidence/xai-portraits/live';mkdirSync(out,{recursive:true});
+const edition=Number(process.env.CORTEX_CANARY_EDITION||0);if(!Number.isInteger(edition)||edition<0||edition>2)throw new Error('Canary edition out of bounds.');
 const choices={presentation:'woman',skinTone:'medium',build:'athletic',hair:'curly',accessibility:'none-specified',setting:'mountain-observatory'};
 const fixture=saveRecord({setItem:()=>{}},{},null,true,{},{},makeHeroRecord({answers:SAMPLE_HERO_ANSWERS,selectedId:'signal_cartographer',portraitChoices:choices}));
 const checks=[],errors=[],failures=[];let job=null,jobPosts=0;const check=(name,ok)=>{assert.ok(ok,name);checks.push(name);console.log('PASS '+name);};
@@ -18,10 +19,10 @@ try{const p=await browser.newPage();await p.setViewport({width:1440,height:1100}
  await p.goto(origin,{waitUntil:'domcontentloaded',timeout:60000});await p.evaluate(x=>localStorage.setItem('cortex-compass-profile',JSON.stringify(x)),fixture);await p.reload({waitUntil:'domcontentloaded'});await click(p,'Open saved profile');await click(p,'Deep Hero Atlas · Signal Cartographer');await click(p,'Build my hero field guide →');await p.waitForSelector('.nh-xai-access input');await p.type('.nh-xai-access input',pass);await click(p,'Unlock portrait studio');await p.waitForSelector('.nh-xai-account');
  check('Production portrait workspace authenticates through a secure cookie',(await p.cookies()).some(c=>c.name==='__Host-cc-portrait'&&c.secure&&c.httpOnly&&c.sameSite==='Strict'));
  const state=await p.evaluate(()=>fetch('/api/portraits/status',{cache:'no-store'}).then(r=>r.json()));const before=state.remaining;
- const existing=state.jobs.find(j=>j.spec?.heroId==='signal_cartographer'&&j.spec.edition===0&&Object.entries(choices).every(([k,v])=>j.spec.choices[k]===v));
- if(existing){job=existing;console.log('Reusing the existing canary job; no new paid request.');}else{await p.click('.nh-xai-panel .nh-image-consent input');await click(p,'Create my xAI portrait');check('One explicit action queues one minimal visual request',jobPosts===1);}
+ const existing=state.jobs.find(j=>j.spec?.heroId==='signal_cartographer'&&j.spec.edition===edition&&Object.entries(choices).every(([k,v])=>j.spec.choices[k]===v));
+ if(existing){job=existing;console.log('Reusing the existing canary job; no new paid request.');}else{for(let i=0;i<edition;i++){p.once('dialog',d=>d.accept());await click(p,'Choose another edition');}await p.click('.nh-xai-panel .nh-image-consent input');const posted=p.waitForResponse(r=>new URL(r.url()).pathname==='/api/portraits/jobs'&&r.request().method()==='POST',{timeout:20000});await click(p,'Create my xAI portrait');const reply=await posted;check('One explicit action queues one minimal visual request',jobPosts===1&&[200,202].includes(reply.status()));}
  const deadline=Date.now()+250000;
- while(Date.now()<deadline){const state=await p.evaluate(()=>fetch('/api/portraits/status',{cache:'no-store'}).then(r=>r.json()));job=state.jobs.find(j=>j.spec?.heroId==='signal_cartographer'&&j.spec.edition===0&&Object.entries(choices).every(([k,v])=>j.spec.choices[k]===v));if(job?.status==='ready')break;if(job?.status==='failed')throw new Error('Real provider job failed: '+job.error);await new Promise(r=>setTimeout(r,3000));}
+ while(Date.now()<deadline){const state=await p.evaluate(()=>fetch('/api/portraits/status',{cache:'no-store'}).then(r=>r.json()));job=state.jobs.find(j=>j.spec?.heroId==='signal_cartographer'&&j.spec.edition===edition&&Object.entries(choices).every(([k,v])=>j.spec.choices[k]===v));if(job?.status==='ready')break;if(job?.status==='failed')throw new Error('Real provider job failed: '+job.error+'; last progress: '+job.progress);await new Promise(r=>setTimeout(r,3000));}
  check('Real xAI job completes and persists privately',job?.status==='ready');writeFileSync(`${out}/job-metadata.json`,JSON.stringify({id:job.id,sha256:job.sha256,model:job.model,bytes:job.bytes,createdAt:job.createdAt,provider:'xAI',fixture:'Original adult fictional character; no real case history'},null,2));
  await click(p,'Refresh my portraits');await p.waitForFunction(id=>[...document.querySelectorAll('.nh-xai-library button')].some(b=>b.textContent.includes('signal cartographer')),{},job.id);for(const b of await p.$$('.nh-xai-library button'))if((await b.evaluate(e=>e.textContent)).includes('signal cartographer')){await b.click();break;}
  await p.waitForFunction(()=>document.querySelector('.nh-xai-preview img')?.naturalWidth>0,{timeout:30000});check('Private xAI image decodes in the actual application',true);
