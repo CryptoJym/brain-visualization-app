@@ -1,0 +1,40 @@
+// One idempotent, fictional end-to-end portrait. Owner access pass is stdin-only.
+import puppeteer from 'puppeteer';
+import assert from 'node:assert/strict';
+import {mkdirSync,writeFileSync} from 'node:fs';
+import {execFileSync} from 'node:child_process';
+import {saveRecord} from '../src/utils/assessmentProfile.mjs';
+import {makeHeroRecord} from '../src/utils/neurohero/storage.mjs';
+import {SAMPLE_HERO_ANSWERS} from '../src/data/neurohero/processes.mjs';
+import {exportReportPDF} from './report-pdf-export-v6.mjs';
+let pass='';for await(const chunk of process.stdin)pass+=chunk;pass=pass.trim();if(!/^[A-Za-z0-9_-]{43}$/.test(pass))throw new Error('A valid private portrait access pass is required through stdin.');
+const origin='https://cortexcompass.utlyze.com',out='.local-evidence/xai-portraits/live';mkdirSync(out,{recursive:true});
+const choices={presentation:'woman',skinTone:'medium',build:'athletic',hair:'curly',accessibility:'none-specified',setting:'mountain-observatory'};
+const fixture=saveRecord({setItem:()=>{}},{},null,true,{},{},makeHeroRecord({answers:SAMPLE_HERO_ANSWERS,selectedId:'signal_cartographer',portraitChoices:choices}));
+const checks=[],errors=[],failures=[];let job=null,jobPosts=0;const check=(name,ok)=>{assert.ok(ok,name);checks.push(name);console.log('PASS '+name);};
+const click=async(p,text)=>{await p.waitForFunction(t=>[...document.querySelectorAll('button')].some(e=>e.textContent.trim()===t&&!e.disabled),{timeout:25000},text);for(const b of await p.$$('button'))if(await b.evaluate(e=>e.textContent.trim())===text){await b.click();return;}};
+const browser=await puppeteer.launch({headless:'new',timeout:60000});
+try{const p=await browser.newPage();await p.setViewport({width:1440,height:1100});p.on('pageerror',e=>errors.push(e.message));p.on('console',m=>{if(m.type()==='error')errors.push(m.text());});p.on('request',r=>{if(r.method()==='POST'&&new URL(r.url()).pathname==='/api/portraits/jobs'){jobPosts++;const body=JSON.parse(r.postData());assert.deepEqual(Object.keys(body).sort(),['consent','requestId','spec']);}});
+ await p.goto(origin,{waitUntil:'domcontentloaded',timeout:60000});await p.evaluate(x=>localStorage.setItem('cortex-compass-profile',JSON.stringify(x)),fixture);await p.reload({waitUntil:'domcontentloaded'});await click(p,'Open saved profile');await click(p,'Deep Hero Atlas · Signal Cartographer');await click(p,'Build my hero field guide →');await p.waitForSelector('.nh-xai-access input');await p.type('.nh-xai-access input',pass);await click(p,'Unlock portrait studio');await p.waitForSelector('.nh-xai-account');
+ check('Production portrait workspace authenticates through a secure cookie',(await p.cookies()).some(c=>c.name==='__Host-cc-portrait'&&c.secure&&c.httpOnly&&c.sameSite==='Strict'));
+ const state=await p.evaluate(()=>fetch('/api/portraits/status',{cache:'no-store'}).then(r=>r.json()));const before=state.remaining;
+ const existing=state.jobs.find(j=>j.spec?.heroId==='signal_cartographer'&&j.spec.edition===0&&Object.entries(choices).every(([k,v])=>j.spec.choices[k]===v));
+ if(existing){job=existing;console.log('Reusing the existing canary job; no new paid request.');}else{await p.click('.nh-xai-panel .nh-image-consent input');await click(p,'Create my xAI portrait');check('One explicit action queues one minimal visual request',jobPosts===1);}
+ const deadline=Date.now()+250000;
+ while(Date.now()<deadline){const state=await p.evaluate(()=>fetch('/api/portraits/status',{cache:'no-store'}).then(r=>r.json()));job=state.jobs.find(j=>j.spec?.heroId==='signal_cartographer'&&j.spec.edition===0&&Object.entries(choices).every(([k,v])=>j.spec.choices[k]===v));if(job?.status==='ready')break;if(job?.status==='failed')throw new Error('Real provider job failed: '+job.error);await new Promise(r=>setTimeout(r,3000));}
+ check('Real xAI job completes and persists privately',job?.status==='ready');writeFileSync(`${out}/job-metadata.json`,JSON.stringify({id:job.id,sha256:job.sha256,model:job.model,bytes:job.bytes,createdAt:job.createdAt,provider:'xAI',fixture:'Original adult fictional character; no real case history'},null,2));
+ await click(p,'Refresh my portraits');await p.waitForFunction(id=>[...document.querySelectorAll('.nh-xai-library button')].some(b=>b.textContent.includes('signal cartographer')),{},job.id);for(const b of await p.$$('.nh-xai-library button'))if((await b.evaluate(e=>e.textContent)).includes('signal cartographer')){await b.click();break;}
+ await p.waitForFunction(()=>document.querySelector('.nh-xai-preview img')?.naturalWidth>0,{timeout:30000});check('Private xAI image decodes in the actual application',true);
+ const data=await p.evaluate(async id=>{const r=await fetch('/api/portraits/jobs/'+id+'/image',{cache:'no-store'});const blob=await r.blob();return await new Promise(resolve=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.readAsDataURL(blob);});},job.id);writeFileSync(`${out}/live-xai-hero.png`,Buffer.from(data.split(',')[1],'base64'));
+ await click(p,'Use this portrait in my report');await p.waitForSelector('[data-portrait-state="ready"]');await p.screenshot({path:`${out}/portrait-studio-desktop.png`,fullPage:true});await click(p,'Use this visual direction →');await p.waitForSelector('[data-portrait-state="ready"]');
+ for(const format of ['A4','Letter'])await exportReportPDF(p,`${out}/Cortex-Compass-xAI-Hero-${format}.pdf`,format);
+ await click(p,'Strengths-only card');await exportReportPDF(p,`${out}/Cortex-Compass-xAI-Strengths-Card.pdf`,'A4');check('Repeated PDFs reuse the accepted image without a second generation',jobPosts<=1);
+ await click(p,'Back to overview');await click(p,'Save profile');await p.click('.cc-save-panel input');await click(p,'Save to this device');await p.reload({waitUntil:'domcontentloaded'});await click(p,'Open saved profile');await click(p,'Choose my reports');await p.waitForSelector('[data-portrait-state="ready"]');
+ check('Saved profile restores the accepted xAI artwork',await p.$eval('.nh-portrait figcaption',e=>e.textContent.includes('xAI-generated')));
+ const repeat=await p.evaluate(async j=>{const r=await fetch('/api/portraits/jobs',{method:'POST',headers:{'Content-Type':'application/json','X-Cortex-Request':'portrait-v1'},body:JSON.stringify({spec:j.spec,requestId:crypto.randomUUID(),consent:true})});return {status:r.status,data:await r.json()};},job);
+ check('Server reuses the same private image for identical specifications',repeat.status===200&&repeat.data.job.id===job.id);
+ const after=await p.evaluate(()=>fetch('/api/portraits/status',{cache:'no-store'}).then(r=>r.json()));check('Idempotent reuse does not reserve another generation',after.remaining===before-(existing?0:1));
+ const anon=await fetch(origin+'/api/portraits/jobs/'+job.id+'/image');check('Anonymous image retrieval is denied',anon.status===401);
+ await p.setViewport({width:390,height:844});check('Portrait report remains mobile friendly',await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await p.screenshot({path:`${out}/portrait-report-mobile.png`,fullPage:true});check('No page or console errors',errors.length===0);
+}catch(e){failures.push(e.stack);process.exitCode=1;}finally{pass='';await browser.close();}
+const result={origin,at:new Date().toISOString(),providerMode:'Actual xAI API through the deployed Worker',passed:checks.length,failed:failures.length,checks,errors,failures,jobId:job?.id||null,model:job?.model||null,sha256:job?.sha256||null};writeFileSync(`${out}/verification.json`,JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));

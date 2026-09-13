@@ -5,7 +5,7 @@ export const HERO_STORAGE_KEY='cortex-compass-neurohero';
 export const HERO_STORAGE_SCHEMA=1;
 export function normalizePortraitAsset(raw){
  if(!raw||typeof raw!=='object'||raw.kind!=='device'||!/^[-a-f0-9]{36}$/.test(raw.id||'')||!/^[a-f0-9]{64}$/.test(raw.sha256||''))return null;
- return {kind:'device',id:raw.id,sha256:raw.sha256,width:Number(raw.width)||0,height:Number(raw.height)||0};
+ return {kind:'device',id:raw.id,sha256:raw.sha256,width:Number(raw.width)||0,height:Number(raw.height)||0,...(raw.provider==='xAI'&&/^[-a-f0-9]{36}$/.test(raw.cloudId||'')?{provider:'xAI',cloudId:raw.cloudId}:{})};
 }
 export function normalizeHeroRecord(raw){
  if(!raw||typeof raw!=='object'||Array.isArray(raw))return null;

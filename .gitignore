@@ -76,3 +76,6 @@ node_modules/
 .wrangler/
 *.blend1
 !art/blender/*.py
+
+# Local Worker test/config secrets
+.dev.vars*

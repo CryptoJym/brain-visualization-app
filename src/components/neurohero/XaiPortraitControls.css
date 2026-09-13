@@ -1,0 +1,16 @@
+.nh-xai-panel{margin:26px 0;padding:22px;border:1px solid #417a81;border-radius:18px;background:#0b2935;color:#d5eef0;overflow-wrap:anywhere}
+.nh-xai-panel h2{font-size:27px;line-height:1.2;margin:12px 0}.nh-xai-panel p{font-size:14px;line-height:1.7;color:#accbd4}.nh-xai-panel a{color:#86e3df;text-underline-offset:3px}
+.nh-xai-panel .cc-actions{margin:18px 0;gap:9px}.nh-xai-panel .cc-small-note{font-size:12px;line-height:1.65;color:#9fbfca}
+.nh-xai-access{display:grid;gap:8px;margin:18px 0;font-size:13px}.nh-xai-access input{width:100%;min-width:0;min-height:48px;padding:12px;border:1px solid #517887;border-radius:9px;background:#071a28;color:#e9fafd;font-size:16px}
+.nh-xai-account{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #355e6b}.nh-xai-account b{font-size:14px}
+.nh-xai-library{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0}.nh-xai-library button{text-align:left;text-transform:capitalize;overflow-wrap:anywhere}.nh-xai-library button[aria-pressed=true]{border-color:#89e3d7;background:#1c4c51;color:#e7fff7}
+.nh-xai-preview{display:grid;gap:12px;padding-top:18px;border-top:1px solid #365f6c}.nh-xai-preview img{display:block;width:100%;height:auto;max-height:640px;aspect-ratio:3/4;object-fit:contain;border-radius:10px;background:#05151f}
+.nh-xai-notice{border-left:3px solid #8bdacf;padding:12px;background:#153c42}.nh-xai-panel .nh-image-consent{align-items:flex-start;line-height:1.65}.nh-xai-panel button{min-height:44px}
+@media(max-width:700px){.nh-xai-panel{padding:17px}.nh-xai-library{grid-template-columns:1fr}.nh-xai-panel .cc-actions{display:grid;grid-template-columns:1fr}.nh-xai-panel h2{font-size:24px}}
+@media print{.nh-xai-panel{display:none!important}}
+/* Let narrow-screen grid children shrink below their intrinsic control widths. */
+.nh-portrait-shell>div,.nh-portrait-shell>aside,.nh-xai-panel,.nh-portrait-controls label{min-width:0;max-width:100%}
+.nh-portrait-controls select{min-width:0;max-width:100%;width:100%}
+.nh-xai-panel .nh-brief,.nh-xai-panel .nh-image-consent{min-width:0;overflow-wrap:anywhere}
+.nh-xai-panel .nh-image-consent input{flex:none}
+.nh-image-availability input[type=file]{max-width:100%;min-width:0}

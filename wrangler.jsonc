@@ -17,5 +17,33 @@
       "pattern": "cortexcompass.utlyze.com",
       "custom_domain": true
     }
-  ]
+  ],
+  "r2_buckets": [
+    {
+      "binding": "PORTRAIT_IMAGES",
+      "bucket_name": "cortex-compass-private-portraits"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "PORTRAIT_SERVICE",
+        "class_name": "PortraitService"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "cc-xai-portraits-v1",
+      "new_sqlite_classes": [
+        "PortraitService"
+      ]
+    }
+  ],
+  "vars": {
+    "PORTRAIT_TOTAL_LIMIT": "100"
+  },
+  "observability": {
+    "enabled": false
+  }
 }

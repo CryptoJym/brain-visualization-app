@@ -78,7 +78,7 @@ export default function CortexCompass(){
     </div><div className="cc-hero-brain"><AtlasHeading/><CortexBrain profile={SAMPLE_PROFILE} compact/></div></section>
     <section className="cc-flow"><span>Reflect</span><i>→</i><span>Describe development</span><i>→</i><span>Explore</span><i>→</i><span>Learn</span></section>
     <FieldGuideIntro historyCount={ALL_QUESTIONS.length} insightCount={INSIGHT_QUESTIONS.length} onResearch={showEvidence} onReports={()=>{sample();navigate('report');}}/><SiteSignature/>
-    <footer className="cc-note">Every answer and timing detail is optional. Responses remain in this open page unless you explicitly choose device saving or export. No cloud profile or Utlyze sign-in is connected.</footer>
+    <footer className="cc-note">Every answer and timing detail is optional. Responses remain in this open page unless you explicitly choose device saving or export. Questionnaire answers stay on your device. The optional private xAI portrait workspace stores artwork separately, not your answers.</footer>
   </main>;
   if(screen==='assessment')return <main className="cc-shell cc-assessment">
     <header className="cc-nav"><button className="cc-brand button" onClick={()=>navigate('welcome')}>{brand}</button><div className="cc-actions small"><button className="cc-secondary" onClick={showEvidence}>Research & methods</button><button className="cc-secondary" onClick={()=>navigate('results')}>Review what I’ve shared</button></div></header>

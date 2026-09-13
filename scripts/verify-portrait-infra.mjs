@@ -1,0 +1,12 @@
+import {execFileSync} from 'node:child_process';
+import {readFileSync,writeFileSync} from 'node:fs';
+import assert from 'node:assert/strict';
+const root=new URL('../',import.meta.url);const cwd=root.pathname;
+const auth=JSON.parse(execFileSync('/Users/utlyze/Projects/freely-sweet/node_modules/.bin/wrangler',['auth','token','--json'],{cwd,env:{...process.env,CLOUDFLARE_AUTH_USE_KEYRING:'true',WRANGLER_SEND_METRICS:'false'},encoding:'utf8',stdio:['ignore','pipe','pipe']}));
+const headers=auth.token?{Authorization:`Bearer ${auth.token}`}:{'X-Auth-Key':auth.key,'X-Auth-Email':auth.email};
+const account=JSON.parse(readFileSync(new URL('wrangler.jsonc',root))).account_id;
+const base=`https://api.cloudflare.com/client/v4/accounts/${account}/r2/buckets/cortex-compass-private-portraits/domains`;
+const managed=await fetch(base+'/managed',{headers}).then(r=>r.json());const custom=await fetch(base+'/custom',{headers}).then(r=>r.json());
+assert.equal(managed.success,true);assert.equal(managed.result.enabled,false);assert.equal(custom.success,true);assert.equal(custom.result.domains.filter(d=>d.enabled).length,0);
+const result={at:new Date().toISOString(),bucket:'cortex-compass-private-portraits',publicManagedDomainEnabled:false,enabledPublicCustomDomains:0,private:true};
+writeFileSync(new URL('.local-evidence/xai-portraits/storage-verification.json',root),JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));
