@@ -2,6 +2,8 @@
 
 **Start here.** This is the transfer record for the full Cortex Compass thread, prepared on Studio0 on 2026-09-13. It separates what is running in production from the unfinished neuroscience graph. The user requested preservation and a resumable work board; this handoff does not deploy new code.
 
+The local package and native task board are complete; see `COMPLETION.md`.
+
 ## The two working copies that matter
 
 **Live-product source:** `/Users/utlyze/Projects/cortex-compass-hero-editions-20260913`, branch `astra/cortex-hero-editions-20260913`. Deployed application commit: `85a29955e7b206a2cd8581289c321f72e1f21243`. Existing release receipt: `157971e`. Production: `https://cortexcompass.utlyze.com`. Native Worker `e127727f-f809-4b6f-85ca-fa7e7f67b75d`, 100% traffic, rechecked during handoff. Rollback: `6fc5170e-fbea-44f1-bfaf-07e0b6d7fec0`.

@@ -73,11 +73,12 @@
   ],
   "sharedTrackerRemoteConfigured": false,
   "historicalStatuses": {
-    "eco-cortex-handoff-20260913": "in_progress",
+    "eco-cortex-handoff-20260913": "closed",
     "eco-cq76kh": "open",
     "eco-a318wk": "in_progress",
     "eco-iln18c": "closed",
     "eco-ii5x99": "closed",
     "eco-fxdv65": "open"
-  }
+  },
+  "handoffClosedVerifiedAt": "2026-09-13T20:15:39.481303+00:00"
 }
