@@ -5,7 +5,7 @@ import {INSIGHT_SECTIONS,INSIGHT_CHOICES,INSIGHT_QUESTIONS} from '../data/insigh
 import {normalizeInsights} from '../utils/insightProfile.mjs';
 export default function InsightReflection({answers,onChange,onDone,onBack}) {
  const [step,setStep]=useState(0),section=INSIGHT_SECTIONS[step],clean=normalizeInsights(answers);
- const move=next=>{setStep(next);window.scrollTo({top:0});requestAnimationFrame(()=>document.querySelector('.cc-insight-title')?.focus());};
+ const move=next=>{setStep(next);window.scrollTo({top:0});requestAnimationFrame(()=>{if(!document.activeElement?.closest('.cc-support-now'))document.querySelector('.cc-insight-title')?.focus();});};
  return <main className="cc-shell cc-insight-screen"><header className="cc-nav"><div className="cc-brand"><CortexBrand/></div><button className="cc-secondary" onClick={onBack}>Back to overview</button></header>
   <div className="cc-insight-container"><JourneyRail active="patterns"/><span className="cc-eyebrow">PRESENT-DAY REFLECTION · OPTIONAL</span><h1 className="cc-insight-title" tabIndex={-1}>{section.title}</h1><p className="cc-lead">{section.subtitle}</p>
   <p className="cc-boundary">Your history does not select a superpower. These separate observations personalize the report. You can skip every question.</p>
