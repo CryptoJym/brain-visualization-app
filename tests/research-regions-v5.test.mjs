@@ -9,7 +9,8 @@ import {QUESTION_RESEARCH,guideRegions} from '../src/data/questionRegionLinks.mj
 import {SOURCES} from '../src/data/assessmentEvidence.mjs';
 import {calculateProfile,normalizeAnswers,migrateSavedRecord,SAMPLE_ANSWERS} from '../src/utils/assessmentProfile.mjs';
 const active=answers=>calculateProfile(answers).regions.filter(r=>r.active).map(r=>r.id);
-const manifest=JSON.parse(readFileSync(new URL('../public/models/cortex-brain-v5.manifest.json',import.meta.url)));
+// The current teaching model (v6) carries the region meshes these research links point to.
+const manifest=JSON.parse(readFileSync(new URL('../public/models/cortex-brain-v6.manifest.json',import.meta.url)));
 
 test('All 28 question IDs have an explicit reviewed disposition',()=>{
   assert.equal(ALL_QUESTIONS.length,28);assert.deepEqual(new Set(ALL_QUESTIONS.map(q=>q.id)),new Set(Object.keys(QUESTION_RESEARCH)));
@@ -79,6 +80,7 @@ test('Unknown or No responses do not activate a study or region',()=>{
 test('All 26 teaching regions have real exported mesh objects',()=>{
   assert.equal(REGIONS.length,26);assert.equal(manifest.meshes.length,47);assert.deepEqual(new Set(manifest.meshes.map(m=>m.regionId)),new Set(REGIONS.map(r=>r.id)));
   for(const m of manifest.meshes)assert.ok(m.triangles>0);
+  for(const h of manifest.helpers)assert.equal(h.regionId,null,`${h.name} is a cut-face or wall helper, not a topic`);
 });
 test('Both anatomical sides exist for all bilateral cortical and deep regions',()=>{
   for(const r of REGIONS.filter(r=>r.hemispheres==='bilateral'&&r.kind!=='support'))assert.deepEqual(new Set(manifest.meshes.filter(m=>m.regionId===r.id).map(m=>m.hemisphere)),new Set(['L','R']),r.id);
@@ -86,9 +88,9 @@ test('Both anatomical sides exist for all bilateral cortical and deep regions',(
 for(const [name,expected] of Object.entries(manifest.assets))test(`GLB integrity and attribution metadata: ${name}`,()=>{
   const b=readFileSync(new URL('../public/models/'+name,import.meta.url));assert.equal(b.readUInt32LE(8),b.length);assert.equal(b.length,expected.bytes);
   assert.equal(createHash('sha256').update(b).digest('hex'),expected.sha256);
-  const g=JSON.parse(b.subarray(20,20+b.readUInt32LE(12)).toString());assert.equal(g.meshes.length,47);
-  const nodes=g.nodes.filter(n=>n.mesh!==undefined);nodes.forEach(n=>assert.equal(n.extras.educationalOnly,true));
-  assert.ok(g.materials.some(m=>m.normalTexture));assert.ok(b.length<25*1024*1024);
+  const g=JSON.parse(b.subarray(20,20+b.readUInt32LE(12)).toString());assert.equal(g.meshes.length,expected.meshes);
+  const nodes=g.nodes.filter(n=>n.mesh!==undefined);nodes.forEach(n=>{assert.equal(n.extras.educationalOnly,true);assert.equal(n.extras.license,'CC-BY-4.0');});
+  assert.ok(g.extensionsRequired.includes('KHR_draco_mesh_compression'));assert.ok(b.length<3*1024*1024);
 });
 test('Deprivation-study sample uses the final DTI analysis, not the original trial enrollment',()=>{
   const s=REGION_STUDIES.deprivationWhiteMatter;
@@ -96,9 +98,10 @@ test('Deprivation-study sample uses the final DTI analysis, not the original tri
   assert.match(s.sample,/26 institutional-care/);assert.match(s.sample,/20 never-institutionalized/);
   assert.match(s.finding,/still differed/);
 });
-test('Export manifest pins the exact catalog, Blender source and builder',()=>{
+test('Export manifest pins the exact catalog, Blender source and builders',()=>{
   const hash=path=>createHash('sha256').update(readFileSync(new URL(path,import.meta.url))).digest('hex');
   assert.equal(manifest.catalogSha256,hash('../src/data/anatomyRegions.json'));
-  assert.equal(manifest.sourceBlendSha256,hash('../art/blender/cortex-brain-v2.blend'));
-  assert.equal(manifest.builderSha256,hash('../art/blender/build_research_regions.py'));
+  assert.equal(manifest.sourceBlendSha256,hash('../art/blender/cortex-brain-v6.blend'));
+  assert.equal(manifest.builderSha256,hash('../art/blender/build_anatomy_v6.py'));
+  for(const [name,sha] of Object.entries(manifest.stageScriptsSha256))assert.equal(sha,hash('../art/blender/'+name),name);
 });

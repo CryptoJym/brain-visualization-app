@@ -20,3 +20,10 @@ test('embedded model textures are permitted without external connect origins',()
  assert.match(policy,/connect-src 'self' blob:;/);
  assert.doesNotMatch(policy,/connect-src[^;]*(?:https?:|\*)/);
 });
+
+test('the Draco decoder may compile WebAssembly, but scripts still may not eval',()=>{
+ const policy=SECURITY_HEADERS['Content-Security-Policy'];
+ assert.match(policy,/script-src 'self' 'wasm-unsafe-eval';/);
+ assert.doesNotMatch(policy,/'unsafe-eval'/);
+ assert.match(policy,/worker-src 'self' blob:;/);
+});

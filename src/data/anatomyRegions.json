@@ -1,6 +1,6 @@
 {
-  "version": "cc-anatomy-5.0",
-  "note": "Generic illustrated anatomy. Boundaries and added internal shapes are approximate, not an MRI atlas. No additional assessment scores.",
+  "version": "cc-anatomy-6.0",
+  "note": "Generic reference anatomy: one atlas brain (HuBMAP/Allen Human Reference Atlas, CC BY 4.0), the same for everyone. Not a scan of any person. No additional assessment scores.",
   "sources": {
     "landmarks": {
       "label": "BrainFacts / Society for Neuroscience — Major brain landmarks",
@@ -59,7 +59,7 @@
       "color": "#53bce3",
       "where": "Front of each cerebral hemisphere.",
       "function": "Supports planning and coordinated behavior with other brain networks.",
-      "look": "Geometric teaching boundary on a generic surface, not a registered anatomical atlas. Follow the blue anterior surface. Named frontal subdivisions have their own colors.",
+      "look": "Grouped from the reference brain's frontal gyri, so the edges follow its sulci. The dorsolateral, orbital and motor parts have their own colors. A generic teaching brain, not a scan of you.",
       "related": [
         "dlpfc",
         "ofc",
@@ -84,7 +84,7 @@
       "color": "#3992df",
       "where": "Upper, outer prefrontal cortex.",
       "function": "A contributor to executive-control networks for goal-directed tasks.",
-      "look": "Geometric teaching boundary on a generic surface, not a registered anatomical atlas. This patch marks an approximate teaching location, not a measured functional boundary.",
+      "look": "Shown as the middle frontal gyrus, which holds most of the dorsolateral prefrontal cortex. Functional boundaries vary between people and studies.",
       "related": [
         "frontal",
         "parietal",
@@ -104,7 +104,7 @@
       "color": "#70d8e5",
       "where": "Underside of the frontal lobe, above the eye sockets.",
       "function": "Helps represent expected outcomes and their changing value.",
-      "look": "Geometric teaching boundary on a generic surface, not a registered anatomical atlas. Rotate toward the underside or isolate this region to see its position.",
+      "look": "The orbital gyri and gyrus rectus on the underside of the frontal lobe. The view turns to the underside when you pick it.",
       "related": [
         "frontal",
         "amygdala",
@@ -124,7 +124,7 @@
       "color": "#f09c67",
       "where": "Precentral gyrus, in front of the central sulcus.",
       "function": "Contributes commands for voluntary movement.",
-      "look": "Geometric teaching boundary on a generic surface, not a registered anatomical atlas. Compare the orange strip with the sensory strip just behind it. Strips are illustrative.",
+      "look": "The precentral gyrus and its medial continuation, in front of the central sulcus. Compare the orange strip with the sensory strip just behind it; a body map is not modeled.",
       "related": [
         "somatosensory",
         "frontal",
@@ -143,7 +143,7 @@
       "color": "#e8cd79",
       "where": "Postcentral gyrus, behind the central sulcus.",
       "function": "Processes body sensation, including touch and position.",
-      "look": "Geometric teaching boundary on a generic surface, not a registered anatomical atlas. The yellow strip is posterior to the motor strip; a full body map is not modeled.",
+      "look": "The postcentral gyrus and its medial continuation, just behind the central sulcus. A full body map is not modeled.",
       "related": [
         "motor",
         "parietal",
@@ -161,7 +161,7 @@
       "color": "#81c798",
       "where": "Upper posterior cerebrum, behind the frontal lobe.",
       "function": "Integrates sensory information and spatial relationships.",
-      "look": "Geometric teaching boundary on a generic surface, not a registered anatomical atlas. Find the green upper surface behind the sensory strip.",
+      "look": "The superior parietal lobule, supramarginal and angular gyri and parietal operculum of the reference brain, behind the sensory strip.",
       "related": [
         "somatosensory",
         "occipital",
@@ -184,7 +184,7 @@
       "color": "#c68ecb",
       "where": "Lateral lower cerebrum, below the lateral fissure.",
       "function": "Supports hearing, memory and aspects of language processing.",
-      "look": "Geometric teaching boundary on a generic surface, not a registered anatomical atlas. The purple side region is a lobe, not one single language or social center.",
+      "look": "The middle and inferior temporal gyri, temporal pole and medial temporal cortex below the lateral (Sylvian) fissure. A lobe, not one single language or social center.",
       "related": [
         "hippocampus",
         "amygdala",
@@ -207,7 +207,7 @@
       "color": "#a08cdd",
       "where": "Back of each cerebral hemisphere.",
       "function": "Processes visual information.",
-      "look": "Geometric teaching boundary on a generic surface, not a registered anatomical atlas. Rotate to the rear to distinguish the occipital lobe from the cerebellum below.",
+      "look": "The lateral occipital gyri and occipital pole of the reference brain. Rotate to the back to separate it from the cerebellum below.",
       "related": [
         "parietal",
         "temporal",
@@ -232,7 +232,7 @@
       "color": "#d18aa7",
       "where": "Upper temporal surface near the lateral fissure.",
       "function": "Interpreting sounds and language-related auditory information.",
-      "look": "A broad superior-temporal teaching patch; not the exact cluster from a study.",
+      "look": "The superior temporal gyrus with Heschl's gyrus and the planum temporale, along the lateral fissure. A broad teaching area, not the exact cluster from a study.",
       "related": [],
       "source": "general",
       "hemispheres": "bilateral"
@@ -247,7 +247,7 @@
       "color": "#9d9fe8",
       "where": "Back and inner surface of the occipital lobe.",
       "function": "Visual processing within multiple interacting visual areas.",
-      "look": "A broad medial-occipital teaching patch, not a precise V2 or lingual-gyrus segmentation.",
+      "look": "The cuneus and lingual gyrus on the inner surface of the occipital lobe, around the calcarine sulcus. Not a precise V1 or V2 map.",
       "related": [],
       "source": "general",
       "hemispheres": "bilateral",
@@ -263,7 +263,7 @@
       "color": "#bbaddf",
       "where": "Inner posterior cortex above the corpus callosum.",
       "function": "A contributor to the default-mode network; its roles depend on task and context.",
-      "look": "A small medial teaching patch, not a precise posterior-cingulate or isthmus atlas parcel.",
+      "look": "The back part of the cingulate gyrus and its isthmus, above and behind the corpus callosum, from the reference atlas. Not a functional map.",
       "related": [],
       "source": "defaultNetwork",
       "hemispheres": "bilateral",
@@ -279,7 +279,7 @@
       "color": "#a4c8b3",
       "where": "Medial parietal surface above the posterior cingulate area.",
       "function": "Participates in higher-order visual and awareness-related processing.",
-      "look": "An approximate medial teaching area.",
+      "look": "The inner surface of the parietal lobe, in front of the parieto-occipital sulcus, from the reference atlas.",
       "related": [],
       "source": "visualAwareness",
       "hemispheres": "bilateral",
@@ -295,7 +295,7 @@
       "color": "#f0a1a5",
       "where": "Medial temporal region, near the front of the hippocampus.",
       "function": "Salience, learning and responses to significant events.",
-      "look": "Not simply a fear switch; shown as paired schematic structures.",
+      "look": "Not simply a fear switch. The reference atlas's amygdaloid nuclei, joined into one structure on each side.",
       "related": [],
       "source": "general",
       "hemispheres": "bilateral"
@@ -310,7 +310,7 @@
       "color": "#ae9aef",
       "where": "Medial temporal region in each hemisphere.",
       "function": "Learning, memory and contextual relationships.",
-      "look": "Curved teaching shape; hippocampal subfields are not individually segmented.",
+      "look": "Head, body and tail from the reference atlas, joined on each side. Subfields are not shown separately.",
       "related": [],
       "source": "general",
       "hemispheres": "bilateral"
@@ -325,7 +325,7 @@
       "color": "#e9abb6",
       "where": "Medial frontal surface arching above the front of the corpus callosum.",
       "function": "Monitoring, regulation and coordination within networks.",
-      "look": "The cingulate is cortex, not a deep nucleus. This arch is a schematic medial-cortex guide.",
+      "look": "The cingulate is cortex, not a deep nucleus. Shown as the front part of the cingulate gyrus, which wraps the front of the corpus callosum.",
       "related": [],
       "source": "salience",
       "hemispheres": "bilateral"
@@ -340,7 +340,7 @@
       "color": "#62d4c2",
       "where": "Cortex buried inside the lateral fissure.",
       "function": "Integrates bodily and other salient information.",
-      "look": "The insula is folded cortex, shown schematically beneath the outer surface.",
+      "look": "Folded cortex hidden beneath the lateral fissure, shown as the reference atlas's insular gyri. Deep structures shows it through the outer cortex.",
       "related": [],
       "source": "insula",
       "hemispheres": "bilateral"
@@ -355,7 +355,7 @@
       "color": "#91cde7",
       "where": "Paired structures near the center of the brain.",
       "function": "Routing and coordinating sensory and other information.",
-      "look": "Many thalamic nuclei are simplified into one teaching form per side.",
+      "look": "The reference atlas's thalamic nuclei joined into one teaching form on each side.",
       "related": [],
       "source": "general",
       "hemispheres": "bilateral"
@@ -370,7 +370,7 @@
       "color": "#edbe73",
       "where": "Below the thalamus near the brain base.",
       "function": "Homeostatic and hormonal regulation.",
-      "look": "A small midline teaching form; no hormone concentration is inferred.",
+      "look": "The reference atlas's hypothalamic regions, joined across the midline. No hormone level is inferred.",
       "related": [],
       "source": "general",
       "hemispheres": "midline"
@@ -385,7 +385,7 @@
       "color": "#ebb984",
       "where": "Around the cerebral aqueduct in the midbrain.",
       "function": "Contributes to pain modulation and defensive responses.",
-      "look": "Highly simplified ring-like guide; not the entire midbrain.",
+      "look": "Drawn as a 4 mm layer around the reference atlas's cerebral aqueduct, inside the midbrain. The atlas has no separate outline for it.",
       "related": [],
       "source": "pag",
       "hemispheres": "midline"
@@ -400,7 +400,7 @@
       "color": "#d8e2e6",
       "where": "Midline white-matter arch between the cerebral hemispheres.",
       "function": "Communication between hemispheres.",
-      "look": "Two joined schematic halves illustrate a continuous commissure, not measured fiber pathways.",
+      "look": "One continuous arch with genu, body and splenium from the reference atlas, split only at the midline for the side controls. Not measured fiber pathways.",
       "related": [],
       "source": "general",
       "hemispheres": "bilateral"
@@ -415,7 +415,7 @@
       "color": "#c7afd9",
       "where": "Midline portion of the cerebellum.",
       "function": "Coordination and regulation within cerebellar networks.",
-      "look": "Schematic vermis shown separately from cerebellar hemispheres.",
+      "look": "The midline vermis from the reference atlas, shown separately from the cerebellar hemispheres.",
       "related": [],
       "source": "general",
       "hemispheres": "midline"
@@ -430,7 +430,7 @@
       "color": "#e9b679",
       "where": "Ventral forebrain below the caudate head.",
       "function": "Reward-related learning and motivated behavior.",
-      "look": "The small accumbens-centered guide is not the full ventral striatum or a pleasure meter.",
+      "look": "The nucleus accumbens from the reference atlas. Not the full ventral striatum or a pleasure meter.",
       "related": [],
       "source": "striatum",
       "hemispheres": "bilateral"
@@ -445,7 +445,7 @@
       "color": "#9cb9ec",
       "where": "Curved structure around the lateral ventricle, medial to the putamen.",
       "function": "Contributes to action selection and learning.",
-      "look": "A schematic curved nucleus; no neuronal counts or personal volume are represented.",
+      "look": "Head, body and tail from the reference atlas, curving around the lateral ventricle. No neuronal counts or personal volume are represented.",
       "related": [],
       "source": "striatum",
       "hemispheres": "bilateral"
@@ -460,7 +460,7 @@
       "color": "#dda1b1",
       "where": "Lateral striatum, outside the caudate and thalamus.",
       "function": "Action selection and motor-learning networks.",
-      "look": "A schematic bilateral shape, distinct from the ventral-striatum guide.",
+      "look": "From the reference atlas, lateral to the internal capsule and distinct from the ventral-striatum guide.",
       "related": [],
       "source": "striatum",
       "hemispheres": "bilateral"
@@ -475,7 +475,7 @@
       "color": "#b3b7d5",
       "where": "Below the posterior cerebrum.",
       "function": "Coordination, timing and learning in distributed networks.",
-      "look": "Original licensed surface retained; no precise cerebellar lobular atlas.",
+      "look": "The cerebellar hemispheres of the reference atlas; no lobular atlas is shown.",
       "related": [],
       "source": "general",
       "hemispheres": "bilateral"
@@ -490,7 +490,7 @@
       "color": "#b4c5d3",
       "where": "Below the cerebrum, continuous with the spinal cord.",
       "function": "Contains pathways and centers supporting essential body functions.",
-      "look": "General teaching anatomy; not a localization of a respondent’s symptoms.",
+      "look": "The midbrain, pons and medulla of the reference atlas; not a localization of a respondent’s symptoms.",
       "related": [],
       "source": "general",
       "hemispheres": "midline"

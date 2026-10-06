@@ -1,0 +1,1156 @@
+{
+  "version": "cc-blender-6.0",
+  "catalogVersion": "cc-anatomy-6.0",
+  "blender": "5.2.1 LTS",
+  "axes": "+X patient left, +Y superior, +Z anterior (right-handed glTF)",
+  "units": "model units; cerebrum length 6.4",
+  "millimetresPerUnit": 26.662,
+  "educationalOnly": true,
+  "boundaryMethod": "Cortical teaching regions are groups of atlas gyri from the HRA/Allen reference brain. Each hemisphere surface is labelled by the nearest atlas cortical label, so region edges follow the atlas gyral boundaries (sulcal fundi), then smoothed along the surface. One generic reference brain, not a registration to any person.",
+  "source": {
+    "id": "hra-brain-female-v1.4",
+    "title": "3D Reference Organ for Brain, Female v1.4",
+    "creators": "Kristen Browne, Heidi Schlehlein (HuBMAP); reviewed by Song-Lin Ding",
+    "basis": "Allen Human Reference Atlas (Ding et al. 2016, J Comp Neurol 524:3127-3481)",
+    "license": "CC-BY-4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "url": "https://doi.org/10.48539/HBM674.NTLM.353",
+    "download": "https://cdn.humanatlas.io/digital-objects/ref-organ/brain-female/v1.4/assets/3d-allen-f-brain.glb",
+    "sha256": "f20d87a347f8d5c6467439cba7db18f19307d29b2c3e0c2b6ddb7e9d49e1c1fc"
+  },
+  "compression": "KHR_draco_mesh_compression (decoder self-hosted in /libs/draco/)",
+  "atlasRelabelled": {
+    "posteroventral_putamen": "paracingulate_gyrus",
+    "paracingulate_gyrus": "frontal_pole",
+    "frontal_pole": "optic_radiation",
+    "optic_radiation": "posteroventral_putamen",
+    "frontomarginal_gyrus": "perirhinal_gyrus",
+    "perirhinal_gyrus_rostral_part_of_FuGt": "atrium_of_lateral_ventricle",
+    "atrium_of_lateral_ventricle": "rostral_gyrus",
+    "rostral_gyrus": "frontomarginal_gyrus"
+  },
+  "pagRadiusMm": 4.0,
+  "meshes": [
+    {
+      "name": "Cortex_frontal_L",
+      "regionId": "frontal",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "L",
+      "triangles": 10924,
+      "capGroup": "hemisphere-L",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "superior_frontal_gyrus",
+        "inferior_frontal_gyrus_triangular_part",
+        "inferior_frontal_gyrus_opercular_part",
+        "frontal_operculum",
+        "paracingulate_gyrus",
+        "rostral_gyrus",
+        "frontal_pole",
+        "frontomarginal_gyrus"
+      ]
+    },
+    {
+      "name": "Cortex_frontal_R",
+      "regionId": "frontal",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "R",
+      "triangles": 10924,
+      "capGroup": "hemisphere-R",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "superior_frontal_gyrus",
+        "inferior_frontal_gyrus_triangular_part",
+        "inferior_frontal_gyrus_opercular_part",
+        "frontal_operculum",
+        "paracingulate_gyrus",
+        "rostral_gyrus",
+        "frontal_pole",
+        "frontomarginal_gyrus"
+      ]
+    },
+    {
+      "name": "Cortex_dlpfc_L",
+      "regionId": "dlpfc",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "L",
+      "triangles": 3410,
+      "capGroup": "hemisphere-L",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "middle_frontal_gyrus"
+      ]
+    },
+    {
+      "name": "Cortex_dlpfc_R",
+      "regionId": "dlpfc",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "R",
+      "triangles": 3410,
+      "capGroup": "hemisphere-R",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "middle_frontal_gyrus"
+      ]
+    },
+    {
+      "name": "Cortex_ofc_L",
+      "regionId": "ofc",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "L",
+      "triangles": 3978,
+      "capGroup": "hemisphere-L",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "gyrus_rectus_straight_gyrus",
+        "medial_orbital_gyrus",
+        "anterior_intermediate_orbital_gyrus",
+        "posterior_intermediate_orbital_gyrus",
+        "lateral_orbital_gyrus",
+        "lateral_olfactory_gyrus"
+      ]
+    },
+    {
+      "name": "Cortex_ofc_R",
+      "regionId": "ofc",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "R",
+      "triangles": 3978,
+      "capGroup": "hemisphere-R",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "gyrus_rectus_straight_gyrus",
+        "medial_orbital_gyrus",
+        "anterior_intermediate_orbital_gyrus",
+        "posterior_intermediate_orbital_gyrus",
+        "lateral_orbital_gyrus",
+        "lateral_olfactory_gyrus"
+      ]
+    },
+    {
+      "name": "Cortex_motor_L",
+      "regionId": "motor",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "L",
+      "triangles": 4346,
+      "capGroup": "hemisphere-L",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "primary_motor_cortex",
+        "paracentral_lobule_rostral_part"
+      ]
+    },
+    {
+      "name": "Cortex_motor_R",
+      "regionId": "motor",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "R",
+      "triangles": 4346,
+      "capGroup": "hemisphere-R",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "primary_motor_cortex",
+        "paracentral_lobule_rostral_part"
+      ]
+    },
+    {
+      "name": "Cortex_somatosensory_L",
+      "regionId": "somatosensory",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "L",
+      "triangles": 3918,
+      "capGroup": "hemisphere-L",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "postcentral_gyrus",
+        "paracentral_lobule_caudal_part"
+      ]
+    },
+    {
+      "name": "Cortex_somatosensory_R",
+      "regionId": "somatosensory",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "R",
+      "triangles": 3918,
+      "capGroup": "hemisphere-R",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "postcentral_gyrus",
+        "paracentral_lobule_caudal_part"
+      ]
+    },
+    {
+      "name": "Cortex_parietal_L",
+      "regionId": "parietal",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "L",
+      "triangles": 7368,
+      "capGroup": "hemisphere-L",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "supraparietal_lobule",
+        "supramarginal_gyrus",
+        "angular_gyrus",
+        "parietal_operculum"
+      ]
+    },
+    {
+      "name": "Cortex_parietal_R",
+      "regionId": "parietal",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "R",
+      "triangles": 7368,
+      "capGroup": "hemisphere-R",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "supraparietal_lobule",
+        "supramarginal_gyrus",
+        "angular_gyrus",
+        "parietal_operculum"
+      ]
+    },
+    {
+      "name": "Cortex_precuneus_L",
+      "regionId": "precuneus",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "L",
+      "triangles": 3488,
+      "capGroup": "hemisphere-L",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "precuneus"
+      ]
+    },
+    {
+      "name": "Cortex_precuneus_R",
+      "regionId": "precuneus",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "R",
+      "triangles": 3488,
+      "capGroup": "hemisphere-R",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "precuneus"
+      ]
+    },
+    {
+      "name": "Cortex_temporal_L",
+      "regionId": "temporal",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "L",
+      "triangles": 7708,
+      "capGroup": "hemisphere-L",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "middle_temporal_gyrus",
+        "inferior_temporal_gyrus",
+        "occipitotemporal_fusiform_gyrus_temporal_part",
+        "temporal_pole",
+        "anterior_parahippocampal_gyrus",
+        "posterior_parahippocampal_gyrus",
+        "gyrus_ambiens",
+        "piriform_region",
+        "perirhinal_gyrus"
+      ]
+    },
+    {
+      "name": "Cortex_temporal_R",
+      "regionId": "temporal",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "R",
+      "triangles": 7708,
+      "capGroup": "hemisphere-R",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "middle_temporal_gyrus",
+        "inferior_temporal_gyrus",
+        "occipitotemporal_fusiform_gyrus_temporal_part",
+        "temporal_pole",
+        "anterior_parahippocampal_gyrus",
+        "posterior_parahippocampal_gyrus",
+        "gyrus_ambiens",
+        "piriform_region",
+        "perirhinal_gyrus"
+      ]
+    },
+    {
+      "name": "Cortex_auditory_L",
+      "regionId": "auditory",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "L",
+      "triangles": 5091,
+      "capGroup": "hemisphere-L",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "superior_temporal_gyrus",
+        "transverse_temporal_gyrus_Heschls_gyrus",
+        "planum_temporale",
+        "planum_polare"
+      ]
+    },
+    {
+      "name": "Cortex_auditory_R",
+      "regionId": "auditory",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "R",
+      "triangles": 5091,
+      "capGroup": "hemisphere-R",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "superior_temporal_gyrus",
+        "transverse_temporal_gyrus_Heschls_gyrus",
+        "planum_temporale",
+        "planum_polare"
+      ]
+    },
+    {
+      "name": "Cortex_occipital_L",
+      "regionId": "occipital",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "L",
+      "triangles": 3147,
+      "capGroup": "hemisphere-L",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "superior_occipital_gyrus",
+        "inferior_occipital_gyrus",
+        "occipital_pole",
+        "lateral_occipitotemporal_fusiform_gyrus_occipital_part"
+      ]
+    },
+    {
+      "name": "Cortex_occipital_R",
+      "regionId": "occipital",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "R",
+      "triangles": 3147,
+      "capGroup": "hemisphere-R",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "superior_occipital_gyrus",
+        "inferior_occipital_gyrus",
+        "occipital_pole",
+        "lateral_occipitotemporal_fusiform_gyrus_occipital_part"
+      ]
+    },
+    {
+      "name": "Cortex_visual_L",
+      "regionId": "visual",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "L",
+      "triangles": 3555,
+      "capGroup": "hemisphere-L",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "cuneus",
+        "lingual_gyrus_medial_occipitotemporal_gyrus"
+      ]
+    },
+    {
+      "name": "Cortex_visual_R",
+      "regionId": "visual",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "R",
+      "triangles": 3555,
+      "capGroup": "hemisphere-R",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "cuneus",
+        "lingual_gyrus_medial_occipitotemporal_gyrus"
+      ]
+    },
+    {
+      "name": "Cortex_pcc_L",
+      "regionId": "pcc",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "L",
+      "triangles": 2489,
+      "capGroup": "hemisphere-L",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "cingulate_gyrus_caudal_posterior_part",
+        "ingulo_parahippocampal_isthmus"
+      ]
+    },
+    {
+      "name": "Cortex_pcc_R",
+      "regionId": "pcc",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "R",
+      "triangles": 2489,
+      "capGroup": "hemisphere-R",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "cingulate_gyrus_caudal_posterior_part",
+        "ingulo_parahippocampal_isthmus"
+      ]
+    },
+    {
+      "name": "Cortex_acc_L",
+      "regionId": "acc",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "L",
+      "triangles": 1265,
+      "capGroup": "hemisphere-L",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "cingulate_gyrus_rostral_anterior_part",
+        "subcallosal_gyrus_parolfactory_gyrus"
+      ]
+    },
+    {
+      "name": "Cortex_acc_R",
+      "regionId": "acc",
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "R",
+      "triangles": 1265,
+      "capGroup": "hemisphere-R",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": [
+        "cingulate_gyrus_rostral_anterior_part",
+        "subcallosal_gyrus_parolfactory_gyrus"
+      ]
+    },
+    {
+      "name": "Insula_L",
+      "regionId": "insula",
+      "kind": "deep",
+      "layer": "internal",
+      "hemisphere": "L",
+      "triangles": 2600,
+      "capGroup": "Insula_L",
+      "capLayer": 3,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "atlas-grey-matter-volume",
+      "methodNote": "Closed grey-matter volume of the atlas insular gyri, beneath the lateral sulcus.",
+      "atlasParts": [
+        "long_insular_gyri",
+        "short_insular_gyri",
+        "limen_insula",
+        "frontal_agranular_insular_cortex_area_Fl",
+        "temporal_agranular_insular_cortex_area_Tl"
+      ]
+    },
+    {
+      "name": "Insula_R",
+      "regionId": "insula",
+      "kind": "deep",
+      "layer": "internal",
+      "hemisphere": "R",
+      "triangles": 2600,
+      "capGroup": "Insula_R",
+      "capLayer": 3,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "atlas-grey-matter-volume",
+      "methodNote": "Closed grey-matter volume of the atlas insular gyri, beneath the lateral sulcus.",
+      "atlasParts": [
+        "long_insular_gyri",
+        "short_insular_gyri",
+        "limen_insula",
+        "frontal_agranular_insular_cortex_area_Fl",
+        "temporal_agranular_insular_cortex_area_Tl"
+      ]
+    },
+    {
+      "name": "Amygdala_L",
+      "regionId": "amygdala",
+      "kind": "deep",
+      "layer": "internal",
+      "hemisphere": "L",
+      "triangles": 1400,
+      "capGroup": "Amygdala_L",
+      "capLayer": 3,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "atlas-union",
+      "methodNote": "Union of the atlas parts listed in atlasParts.",
+      "atlasParts": [
+        "amygdaloid_complex",
+        "anterior_amygdaloid_area",
+        "central_nuclear_group",
+        "lateral_nucleus",
+        "basolateral_nucleus_basal_nucleus",
+        "basomedial_nucleus_accessory_basal_nucleus",
+        "anterior_cortical_nucleus",
+        "posterior_cortical_nucleus",
+        "medial_nucleus",
+        "amygdalohippocampal_area"
+      ]
+    },
+    {
+      "name": "Amygdala_R",
+      "regionId": "amygdala",
+      "kind": "deep",
+      "layer": "internal",
+      "hemisphere": "R",
+      "triangles": 1400,
+      "capGroup": "Amygdala_R",
+      "capLayer": 3,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "atlas-union",
+      "methodNote": "Union of the atlas parts listed in atlasParts.",
+      "atlasParts": [
+        "amygdaloid_complex",
+        "anterior_amygdaloid_area",
+        "central_nuclear_group",
+        "lateral_nucleus",
+        "basolateral_nucleus_basal_nucleus",
+        "basomedial_nucleus_accessory_basal_nucleus",
+        "anterior_cortical_nucleus",
+        "posterior_cortical_nucleus",
+        "medial_nucleus",
+        "amygdalohippocampal_area"
+      ]
+    },
+    {
+      "name": "Hippocampus_L",
+      "regionId": "hippocampus",
+      "kind": "deep",
+      "layer": "internal",
+      "hemisphere": "L",
+      "triangles": 2200,
+      "capGroup": "Hippocampus_L",
+      "capLayer": 3,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "atlas-union",
+      "methodNote": "Union of the atlas parts listed in atlasParts.",
+      "atlasParts": [
+        "head_of_hippocampus",
+        "body_of_hippocampus",
+        "tail_of_hippocampus"
+      ]
+    },
+    {
+      "name": "Hippocampus_R",
+      "regionId": "hippocampus",
+      "kind": "deep",
+      "layer": "internal",
+      "hemisphere": "R",
+      "triangles": 2200,
+      "capGroup": "Hippocampus_R",
+      "capLayer": 3,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "atlas-union",
+      "methodNote": "Union of the atlas parts listed in atlasParts.",
+      "atlasParts": [
+        "head_of_hippocampus",
+        "body_of_hippocampus",
+        "tail_of_hippocampus"
+      ]
+    },
+    {
+      "name": "Thalamus_L",
+      "regionId": "thalamus",
+      "kind": "deep",
+      "layer": "internal",
+      "hemisphere": "L",
+      "triangles": 2400,
+      "capGroup": "Thalamus_L",
+      "capLayer": 3,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "atlas-union",
+      "methodNote": "Union of the atlas parts listed in atlasParts.",
+      "atlasParts": [
+        "thalamus",
+        "anterior_nuclear_complex_of_thalamus",
+        "lateral_dorsal_nucleus_of_thalamus",
+        "mediodorsal_nucleus_of_thalamus",
+        "reuniens_nucleus_medioventral_nucleus_of_thalamus",
+        "lateral_posterior_nucleus_of_thalamus",
+        "pulvinar_of_thalamus",
+        "ventral_anterior_nucleus_of_thalamus",
+        "ventral_lateral_nucleus_of_thalamus",
+        "ventral_posterior_lateral_nucleus",
+        "ventral_posterior_medial_nucleus",
+        "dorsal_lateral_geniculate_nucleus",
+        "medial_geniculate_nuclei",
+        "centromedian_nucleus_of_thalamus",
+        "parafascicular_nucleus_of_thalamus",
+        "midline_nuclear_complex"
+      ]
+    },
+    {
+      "name": "Thalamus_R",
+      "regionId": "thalamus",
+      "kind": "deep",
+      "layer": "internal",
+      "hemisphere": "R",
+      "triangles": 2400,
+      "capGroup": "Thalamus_R",
+      "capLayer": 3,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "atlas-union",
+      "methodNote": "Union of the atlas parts listed in atlasParts.",
+      "atlasParts": [
+        "thalamus",
+        "anterior_nuclear_complex_of_thalamus",
+        "lateral_dorsal_nucleus_of_thalamus",
+        "mediodorsal_nucleus_of_thalamus",
+        "reuniens_nucleus_medioventral_nucleus_of_thalamus",
+        "lateral_posterior_nucleus_of_thalamus",
+        "pulvinar_of_thalamus",
+        "ventral_anterior_nucleus_of_thalamus",
+        "ventral_lateral_nucleus_of_thalamus",
+        "ventral_posterior_lateral_nucleus",
+        "ventral_posterior_medial_nucleus",
+        "dorsal_lateral_geniculate_nucleus",
+        "medial_geniculate_nuclei",
+        "centromedian_nucleus_of_thalamus",
+        "parafascicular_nucleus_of_thalamus",
+        "midline_nuclear_complex"
+      ]
+    },
+    {
+      "name": "Caudate_L",
+      "regionId": "caudate",
+      "kind": "deep",
+      "layer": "internal",
+      "hemisphere": "L",
+      "triangles": 2200,
+      "capGroup": "Caudate_L",
+      "capLayer": 3,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "atlas-union",
+      "methodNote": "Union of the atlas parts listed in atlasParts.",
+      "atlasParts": [
+        "head_of_caudate",
+        "body_of_caudate",
+        "tail_of_caudate"
+      ]
+    },
+    {
+      "name": "Caudate_R",
+      "regionId": "caudate",
+      "kind": "deep",
+      "layer": "internal",
+      "hemisphere": "R",
+      "triangles": 2200,
+      "capGroup": "Caudate_R",
+      "capLayer": 3,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "atlas-union",
+      "methodNote": "Union of the atlas parts listed in atlasParts.",
+      "atlasParts": [
+        "head_of_caudate",
+        "body_of_caudate",
+        "tail_of_caudate"
+      ]
+    },
+    {
+      "name": "Putamen_L",
+      "regionId": "putamen",
+      "kind": "deep",
+      "layer": "internal",
+      "hemisphere": "L",
+      "triangles": 1800,
+      "capGroup": "Putamen_L",
+      "capLayer": 3,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "atlas-union",
+      "methodNote": "Union of the atlas parts listed in atlasParts.",
+      "atlasParts": [
+        "putamen",
+        "posteroventral_putamen"
+      ]
+    },
+    {
+      "name": "Putamen_R",
+      "regionId": "putamen",
+      "kind": "deep",
+      "layer": "internal",
+      "hemisphere": "R",
+      "triangles": 1800,
+      "capGroup": "Putamen_R",
+      "capLayer": 3,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "atlas-union",
+      "methodNote": "Union of the atlas parts listed in atlasParts.",
+      "atlasParts": [
+        "putamen",
+        "posteroventral_putamen"
+      ]
+    },
+    {
+      "name": "Ventral_striatum_L",
+      "regionId": "ventral_striatum",
+      "kind": "deep",
+      "layer": "internal",
+      "hemisphere": "L",
+      "triangles": 900,
+      "capGroup": "Ventral_striatum_L",
+      "capLayer": 3,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "atlas-union",
+      "methodNote": "Union of the atlas parts listed in atlasParts.",
+      "atlasParts": [
+        "nucleus_accumbens"
+      ]
+    },
+    {
+      "name": "Ventral_striatum_R",
+      "regionId": "ventral_striatum",
+      "kind": "deep",
+      "layer": "internal",
+      "hemisphere": "R",
+      "triangles": 900,
+      "capGroup": "Ventral_striatum_R",
+      "capLayer": 3,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "atlas-union",
+      "methodNote": "Union of the atlas parts listed in atlasParts.",
+      "atlasParts": [
+        "nucleus_accumbens"
+      ]
+    },
+    {
+      "name": "Corpus_callosum_L",
+      "regionId": "callosum",
+      "kind": "deep",
+      "layer": "internal",
+      "hemisphere": "L",
+      "triangles": 3254,
+      "capGroup": "Corpus_callosum_L",
+      "capLayer": 3,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "atlas-union",
+      "methodNote": "Union of the atlas parts listed in atlasParts.",
+      "atlasParts": [
+        "corpus_callosum"
+      ]
+    },
+    {
+      "name": "Corpus_callosum_R",
+      "regionId": "callosum",
+      "kind": "deep",
+      "layer": "internal",
+      "hemisphere": "R",
+      "triangles": 3254,
+      "capGroup": "Corpus_callosum_R",
+      "capLayer": 3,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "atlas-union",
+      "methodNote": "Union of the atlas parts listed in atlasParts.",
+      "atlasParts": [
+        "corpus_callosum"
+      ]
+    },
+    {
+      "name": "Hypothalamus",
+      "regionId": "hypothalamus",
+      "kind": "deep",
+      "layer": "internal",
+      "hemisphere": "M",
+      "triangles": 1600,
+      "capGroup": "Hypothalamus",
+      "capLayer": 3,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "atlas-union",
+      "methodNote": "Union of the atlas parts listed in atlasParts.",
+      "atlasParts": [
+        "hypothalamus",
+        "preoptic_region_of_HTH",
+        "supraoptic_region_of_HTH",
+        "tuberal_region_of_HTH",
+        "mammillary_region_of_HTH"
+      ]
+    },
+    {
+      "name": "Cerebellar_vermis",
+      "regionId": "cerebellum",
+      "kind": "deep",
+      "layer": "surface",
+      "hemisphere": "M",
+      "triangles": 3200,
+      "capGroup": "Cerebellar_vermis",
+      "capLayer": 3,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "atlas-union",
+      "methodNote": "Union of the atlas parts listed in atlasParts.",
+      "atlasParts": [
+        "cerebellar_vermis"
+      ]
+    },
+    {
+      "name": "Periaqueductal_gray",
+      "regionId": "pag",
+      "kind": "deep",
+      "layer": "internal",
+      "hemisphere": "M",
+      "triangles": 900,
+      "capGroup": "Periaqueductal_gray",
+      "capLayer": 3,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "aqueduct-sleeve-4mm",
+      "methodNote": "Geometric sleeve: atlas midbrain tissue within 4.0 mm of the atlas cerebral aqueduct.",
+      "atlasParts": [
+        "cerebral_aqueduct",
+        "midbrain_tegmentum",
+        "superior_colliculus",
+        "inferior_colliculus",
+        "pretectal_region"
+      ]
+    },
+    {
+      "name": "Cerebellar_hemispheres",
+      "regionId": "cerebellar_hemispheres",
+      "kind": "support",
+      "layer": "surface",
+      "hemisphere": "M",
+      "triangles": 14000,
+      "capGroup": "Cerebellar_hemispheres",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "atlas-union",
+      "methodNote": "Union of the atlas parts listed in atlasParts.",
+      "atlasParts": [
+        "lateral_hemisphere_of_cerebellum",
+        "paravermis_of_cerebellum",
+        "cerebellar_deep_nuclei",
+        "white_matter_of_hindbrain"
+      ]
+    },
+    {
+      "name": "Brainstem",
+      "regionId": "brainstem",
+      "kind": "support",
+      "layer": "surface",
+      "hemisphere": "M",
+      "triangles": 6000,
+      "capGroup": "Brainstem",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "atlas-union",
+      "methodNote": "Union of the atlas parts listed in atlasParts.",
+      "atlasParts": [
+        "midbrain_tegmentum",
+        "cerebral_peduncle_crus_cerebri",
+        "substantia_nigra",
+        "red_nucleus",
+        "superior_colliculus",
+        "inferior_colliculus",
+        "pretectal_region",
+        "basilar_part_of_pons",
+        "pontine_tegmentum",
+        "pyramidal_part_of_medulla_oblongata",
+        "tegmentum_of_medulla_oblongata",
+        "inferior_olive",
+        "superior_cerebellar_peduncle_brachium_conjunctivum",
+        "middle_cerebellar_peduncle",
+        "inferior_cerebellar_peduncle",
+        "white_matter_of_hindbrain"
+      ]
+    }
+  ],
+  "helpers": [
+    {
+      "name": "Cortex_wall_L",
+      "regionId": null,
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "L",
+      "triangles": 4195,
+      "capGroup": "hemisphere-L",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": []
+    },
+    {
+      "name": "Cortex_wall_R",
+      "regionId": null,
+      "kind": "cortex",
+      "layer": "surface",
+      "hemisphere": "R",
+      "triangles": 4195,
+      "capGroup": "hemisphere-R",
+      "capLayer": 0,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "hemisphere-surface-split",
+      "methodNote": "Hemisphere outer surface split by nearest atlas cortical label; edges follow atlas gyral boundaries.",
+      "atlasParts": []
+    },
+    {
+      "name": "Cap_wm_L",
+      "regionId": null,
+      "kind": "cortex",
+      "layer": "cap",
+      "hemisphere": "L",
+      "triangles": 14000,
+      "capGroup": "wm-L",
+      "capLayer": 1,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "cap-volume",
+      "methodNote": "Cut-face helper only (never drawn as a surface).",
+      "atlasParts": []
+    },
+    {
+      "name": "Cap_wm_R",
+      "regionId": null,
+      "kind": "cortex",
+      "layer": "cap",
+      "hemisphere": "R",
+      "triangles": 14000,
+      "capGroup": "wm-R",
+      "capLayer": 1,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "cap-volume",
+      "methodNote": "Cut-face helper only (never drawn as a surface).",
+      "atlasParts": []
+    },
+    {
+      "name": "Cap_ventricles_L",
+      "regionId": null,
+      "kind": "cortex",
+      "layer": "cap",
+      "hemisphere": "L",
+      "triangles": 3000,
+      "capGroup": "ventricles-L",
+      "capLayer": 2,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "cap-volume",
+      "methodNote": "Cut-face helper only (never drawn as a surface).",
+      "atlasParts": []
+    },
+    {
+      "name": "Cap_ventricles_R",
+      "regionId": null,
+      "kind": "cortex",
+      "layer": "cap",
+      "hemisphere": "R",
+      "triangles": 3000,
+      "capGroup": "ventricles-R",
+      "capLayer": 2,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "cap-volume",
+      "methodNote": "Cut-face helper only (never drawn as a surface).",
+      "atlasParts": []
+    },
+    {
+      "name": "Cap_cerebellum_wm",
+      "regionId": null,
+      "kind": "support",
+      "layer": "cap",
+      "hemisphere": "M",
+      "triangles": 3500,
+      "capGroup": "Cap_cerebellum_wm",
+      "capLayer": 1,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "cap-volume",
+      "methodNote": "Cut-face helper only (never drawn as a surface).",
+      "atlasParts": [
+        "white_matter_of_hindbrain"
+      ]
+    },
+    {
+      "name": "Cap_hindbrain_csf",
+      "regionId": null,
+      "kind": "support",
+      "layer": "cap",
+      "hemisphere": "M",
+      "triangles": 600,
+      "capGroup": "Cap_hindbrain_csf",
+      "capLayer": 2,
+      "source": "hra-brain-female-v1.4",
+      "license": "CC-BY-4.0",
+      "method": "cap-volume",
+      "methodNote": "Cut-face helper only (never drawn as a surface).",
+      "atlasParts": [
+        "cerebral_aqueduct",
+        "fourth_ventricle",
+        "central_canal_of_medulla_oblongata"
+      ]
+    }
+  ],
+  "assets": {
+    "cortex-brain-v6-8542869de3.glb": {
+      "lod": "desktop",
+      "bytes": 1126072,
+      "sha256": "8542869de31ee469aa2a93ed9d9c1426d0ac67f4fafcbba8c52c79dc79c4ecb1",
+      "triangles": 227072,
+      "drawnTriangles": 188972,
+      "meshes": 55
+    },
+    "cortex-brain-v6-mobile-1a53452d83.glb": {
+      "lod": "mobile",
+      "bytes": 629524,
+      "sha256": "1a53452d83ca177c68e2cfcb0ae475d341da397bd55a05531676e6fb808f03fe",
+      "triangles": 108564,
+      "drawnTriangles": 90464,
+      "meshes": 55
+    }
+  },
+  "lods": {
+    "desktop": "cortex-brain-v6-8542869de3.glb",
+    "mobile": "cortex-brain-v6-mobile-1a53452d83.glb"
+  },
+  "catalogSha256": "eb018a0ea98a33ed899733eb8d3a596988fe4b61c1bf202667319d2e8e1b5bac",
+  "builderSha256": "39b599e85bf30f9cd4781628a6ff79eb9e7cfaa019e3e0b08468b786ac7fddc3",
+  "stageScriptsSha256": {
+    "anatomy_v6_atlas.py": "dce7ee3adf0097dd15ffd311645ff974eb7daa5d48264995b57793879b3ac2d7",
+    "anatomy_v6_meshes.py": "ce9291bb0134cbf119f4cae5b38c1c7601074ac2bb415485484cc111d4a05dfd"
+  },
+  "sourceBlendSha256": "b9bb25523d0e53865edc67e7cc957c90879af4da692ceb2413241b018c6fa1a9",
+  "poster": {
+    "file": "cortex-brain-v6-poster-a57bed75d6.jpg",
+    "bytes": 46171,
+    "sha256": "a57bed75d6ac0b0aed207d0c86710cf1c140052a81b6b95178605728aba7dcf1"
+  }
+}
