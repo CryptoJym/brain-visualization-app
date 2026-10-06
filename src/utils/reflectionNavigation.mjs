@@ -40,7 +40,7 @@ export function createReflectionNavigation(win,onNavigate,sectionCount){
  };
 }
 
-export function shouldWarnBeforeLeave({demo=false,saved=false,exported=false,answers={},personContext={},insightAnswers={},heroAnswers={},selectedHeroId='',portraitChoices={},portraitAsset=null,legacyRecord=null}={}){
- if(demo||saved||exported)return false;
+export function shouldWarnBeforeLeave({demo=false,saved=false,answers={},personContext={},insightAnswers={},heroAnswers={},selectedHeroId='',portraitChoices={},portraitAsset=null,legacyRecord=null}={}){
+ if(demo||saved)return false;
  return Boolean(Object.values(answers).some(a=>a?.value)||Object.values(personContext).some(Boolean)||Object.values(insightAnswers).some(Boolean)||Object.values(heroAnswers).some(Boolean)||selectedHeroId||Object.values(portraitChoices).some(Boolean)||portraitAsset||legacyRecord);
 }

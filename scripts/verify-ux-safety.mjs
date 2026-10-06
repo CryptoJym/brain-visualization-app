@@ -56,7 +56,8 @@ async function leaveWarning(p,action){
 async function armed(p){return p.evaluate(()=>{const e=new Event('beforeunload',{cancelable:true});window.dispatchEvent(e);return e.defaultPrevented;});}
 async function download(p,action){
  const client=await p.target().createCDPSession();
- await client.send('Browser.setDownloadBehavior',{behavior:'allow',downloadPath:out,eventsEnabled:true});
+ const {targetInfo}=await client.send('Target.getTargetInfo');
+ await client.send('Browser.setDownloadBehavior',{behavior:'allow',downloadPath:out,eventsEnabled:true,browserContextId:targetInfo.browserContextId});
  let filename,timer;
  const finished=new Promise((resolvePromise,reject)=>{
   timer=setTimeout(()=>reject(new Error('Browser download did not finish')),15000);
@@ -127,12 +128,12 @@ try{
  const {context,p}=await page();await click(p,'Begin my reflection →');await p.select('[data-context-question=sexAssigned] select','female');await click(p,'Continue to experiences →');
  await click(p,'No','[data-question="physical_assault"] .cc-choice');await click(p,'Review what I’ve shared');await route(p,'#/results');await click(p,'Save profile');
  const raw=await download(p,()=>click(p,'Export my reflection (.json)'));
- check('Explicit JSON export contains the actual open-page answer',JSON.parse(readFileSync(raw,'utf8')).answers.physical_assault.value==='no');check('JSON export removes the current warning',!await armed(p));
+ check('Explicit JSON export contains the actual open-page answer',JSON.parse(readFileSync(raw,'utf8')).answers.physical_assault.value==='no');check('JSON export preserves the warning because file saving cannot be confirmed by the page',await armed(p));
  await click(p,'Edit answers');await route(p,'#/reflect/1');await click(p,'Yes','[data-question="physical_assault"] .cc-choice');check('Editing an exported reflection re-arms the warning',await armed(p));
  await click(p,'Review what I’ve shared');await click(p,'Backup / restore');await route(p,'#/backup');
  const phrase='Fictional test only river compass meadow';await p.type('[aria-label="Backup password"]',phrase);await p.type('[aria-label="Confirm backup password"]',phrase);await click(p,'Prepare encrypted backup');await p.waitForSelector('.cc-backup-download');
  check('Preparing a backup keeps the warning until download',await armed(p));
- await download(p,()=>p.click('.cc-backup-download a'));check('Explicit encrypted backup download removes the current warning',!await armed(p));
+ await download(p,()=>p.click('.cc-backup-download a'));check('Encrypted download preserves the warning for unsaved page answers',await armed(p));
  check('Exports do not automatically save to browser storage',await p.evaluate(()=>localStorage.getItem('cortex-compass-profile')===null));await context.close();
 
  for(const hash of ['#/reflect/3','#/context','#/results','#/report','#/portrait']){

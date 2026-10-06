@@ -10,8 +10,8 @@ test('all real answer surfaces arm a warning before saving',async()=>{
  const {shouldWarnBeforeLeave}=await load();
  for(const state of [{answers:{physical_assault:{value:'no'}}},{personContext:{sexAssigned:'male'}},{insightAnswers:{noticing:'often'}},{heroAnswers:{signal_detection:'often'}},{selectedHeroId:'signal_cartographer'},{portraitChoices:{setting:'forest'}},{portraitAsset:{id:'synthetic-device-art'}},{legacyRecord:{answers:{old:'yes'}}}])assert.equal(shouldWarnBeforeLeave(state),true,JSON.stringify(state));
 });
-test('explicit save or completed export suppresses the warning for the current answers',async()=>{
+test('only an explicit device save suppresses the warning for real answers',async()=>{
  const {shouldWarnBeforeLeave}=await load(),state={answers:{physical_assault:{value:'no'}}};
- assert.equal(shouldWarnBeforeLeave({...state,saved:true}),false);assert.equal(shouldWarnBeforeLeave({...state,exported:true}),false);
+ assert.equal(shouldWarnBeforeLeave({...state,saved:true}),false);assert.equal(shouldWarnBeforeLeave({...state,exported:true}),true);
  assert.equal(shouldWarnBeforeLeave({...state,saved:false,exported:false}),true);
 });
