@@ -22,7 +22,7 @@ export function useReflectionNavigation(sectionCount){
 export function useLeaveWarning(unsaved){
  useEffect(()=>{
   if(!unsaved)return;
-  const warn=event=>{event.preventDefault();event.returnValue='';};
+  const warn=event=>{event.preventDefault();event.returnValue=true;};
   window.addEventListener('beforeunload',warn);
   return()=>window.removeEventListener('beforeunload',warn);
  },[unsaved]);

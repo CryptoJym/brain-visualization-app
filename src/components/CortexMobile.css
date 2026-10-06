@@ -1,4 +1,6 @@
 /* App-wide usability fixes; specificity also overrides legacy mobile hiding. */
+/* Let the assessment grid shrink around its journey rail on narrow phones. */
+.cc-shell .cc-assessment-wrap>aside,.cc-shell .cc-question-list{min-width:0}
 .cc-shell button,.cc-shell select,.cc-shell input{font-family:inherit;touch-action:manipulation}
 .cc-shell button:focus-visible,.cc-shell a:focus-visible,.cc-shell select:focus-visible,.cc-shell input:focus-visible,.cc-shell summary:focus-visible{outline:3px solid #24aabc;outline-offset:4px}
 .cc-shell button,.cc-shell select{min-height:44px}.cc-shell button{cursor:pointer}.cc-shell button:disabled{cursor:not-allowed}
