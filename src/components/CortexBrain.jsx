@@ -11,14 +11,15 @@ import './CortexBrain.css';
 // v6 model axes: +X patient left, +Y superior, +Z anterior. A camera on +X sees the left hemisphere.
 const cache = new Map();
 const VIEWS = {perspective:[7.2,3.2,7.2], left:[10.5,1,0], right:[-10.5,1,0], top:[0,11,.01], front:[0,1,10.5],
-  below:[3.4,-9.4,5.4], back:[5.6,2.2,-9.2], low:[6.4,-2.6,7.6]};
+  below:[3.4,-9.4,5.4], back:[5.6,2.2,-9.2], low:[6.4,-2.6,7.6], posterior:[7.4,3.4,-7.2]};
 const NEUTRAL = new THREE.Color('#bed0dc');
 const MEDIAL_CUT = .004; // ~0.1 mm: removes only the flat midline face; medial cortex stays whole
 // Pick presets. Medial cortex opens the medial cutaway; buried or internal parts open the deep view.
 const MEDIAL = new Set(['acc','pcc','precuneus','visual']);
-const DEEP_PICK = new Set(['amygdala','hippocampus','thalamus','hypothalamus','pag','callosum','caudate','putamen','ventral_striatum','insula','cerebellum']);
+const DEEP_PICK = new Set(['amygdala','hippocampus','thalamus','hypothalamus','pag','callosum','caudate','putamen','ventral_striatum','insula','cerebellum','brainstem']);
+const DEEP_VIEW = {brainstem:'low'};
 const MIDLINE_CUT = new Set(['hypothalamus','pag','callosum','cerebellum']);
-const PICK_VIEW = {ofc:'below', brainstem:'low', cerebellar_hemispheres:'back'};
+const PICK_VIEW = {ofc:'below', cerebellar_hemispheres:'back', occipital:'posterior'};
 let draco = null;
 function dracoLoader(type='wasm') {
   if (!draco || draco.type !== type) {
@@ -64,13 +65,22 @@ function ghostify(material) {
   };
   material.customProgramCacheKey = () => 'cc-ghost';
 }
-const anchorOf = geometry => {
+// Label anchors: the vertex nearest the part's centre first, then up to 24 points spread over it
+// (farthest-point sampling), so the leader line can always end on a visible part of the region.
+const anchorsOf = geometry => {
   const p = geometry.attributes.position, centre = new THREE.Vector3(), v = new THREE.Vector3();
   for (let i = 0; i < p.count; i++) centre.add(v.fromBufferAttribute(p, i));
   centre.divideScalar(Math.max(p.count, 1));
-  let best = 0, bestDistance = Infinity;
-  for (let i = 0; i < p.count; i++) {const d = v.fromBufferAttribute(p, i).distanceToSquared(centre); if (d < bestDistance) {bestDistance = d; best = i;}}
-  return new THREE.Vector3().fromBufferAttribute(p, best);
+  const step = Math.max(1, Math.floor(p.count / 600)), pool = [];
+  for (let i = 0; i < p.count; i += step) pool.push(new THREE.Vector3().fromBufferAttribute(p, i));
+  let first = pool[0];
+  for (const point of pool) if (point.distanceToSquared(centre) < first.distanceToSquared(centre)) first = point;
+  const chosen = [first], gap = pool.map(point => point.distanceToSquared(first));
+  while (chosen.length < 25 && chosen.length < pool.length) {
+    let far = 0; for (let i = 1; i < pool.length; i++) if (gap[i] > gap[far]) far = i;
+    chosen.push(pool[far]); for (let i = 0; i < pool.length; i++) gap[i] = Math.min(gap[i], pool[i].distanceToSquared(pool[far]));
+  }
+  return chosen.sort((a, b) => a.distanceToSquared(centre) - b.distanceToSquared(centre));
 };
 export default function CortexBrain({profile, onSelect, compact=false,focus=null}) {
   const mount=useRef(null),engine=useRef(null),callback=useRef(onSelect),labelRef=useRef(null),lineRef=useRef(null);
@@ -90,8 +100,8 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
     // Every pick opens a mode where that part is actually drawn: lateral cortex on the surface, medial
     // cortex in the medial cutaway, buried and internal parts in the deep view.
     if(MEDIAL.has(id)){setMode('cutaway');setView(s==='L'?'right':'left');}
-    else if(DEEP_PICK.has(id)){setMode('deep');setView(s==='L'?'left':s==='R'?'right':'perspective');}
-    else if(PICK_VIEW[id]){setMode('surface');setView(PICK_VIEW[id]);}
+    else if(DEEP_PICK.has(id)){setMode('deep');setView(s==='L'?'left':s==='R'?'right':DEEP_VIEW[id]||'perspective');}
+    else if(PICK_VIEW[id]&&s==='both'){setMode('surface');setView(PICK_VIEW[id]);}
     else{setMode('surface');setView(s==='R'?'right':s==='L'?'left':'perspective');}
   };
   const chooseRef=useRef(choose); chooseRef.current=choose;
@@ -121,7 +131,7 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
     const key=new THREE.DirectionalLight(0xfff3ea,2.3);key.position.set(5,7,7);scene.add(key);
     const rim=new THREE.DirectionalLight(0x86d4ff,1.1);rim.position.set(-5,3,-6);scene.add(rim);
     const meshes=[],capGroups=new Map(),capRoot=new THREE.Group();
-    let selectedMeshes=[],labelMesh=null,activeMode='surface',activeIsolate=false,activeKeep='R';
+    let selectedMeshes=[],labelMesh=null,labelPoint=null,activeMode='surface',activeIsolate=false,activeKeep='R';
     const plane=new THREE.Plane(new THREE.Vector3(-1,0,0),-MEDIAL_CUT);
     const resize=()=>{
       const width=host.clientWidth,height=host.clientHeight;if(!width||!height)return;
@@ -202,25 +212,32 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
       }
       return null;
     };
+    // Visibility probe: a selected part counts as shown when one of its anchors is the first thing a
+    // ray from the camera meets (not hidden behind other opaque parts or under a filled cut face).
+    // The label then points at that anchor. Exposed as data-selected-visible for the browser checks.
+    const anchorVisible=(mesh,anchor,ray)=>{
+      const direction=anchor.clone().sub(camera.position),distance=direction.length();
+      ray.set(camera.position,direction.normalize());ray.far=distance+.05;
+      const hits=ray.intersectObjects(meshes.filter(isOpaqueVisible),false).filter(h=>!clippedAway(h.object,h.point));
+      if(hits[0]&&!selectedMeshes.includes(hits[0].object)&&hits[0].distance<distance-.03)return false;
+      if(activeMode==='cutaway'&&mesh.material.clippingPlanes?.length){
+        const crossing=ray.ray.intersectPlane(plane,new THREE.Vector3());
+        if(crossing&&crossing.distanceTo(camera.position)<distance-.01&&insideCap(crossing))return false;
+      }
+      return true;
+    };
     const probe=()=>{
       probeTimer=0;
-      if(!selectedMeshes.length){host.dataset.selectedVisible='';host.dataset.labelTarget='';labelMesh=null;return;}
-      const ray=new THREE.Raycaster();let found=null;
-      const ranked=[...selectedMeshes].sort((a,b)=>a.userData.anchorWorld.distanceTo(camera.position)-b.userData.anchorWorld.distanceTo(camera.position));
+      if(!selectedMeshes.length){host.dataset.selectedVisible='';host.dataset.labelTarget='';labelMesh=null;labelPoint=null;return;}
+      const ray=new THREE.Raycaster();let found=null,point=null;
+      const ranked=[...selectedMeshes].sort((a,b)=>a.userData.anchors[0].distanceTo(camera.position)-b.userData.anchors[0].distanceTo(camera.position));
       for(const mesh of ranked){
-        if(mesh.userData.xray.visible){found=mesh;break;}
+        if(mesh.userData.xray.visible){found=mesh;point=mesh.userData.anchors[0];break;}
         if(!mesh.visible)continue;
-        const anchor=mesh.userData.anchorWorld,direction=anchor.clone().sub(camera.position),distance=direction.length();
-        ray.set(camera.position,direction.normalize());ray.far=distance+.05;
-        const hits=ray.intersectObjects(meshes.filter(isOpaqueVisible),false).filter(h=>!clippedAway(h.object,h.point));
-        if(hits[0]&&!selectedMeshes.includes(hits[0].object)&&hits[0].distance<distance-.03)continue;
-        if(activeMode==='cutaway'&&mesh.material.clippingPlanes?.length){
-          const crossing=ray.ray.intersectPlane(plane,new THREE.Vector3());
-          if(crossing&&crossing.distanceTo(camera.position)<distance-.01&&insideCap(crossing))continue;
-        }
-        found=mesh;break;
+        point=mesh.userData.anchors.find(anchor=>anchorVisible(mesh,anchor,ray));
+        if(point){found=mesh;break;}
       }
-      labelMesh=found||ranked[0];
+      labelMesh=found||ranked[0];labelPoint=point||labelMesh.userData.anchors[0];
       host.dataset.selectedVisible=String(Boolean(found));host.dataset.labelTarget=labelMesh?.name||'';needsRender=true;
     };
     const scheduleProbe=()=>{if(probeTimer)clearTimeout(probeTimer);probeTimer=setTimeout(()=>{if(!disposed)probe();},120);};
@@ -248,7 +265,8 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
         mat.color.copy(colored&&!helper?baseColor:NEUTRAL);
         // A pick should stand out: everything else is muted toward neutral grey-blue.
         if(anySelected&&!match&&!helper)mat.color.lerp(NEUTRAL,colored?.5:0).multiplyScalar(.9);
-        mat.emissive.copy(baseColor);mat.emissiveIntensity=match?.42:0;
+        if(match&&colored)mat.color.offsetHSL(0,.12,-.05); // a little more saturated than its neighbours
+        mat.emissive.copy(baseColor);mat.emissiveIntensity=match?(nextMode==='deep'?.22:.45):0;
         mat.opacity=1;mat.transparent=false;mat.depthWrite=true;mat.side=THREE.DoubleSide;
         mat.polygonOffset=false;mat.polygonOffsetFactor=0;mat.polygonOffsetUnits=0;mat.onBeforeCompile=()=>{};mat.customProgramCacheKey=()=> 'cc-solid';
         let show=layer!=='cap',ghost=false;
@@ -260,7 +278,7 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
         }else if(nextMode==='deep'){
           if(layer==='cap')show=false;
           else if(kind==='cortex'||kind==='support'||(mesh.userData.regionId==='insula'&&!match)){ghost=!match;show=true;}
-          else{show=true;if(anySelected&&!match){mat.opacity=.2;}}
+          else{show=true;if(anySelected&&!match){mat.opacity=.16;mat.color.copy(NEUTRAL);}}
         }
         if(ghost){
           mat.opacity=kind==='support'?.16:.11;mat.depthWrite=false;mat.side=THREE.FrontSide;mesh.renderOrder=5;
@@ -271,7 +289,7 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
         mesh.visible=show;
         mat.transparent=mat.opacity<1;if(mat.transparent&&!ghost)mat.depthWrite=false;mat.needsUpdate=true;
         // A selected part that this mode would hide (e.g. an internal one in Surface) shows as an x-ray.
-        xray.visible=match&&!mesh.visible&&!only&&layer!=='cap';
+        xray.visible=match&&!mesh.visible&&!only&&layer!=='cap'&&!(nextMode==='cutaway'&&!keptSide);
         if(match&&(mesh.visible||xray.visible))selectedMeshes.push(mesh);
       }
       const capping=nextMode==='cutaway'&&!only;
@@ -280,6 +298,7 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
         group.stencil?.forEach(o=>{o.visible=on;});if(group.cap){group.cap.visible=on;group.cap.material.color.copy(colored||group.layer<3?group.color:group.neutral);}
       }
       host.dataset.selectedMeshes=selectedMeshes.map(m=>m.name).join(',');
+      host.dataset.selectedVisible='';host.dataset.labelTarget='';labelMesh=null;labelPoint=null;
       scheduleProbe();
     };
     const frameSelection=(targets=selectedMeshes,margin=1.08)=>{
@@ -296,7 +315,7 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
       if(!selectedMeshes.length)return;
       const box=new THREE.Box3();selectedMeshes.forEach(o=>box.union(new THREE.Box3().setFromObject(o)));
       const size=box.getSize(new THREE.Vector3()).length(),centre=box.getCenter(new THREE.Vector3());
-      const scale=THREE.MathUtils.clamp(.62+size*.12,.66,.92);
+      const scale=THREE.MathUtils.clamp(.5+size*.14,.56,.92); // closer for tiny parts such as the PAG
       fitView(activeView,centre.multiplyScalar(.6),scale);
     };
     let activeView='perspective';
@@ -316,10 +335,10 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
         if(data.layer!=='cap')drawn+=count;
         obj.geometry.computeBoundingBox();
         const centre=obj.geometry.boundingBox.getCenter(new THREE.Vector3()).applyMatrix4(obj.matrixWorld);
-        const anchor=anchorOf(obj.geometry);
+        const anchors=anchorsOf(obj.geometry).map(a=>a.applyMatrix4(obj.matrixWorld));
         const xray=new THREE.Mesh(obj.geometry,new THREE.MeshBasicMaterial({color:mat.color,transparent:true,opacity:.5,depthTest:false,depthWrite:false}));
         ownedMaterials.push(xray.material);xray.renderOrder=999;xray.visible=false;xray.matrixAutoUpdate=false;xray.matrix.copy(obj.matrixWorld);capRoot.add(xray);
-        obj.userData={...data,restPosition:obj.position.clone(),baseColor:mat.color.clone(),centre,anchorWorld:anchor.applyMatrix4(obj.matrixWorld),xray};
+        obj.userData={...data,restPosition:obj.position.clone(),baseColor:mat.color.clone(),centre,anchors,xray};
         if(data.capGroup){
           const group=capGroups.get(data.capGroup)||{name:data.capGroup,meshes:[],layer:Number(data.capLayer)||0,
             color:new THREE.Color(data.capColor||'#97a3ae'),neutral:new THREE.Color(Number(data.capLayer)>=3?(data.regionId==='callosum'?'#e8edf0':'#97a3ae'):data.capColor||'#97a3ae'),side:data.hemisphere};
@@ -369,9 +388,9 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
     canvas.addEventListener('keydown',keyDown);canvas.addEventListener('webglcontextlost',lost);
     const updateLabel=()=>{
       const label=labelRef.current,line=lineRef.current;if(!label||!line)return;
-      const mesh=labelMesh&&selectedMeshes.includes(labelMesh)?labelMesh:selectedMeshes[0];
+      const mesh=labelMesh&&selectedMeshes.includes(labelMesh)?labelMesh:null;
       if(!mesh){label.style.opacity='0';line.style.opacity='0';return;}
-      const point=mesh.userData.anchorWorld.clone().project(camera);
+      const point=(labelPoint||mesh.userData.anchors[0]).clone().project(camera);
       if(point.z>1||point.z< -1){label.style.opacity='0';line.style.opacity='0';return;}
       const x=(point.x+1)/2*host.clientWidth,y=(1-point.y)/2*host.clientHeight;
       const lx=Math.max(8,Math.min(host.clientWidth-190,x+22)),ly=Math.max(8,Math.min(host.clientHeight-65,y-68));

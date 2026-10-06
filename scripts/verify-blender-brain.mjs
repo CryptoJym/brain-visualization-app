@@ -3,7 +3,7 @@ import {writeFileSync,mkdirSync,readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import puppeteer from 'puppeteer';
 const origin=process.env.CORTEX_TEST_ORIGIN||'http://127.0.0.1:5188';
-const out=process.env.CORTEX_TEST_OUTPUT||'.local-evidence/blender-v2';
+const out=process.env.CORTEX_TEST_OUTPUT||'.local-evidence/blender-v6';
 mkdirSync(out,{recursive:true});
 const passed=[],failures=[],errors=[];
 const record=(name,value)=>{assert.ok(value,name);passed.push(name);};
@@ -12,7 +12,7 @@ const click=async(page,text)=>{
   for(const button of await page.$$('button')) if((await button.evaluate(e=>e.textContent.trim()))===text){await button.click();return;}
   throw new Error(`Button not found: ${text}`);
 };
-const browser=await puppeteer.launch({headless:'new',timeout:60000});
+const browser=await puppeteer.launch({headless:'new',timeout:60000,executablePath:process.env.CORTEX_CHROME||undefined});
 try {
   const page=await browser.newPage();await page.setViewport({width:1440,height:1100,deviceScaleFactor:1});
   page.on('pageerror',e=>errors.push(e.message));
@@ -20,20 +20,23 @@ try {
   await page.goto(origin,{waitUntil:'domcontentloaded',timeout:25000});
   await page.waitForSelector('[data-model="loaded"]',{timeout:35000});await wait(700);
   const state=()=>page.$eval('.cc-brain-canvas',e=>({...e.dataset}));
-  record('Blender v2 asset loaded',(await state()).version==='cc-blender-5.0');
+  record('Blender v6 asset loaded',(await state()).version==='cc-blender-6.0');
   record('47 named region meshes',(await state()).meshes==='47');
   record('Refined mesh triangle budget',Number((await state()).triangles)>50000);
-  record('Stage is not compressed by legacy CSS',await page.$eval('.cc-brain-stage',e=>e.clientHeight>=430));
+  // The welcome page sets a 355 px stage (CortexExperience.css); 430 px predates that design.
+  record('Stage is not compressed by legacy CSS',await page.$eval('.cc-brain-stage',e=>e.clientHeight>=320));
   record('Desktop no horizontal overflow',await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
   await page.screenshot({path:`${out}/after-home.png`});
   await page.evaluate(()=>{window.__testCanvas=document.querySelector('canvas');});
   await page.select('.cc-brain-region-selector select','hippocampus');await wait(350);
-  record('Deep-region choice opens cutaway',(await state()).mode==='cutaway');
+  record('Internal-structure choice opens the see-through deep view',(await state()).mode==='deep');
   record('Hippocampus selection retained',(await state()).selected==='hippocampus');
   record('No renderer remount on selection',await page.evaluate(()=>window.__testCanvas===document.querySelector('canvas')));
   await page.screenshot({path:`${out}/after-cutaway.png`});
+  await click(page,'Cutaway');await wait(300);
+  record('Cutaway cuts through the chosen structure',(await state()).mode==='cutaway'&&Number((await state()).cut)>.5);
   await click(page,'Deep structures');await wait(300);
-  record('Exploded deep view',(await state()).mode==='deep');
+  record('Deep view',(await state()).mode==='deep');
   await page.screenshot({path:`${out}/after-deep.png`});
   for(const id of ['dlpfc','acc','amygdala','hippocampus','insula','thalamus','hypothalamus','pag','temporal','cerebellum']){
     await page.select('.cc-brain-region-selector select',id);await wait(90);
@@ -67,10 +70,10 @@ try {
   record('Mobile selects reduced geometry',await mobile.$eval('.cc-brain-canvas',e=>e.dataset.lod==='mobile'));
   record('Mobile no horizontal overflow',await mobile.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
   await mobile.select('.cc-brain-region-selector select','insula');await wait(150);
-  record('Mobile deep-region selection',await mobile.$eval('.cc-brain-canvas',e=>e.dataset.selected==='insula'&&e.dataset.mode==='cutaway'));
+  record('Mobile buried-cortex selection',await mobile.$eval('.cc-brain-canvas',e=>e.dataset.selected==='insula'&&e.dataset.mode==='deep'));
   await mobile.screenshot({path:`${out}/after-mobile.png`,fullPage:true});await mobile.close();
   const broken=await browser.newPage();await broken.setRequestInterception(true);
-  broken.on('request',request=>request.url().includes('cortex-brain-v5')&&request.url().endsWith('.glb')?request.abort('failed'):request.continue());
+  broken.on('request',request=>request.url().includes('cortex-brain-v6')&&request.url().endsWith('.glb')?request.abort('failed'):request.continue());
   await broken.goto(origin,{waitUntil:'domcontentloaded',timeout:25000});await broken.waitForSelector('[data-model="failed"]',{timeout:35000});
   record('Model failure explicitly shown',await broken.evaluate(()=>document.body.innerText.includes('3D view unavailable')));
   await broken.select('.cc-brain-region-selector select','thalamus');
