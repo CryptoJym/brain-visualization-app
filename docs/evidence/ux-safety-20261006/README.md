@@ -1,6 +1,6 @@
 # UX safety evidence — 2026-10-06
 
-These are local browser screenshots of the pinned production source and the Lane A candidate, with synthetic test data. They are not production-user evidence. The baseline is `2aa769bc3728146a3bfa8801da0253b93c4293f8`; the candidate source is `3d677ccb136953538b587a58e6e8c53af9eda579`. Desktop captures are 1440×1000; phone captures are 375×812. The gold outlines show keyboard focus.
+These are local browser screenshots of the pinned production source and the Lane A candidate, with synthetic test data. They are not production-user evidence. The baseline is `2aa769bc3728146a3bfa8801da0253b93c4293f8`; the candidate source is `c1db0d52e8654d8f45128a50274fb08a4b21a822`. Desktop captures are 1440×1000; phone captures are 375×812. The gold outlines show keyboard focus.
 
 - **before-desktop-assessment.jpg**: Pinned base, assessment section 1, 1440×1000, top of page.
 - **after-desktop-assessment.jpg**: Candidate, assessment section 1, 1440×1000, support closed.
