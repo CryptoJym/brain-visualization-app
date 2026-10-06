@@ -131,7 +131,7 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
     const key=new THREE.DirectionalLight(0xfff3ea,2.45);key.position.set(5,7,7);scene.add(key);
     const rim=new THREE.DirectionalLight(0x86d4ff,1.05);rim.position.set(-5,3,-6);scene.add(rim);
     const meshes=[],capGroups=new Map(),capRoot=new THREE.Group();
-    let selectedMeshes=[],labelMesh=null,labelPoint=null,activeMode='surface',activeIsolate=false,activeKeep='R';
+    let selectedMeshes=[],labelMesh=null,labelPoint=null,activeMode='surface',activeIsolate=false;
     const plane=new THREE.Plane(new THREE.Vector3(-1,0,0),-MEDIAL_CUT);
     const resize=()=>{
       const width=host.clientWidth,height=host.clientHeight;if(!width||!height)return;
@@ -246,7 +246,7 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
       needsRender=true;activeMode=nextMode;activeIsolate=only;
       host.dataset.mode=nextMode;host.dataset.selected=id||'';host.dataset.side=selectedSide;host.dataset.isolated=String(only);
       const members=REGION_BY_ID[id]?.members||[id];selectedMeshes=[];
-      const keep=selectedSide==='L'?'L':'R';activeKeep=keep;
+      const keep=selectedSide==='L'?'L':'R';
       const matches=mesh=>{const {regionId,hemisphere}=mesh.userData;return Boolean(id)&&members.includes(regionId)&&(selectedSide==='both'||hemisphere===selectedSide||!['L','R'].includes(hemisphere));};
       // Cut plane: the medial plane, or through the selected structure on the kept side.
       let cut=MEDIAL_CUT;
