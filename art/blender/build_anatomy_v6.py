@@ -10,14 +10,14 @@ loads), art/blender/cortex-brain-v6.blend (desktop scene, packed) and evidence r
 v1.4 (Allen Human Reference Atlas), CC BY 4.0. One generic reference brain; no respondent data.
 Exported glTF axes: +X patient left, +Y superior, +Z anterior (right-handed).
 """
-import bpy, bmesh, hashlib, json, math, sys
+import bpy, bmesh, hashlib, json, math
 from pathlib import Path
 import numpy as np
 from mathutils import Vector
 
 ROOT = Path(__file__).resolve().parents[2]
 ART = ROOT / 'art/blender'; OUT = ROOT / 'public/models'
-STAGE1 = ROOT / '.local-evidence/anatomy-v6/stage1'; STAGE2 = ROOT / '.local-evidence/anatomy-v6/stage2'
+STAGE2 = ROOT / '.local-evidence/anatomy-v6/stage2'
 RENDERS = ROOT / '.local-evidence/anatomy-v6/renders'
 VERSION = 'cc-blender-6.0'
 CEREBRUM_LENGTH_UNITS = 6.4  # same framing as v2-v5

@@ -127,9 +127,9 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
     const markDirty=()=>{needsRender=true;};controls.addEventListener('change',markDirty);
     controls.enableDamping=true; controls.enablePan=false; controls.dampingFactor=.08;
     controls.minDistance=8; controls.maxDistance=22; controls.target.set(0,0,0); controls.autoRotateSpeed=.45;
-    scene.add(new THREE.HemisphereLight(0xd6eeff,0x15223a,.42));
-    const key=new THREE.DirectionalLight(0xfff3ea,2.3);key.position.set(5,7,7);scene.add(key);
-    const rim=new THREE.DirectionalLight(0x86d4ff,1.1);rim.position.set(-5,3,-6);scene.add(rim);
+    scene.add(new THREE.HemisphereLight(0xd6eeff,0x15223a,.36));
+    const key=new THREE.DirectionalLight(0xfff3ea,2.45);key.position.set(5,7,7);scene.add(key);
+    const rim=new THREE.DirectionalLight(0x86d4ff,1.05);rim.position.set(-5,3,-6);scene.add(rim);
     const meshes=[],capGroups=new Map(),capRoot=new THREE.Group();
     let selectedMeshes=[],labelMesh=null,labelPoint=null,activeMode='surface',activeIsolate=false,activeKeep='R';
     const plane=new THREE.Plane(new THREE.Vector3(-1,0,0),-MEDIAL_CUT);
@@ -329,7 +329,7 @@ export default function CortexBrain({profile, onSelect, compact=false,focus=null
       model.traverse(obj=>{
         if(!obj.isMesh)return;
         const mat=obj.material.clone();obj.material=mat;ownedMaterials.push(mat);
-        mat.roughness=Math.max(mat.roughness||.5,.5);mat.metalness=.02;mat.envMapIntensity=.5;
+        mat.roughness=Math.max(mat.roughness||.5,.5);mat.metalness=.02;mat.envMapIntensity=.42;
         const count=(obj.geometry.index?.count||obj.geometry.attributes.position.count)/3;triangles+=count;
         const data=obj.userData;data.helper=Boolean(data.helper);
         if(data.layer!=='cap')drawn+=count;

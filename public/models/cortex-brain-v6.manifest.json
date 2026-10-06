@@ -1142,12 +1142,12 @@
     "mobile": "cortex-brain-v6-mobile-1a53452d83.glb"
   },
   "catalogSha256": "eb018a0ea98a33ed899733eb8d3a596988fe4b61c1bf202667319d2e8e1b5bac",
-  "builderSha256": "39b599e85bf30f9cd4781628a6ff79eb9e7cfaa019e3e0b08468b786ac7fddc3",
+  "builderSha256": "99faefc5ea4eb1029bb616f3bc448c8de2b714892d32e6e25e37cfd071ef389a",
   "stageScriptsSha256": {
     "anatomy_v6_atlas.py": "dce7ee3adf0097dd15ffd311645ff974eb7daa5d48264995b57793879b3ac2d7",
-    "anatomy_v6_meshes.py": "ce9291bb0134cbf119f4cae5b38c1c7601074ac2bb415485484cc111d4a05dfd"
+    "anatomy_v6_meshes.py": "da05c7254d8e70fd6eefdb5349dd075f6a070ee733e230d168ff3b07078f06de"
   },
-  "sourceBlendSha256": "b9bb25523d0e53865edc67e7cc957c90879af4da692ceb2413241b018c6fa1a9",
+  "sourceBlendSha256": "734115c7a0d13161637ae079bc561a5bda5d61447f8ddf490c6957aec32e5544",
   "poster": {
     "file": "cortex-brain-v6-poster-a57bed75d6.jpg",
     "bytes": 46171,

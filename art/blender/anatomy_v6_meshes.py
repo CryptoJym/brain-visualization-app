@@ -461,12 +461,10 @@ def main():
     label, origin, sp, names, lut, meta1 = load()
     xs, ys, zs = grid_coords(origin, sp, label.shape)
     left = (xs > 0)[:, None, None]
-    keys = lambda table: list(table)
-    cortex_keys, deep_keys, mid_keys = keys(CORTEX), keys(DEEP), keys(MIDLINE)
+    cortex_keys, deep_keys = list(CORTEX), list(DEEP)
     forebrain = mask_for(label, lut, cortex_keys + deep_keys + ['hypothalamus', 'forebrain_other', 'ventricles'])
     hemi_both = ndimage.binary_fill_holes(largest_component(forebrain))  # both hemispheres, joined at the midline
     hemi = hemi_both & left
-    gm = mask_for(label, lut, cortex_keys) & left  # all cortical grey matter, insula included
     surface_keys = [k for k in cortex_keys if k != 'insula']  # the insula is buried: own closed volume
     gm_regions = np.zeros(label.shape, np.int8)
     for k, key in enumerate(surface_keys, start=1):
