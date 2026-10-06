@@ -33,12 +33,15 @@ async function support(p,label){
  check(`${label}: current support actions and usable targets`,links.every(l=>l.height>=44));
  check(`${label}: external support keeps this page open with no referrer`,links.filter(l=>l.href.startsWith('https:')).every(l=>l.target==='_blank'&&l.rel.includes('noreferrer')));
  const ax=await p.accessibility.snapshot({root:await p.$('.cc-support-now'),interestingOnly:false});
- check(`${label}: screen reader receives the expanded support disclosure`,axNodes(ax).some(n=>n.name.includes('Need support now?')&&n.expanded===true));
  writeFileSync(resolve(out,label+'-accessibility.json'),JSON.stringify(ax,null,2));
+ check(`${label}: screen reader receives the expanded support disclosure`,axNodes(ax).some(n=>n.name?.includes('Need support now?')&&n.expanded===true));
  await p.keyboard.press('Tab');check(`${label}: keyboard reaches Call 988`,await p.evaluate(()=>document.activeElement.getAttribute('href')==='tel:988'));
  await screenshot(p,label+'-support-open');await p.keyboard.press('Escape');
  check(`${label}: Escape closes support and returns focus`,await p.evaluate(()=>!document.querySelector('.cc-support-now details').open&&document.activeElement.matches('.cc-support-now summary')));
  await screenshot(p,label);
+ await p.evaluate(()=>window.scrollTo({top:document.documentElement.scrollHeight,behavior:'instant'}));
+ check(`${label}: support stays within reach while reading`,await p.$eval('.cc-support-now summary',e=>e.getBoundingClientRect().top>=0&&e.getBoundingClientRect().top<80));
+ await p.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
 }
 async function leaveWarning(p,action){
  const client=await p.target().createCDPSession();
@@ -64,6 +67,14 @@ async function download(p,action){
 }
 
 try{
+ // A delayed step-heading focus must not pull a person out of support options.
+ const focus=await page();await click(focus.p,'Explore sample profile');await click(focus.p,'Edit strengths & friction →');
+ await focus.p.waitForSelector('.cc-insight-title');await focus.p.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
+ await focus.p.evaluate(()=>{window.__nativeRAF=window.requestAnimationFrame;window.__pendingFocus=[];window.requestAnimationFrame=fn=>{window.__pendingFocus.push(fn);return 1;};});
+ await click(focus.p,'Continue →');await focus.p.focus('.cc-support-now summary');await focus.p.keyboard.press('Enter');await focus.p.keyboard.press('Tab');
+ await focus.p.evaluate(()=>{window.requestAnimationFrame=window.__nativeRAF;window.__pendingFocus.forEach(fn=>fn(performance.now()));});
+ check('Pending step focus preserves keyboard focus inside support',await focus.p.evaluate(()=>document.activeElement.getAttribute('href')==='tel:988'));
+ await focus.p.keyboard.press('Escape');check('Support still closes after a pending step focus update',await focus.p.evaluate(()=>!document.querySelector('.cc-support-now details').open));await focus.context.close();
  for(const [size,width,height] of [['desktop',1440,1000],['mobile',375,812]]){
   const {context,p}=await page(width,height);await click(p,'Begin my reflection →');await route(p,'#/context');
   await support(p,`${size}-context`);
@@ -95,7 +106,7 @@ try{
   check(`${size}: traversal stays in the same document`,await p.evaluate(token=>window.__uxDocument===token,documentToken));
   check(`${size}: sensitive fields absent from history and URL`,await p.evaluate(()=>!JSON.stringify(history.state).match(/answers|personContext|male|physical_assault/)&&!location.href.includes('?')));
   await leaveWarning(p,'reload');await leaveWarning(p,'close');
-  check(`${size}: cancelling leave keeps all answers`,await p.$eval('.cc-load strong',e=>e.textContent.startsWith(String(SECTIONS.length)+' /')));
+  check(`${size}: cancelling leave keeps all answers`,await p.$eval('.cc-load strong',(e,count)=>e.textContent.startsWith(String(count)+' /'),SECTIONS.length));
   await click(p,'Choose my reports');await route(p,'#/report');await support(p,`${size}-report`);
   await p.emulateMediaType('print');check(`${size}: support UI excluded from print`,await p.$eval('.cc-support-now',e=>getComputedStyle(e).display==='none'));await p.emulateMediaType('screen');
   await click(p,'Edit strengths & friction');await route(p,'#/insights');
@@ -108,7 +119,7 @@ try{
   let dialogs=0;const unexpected=async d=>{dialogs++;await d.dismiss();};p.on('dialog',unexpected);
   await p.reload({waitUntil:'networkidle0'});p.off('dialog',unexpected);await route(p,'#/welcome');check(`${size}: saved reload has no leave warning`,dialogs===0);
   await p.goBack();await route(p,'#/welcome');check(`${size}: old history cannot reconstruct answers after reload`,!await p.$('.cc-results')&&!await p.$('.cc-assessment'));
-  await click(p,'Open saved profile');await route(p,'#/results');check(`${size}: resume still opens only by explicit choice`,await p.$eval('.cc-load strong',e=>e.textContent.startsWith(String(SECTIONS.length)+' /')));
+  await click(p,'Open saved profile');await route(p,'#/results');check(`${size}: resume still opens only by explicit choice`,await p.$eval('.cc-load strong',(e,count)=>e.textContent.startsWith(String(count)+' /'),SECTIONS.length));
   await context.close();
  }
 

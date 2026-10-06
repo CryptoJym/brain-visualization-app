@@ -7,6 +7,7 @@ export function useReflectionNavigation(sectionCount){
   const navigation=createReflectionNavigation(window,next=>{
    setRoute(next);window.scrollTo({top:0,behavior:'auto'});
    requestAnimationFrame(()=>{
+    if(document.activeElement?.closest('.cc-support-now'))return;
     const heading=document.querySelector('main h1, main .cc-assessment-wrap h2');
     if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true});}
    });
