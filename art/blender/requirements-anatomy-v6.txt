@@ -1,0 +1,9 @@
+# Python 3.12 environment for art/blender/anatomy_v6_atlas.py and anatomy_v6_meshes.py
+# (Blender's own Python runs build_anatomy_v6.py). Versions used for the committed v6 build:
+numpy==2.5.3
+scipy==1.18.1
+scikit-image==0.26.0
+trimesh==5.1.1
+libigl==2.6.3
+pymeshlab==2025.7.post1
+manifold3d==3.5.4

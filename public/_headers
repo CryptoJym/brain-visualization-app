@@ -1,7 +1,15 @@
 /libs/*
   Cache-Control: public, max-age=31536000, immutable
   Access-Control-Allow-Origin: *
+
+/libs/threebrain-*
   Content-Type: application/javascript
+
+/libs/draco/*.wasm
+  Content-Type: application/wasm
+
+/models/cortex-brain-v6-*
+  Cache-Control: public, max-age=31536000, immutable
 
 /*
   X-Frame-Options: DENY

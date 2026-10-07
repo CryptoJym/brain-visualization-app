@@ -10,6 +10,8 @@ This working copy is `/Users/utlyze/Projects/cortex-compass-hero-editions-202609
 ## Implemented
 Cortex Compass provides stage-first history/development reflection; a required blank-by-default Male/Female biological-sex field; separate current strengths/friction/support observations; 27 functional Hero Atlas observations and 24 editorial compositions; generic 3D teaching anatomy; cinematic and ink-saving Superhero/Scientific reports; accepted hero artwork; a private xAI portrait pilot; explicit local saves; and encrypted `.cortex` file backup/restore with optional portrait bytes.
 
+The 3D teaching brain is anatomy v6, built from the HuBMAP/Allen reference brain (CC BY 4.0); see [docs/anatomy-v6/README.md](docs/anatomy-v6/README.md) for its sources, build and checks.
+
 The accepted portrait is reused when printing and restoring, not regenerated. The portrait backend receives only approved visual information, not questionnaire history. Private history and biological-context print appendices are separate opt-ins. The image pilot uses private access passes, not general public account registration. Backups are local encrypted files, not an encrypted cloud account. Software tests are not clinical validation or evidence of measured brain alterations.
 
 ## What is unfinished

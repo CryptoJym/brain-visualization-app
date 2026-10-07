@@ -79,3 +79,8 @@ node_modules/
 
 # Local Worker test/config secrets
 .dev.vars*
+
+# Anatomy v6: the generated viewer poster and the PR evidence images are tracked
+!public/models/cortex-brain-v6-poster-*.jpg
+!docs/evidence/anatomy-v6-20261006/*.png
+!docs/evidence/anatomy-v6-20261006/*.jpg
