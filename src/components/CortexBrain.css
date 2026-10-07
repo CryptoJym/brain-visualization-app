@@ -34,7 +34,14 @@
  .cc-brain-region-selector{padding:10px;gap:7px;flex-direction:column;align-items:stretch}
  .cc-brain-v2 button{min-height:42px;padding:8px 10px}
  .cc-brain-v2 .cc-brain-view-label{font-size:8px;letter-spacing:.08em}
+ .cc-brain-v2 .cc-story-marker{padding:0 2px}.cc-brain-v2 .cc-story-marker>span{display:none}
 }
+/* Brain-story map labels: placed by the viewer each frame; numbers match the legend and walkthrough. */
+.cc-story-leaders{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:hidden;z-index:2}
+.cc-story-leaders line{stroke:#d7f7fa;stroke-width:1;stroke-opacity:.8;opacity:0}
+.cc-story-markers{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:2}
+.cc-story-marker{position:absolute;left:0;top:0;display:flex;align-items:center;gap:7px;height:26px;padding:0 10px 0 3px;border:1px solid var(--marker);border-radius:13px;background:#061724e6;color:#e8f9ff;font-size:11px;font-weight:600;white-space:nowrap;opacity:0}
+.cc-story-marker b{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--marker);color:#061724;font-size:11px;font-weight:800}
 @media(prefers-reduced-motion:reduce){.cc-brain-v2 *{transition:none!important;animation:none!important}}
 @media print{
  .cc-brain-v2-header,.cc-brain-v2-controls,.cc-brain-region-selector,.cc-brain-credits{display:none!important}
