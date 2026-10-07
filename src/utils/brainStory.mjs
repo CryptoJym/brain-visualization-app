@@ -36,7 +36,7 @@ export const PLAIN_NAMES={
 // The limits live in `basis`; each stop adds one sentence on what it does and doesn't mean.
 export const STORY_COPY={
   eyebrow:'ILLUSTRATIVE ANATOMY',
-  title:'Your brain map',
+  title:'Brain map of your answers',
   emptyTitle:'Explore the systems',
   chip:'Same generic brain for everyone',
   panelEyebrow:'LINKED TO YOUR ANSWERS',
@@ -49,7 +49,7 @@ export const STORY_COPY={
   walkHintStill:'Your device asks for less motion, so the walkthrough opens as a still list of steps.',
   textVersion:n=>`Read the walkthrough as text (${n} ${n===1?'stop':'stops'})`,
   exploring:'You are exploring freely, so the map highlights are paused.',
-  backToMap:'Show my brain map',
+  backToMap:'Show the brain map',
   stop:(i,n)=>`Stop ${i+1} of ${n}`,
   answersHeading:'From your answers',
   answered:'You answered Yes.',
@@ -71,7 +71,8 @@ export const STORY_COPY={
   empty:'Many important experiences have no region-specific study in this site’s research guide, and that takes nothing away from them. You can still explore any structure on the teaching brain.',
 };
 
-export const SIDE_TEXT={L:'left side',R:'right side',both:'both sides'};
+// The side the studies reported, so a single side is never read as the person's own left or right.
+export const SIDE_TEXT={L:'left side in the study',R:'right side in the study',both:'both sides'};
 
 // One side for a structure: what every study that links it reported. Mixed or bilateral → both.
 export function mergeSides(sides=[]){

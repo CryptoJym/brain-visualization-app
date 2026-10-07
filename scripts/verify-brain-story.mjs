@@ -161,12 +161,12 @@ try{
   record('desktop: full text version has every stop in walkthrough order',text.map(t=>t.id).join(',')===SAMPLE.steps.map(st=>st.id).join(','));
   record('desktop: text version carries the same names, answers, findings, links and meaning',SAMPLE.steps.every((st,i)=>[st.plainName,st.scientificName,st.lead,st.meaning,...st.answers.map(a=>a.title),...st.studies.map(x=>x.finding)].every(part=>text[i]?.text.includes(part))&&st.studies.every(x=>text[i].links.includes(x.url))));
   await (await desk.$('.bs-story .bs-panel')).screenshot({path:resolve(out,'desktop-text-version.png')});shots.push({file:'desktop-text-version.png',note:'Text version of the walkthrough'});
-  // The person's own pick hands control back; “Show my brain map” returns.
+  // The person's own pick hands control back; “Show the brain map” returns.
   await desk.select('.bs-story .cc-brain-region-selector select','hippocampus');await wait(300);
   s=await brain(desk);view=await story(desk);
   record('desktop: picking a region yourself switches to free exploring',view.storyView==='explore'&&s.story===''&&s.highlighted===''&&s.selected==='hippocampus',`${view.storyView} ${s.story} ${s.selected}`);
   record('desktop: free exploring keeps the existing region info',await desk.$eval('.bs-story .cc-selected-info',e=>e.textContent.includes('Hippocampus')));
-  await press(desk,'.bs-story [data-control="map"]');await checkMap(desk,SAMPLE,'desktop Show my brain map');
+  await press(desk,'.bs-story [data-control="map"]');await checkMap(desk,SAMPLE,'desktop Show the brain map');
   const chip=await desk.$eval('.cc-report-evidence .cc-study-region[data-region-link]',e=>({id:e.dataset.regionLink,side:e.dataset.side}));
   await press(desk,`.cc-report-evidence .cc-study-region[data-region-link="${chip.id}"][data-side="${chip.side}"]`);await wait(400);
   s=await brain(desk);
